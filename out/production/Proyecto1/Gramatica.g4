@@ -30,35 +30,14 @@ instrucciones returns [Nodo nodo]:
 ;
 
 instrucciones2 returns [Nodo nodo]:
-        declaracion
-        |print {$nodo=$print.nodo;}
-
+        print {$nodo=$print.nodo;}
 ;
-
-declaracion returns [Nodo nodo]:
-        tipo '::' IDEN listaDeclaracion
-        |tipo '::' IDEN '=' expresion listaDeclaracion
-;
-
-listaDeclaracion :
-         (',' IDEN)*
-        |(',' IDEN '=' expresion)*
-;
-
 
 print returns [Nodo nodo]:
-    p='print' '*' ',' expresion {$nodo = new Print($expresion.nodo, $p.line, $p.pos);}
+    p='print' '(' expresion ')' {$nodo = new Print($expresion.nodo, $p.line, $p.pos);}
 ;
 
 expresion returns [Nodo nodo]:
     REAL    {$nodo = new Primitivo(Tipo.Tipos.REAL, $REAL.text, $REAL.line, $REAL.pos);}
-    |INT    {$nodo = new Primitivo(Tipo.Tipos.INTEGER, $INT.text, $INT.line, $INT.pos);}
-;
-
-tipo returns [Nodo nodo]:
-    'integer'       {$nodo = new Tipo(Tipo.Tipos.INTEGER);}
-    |'real'         {$nodo = new Tipo(Tipo.Tipos.REAL);}
-    |'complex'      {$nodo = new Tipo(Tipo.Tipos.COMPLEX);}
-    |'character'    {$nodo = new Tipo(Tipo.Tipos.CHARACTER);}
-    |'logical'      {$nodo = new Tipo(Tipo.Tipos.LOGICAL);}
+    |INT     {$nodo = new Primitivo(Tipo.Tipos.INTEGER, $INT.text, $INT.line, $INT.pos);}
 ;

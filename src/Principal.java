@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import Gramatica.*;
+import Symbols.Table;
+import Symbols.Tree;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
@@ -37,6 +39,7 @@ public class Principal extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                Globales.tree = new Tree();
                 Globales.entrada = textArea1.getText();
                 Globales.salida = "";
 
@@ -50,9 +53,18 @@ public class Principal extends JFrame{
                 Visitor visitor = new Visitor();
                 visitor.visit(startCtx);
 
+                Table table = new Table(null);
+                for(int i = 0; i<Globales.tree.instrucciones.size(); i++){
+                    Globales.tree.instrucciones.get(i).execute(table, Globales.tree);
+                }
+
+                for(int i = 0; i < Globales.tree.consola.size(); i++){
+                    Globales.salida += Globales.tree.consola.get(i) + "\n";
+                }
 
                 textArea2.setText(Globales.salida);
             }
         });
     }
 }
+
