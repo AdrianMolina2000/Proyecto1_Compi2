@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Table {
     Table anterior;
-    Map<String, Simbolo> Variables;
+    public Map<String, Simbolo> Variables;
 
     public Table(Table anterior) {
         this.anterior = anterior;

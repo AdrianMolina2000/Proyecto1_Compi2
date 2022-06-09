@@ -3,10 +3,10 @@ import Gramatica.Globales;
 import Other.Tipo;
 
 public class Simbolo {
-    Tipo tipo;
-    Tipo tipo2;
-    String id;
-    Object valor;
+    public Tipo tipo;
+    public Tipo tipo2;
+    public String id;
+    public Object valor;
     int line;
     int column;
     Table ambito;

@@ -2,10 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import Abstract.Nodo;
 import Gramatica.*;
 import Symbols.Table;
 import Symbols.Tree;
+import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
@@ -38,8 +43,7 @@ public class Principal extends JFrame{
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                Globales.tree = new Tree();
+                Tree tree = new Tree();
                 Globales.entrada = textArea1.getText();
                 Globales.salida = "";
 
@@ -51,18 +55,25 @@ public class Principal extends JFrame{
                 GramaticaParser.StartContext startCtx = sintactico.start();
 
                 Visitor visitor = new Visitor();
-                visitor.visit(startCtx);
+                Object treeAST = visitor.visit(startCtx);
 
                 Table table = new Table(null);
-                for(int i = 0; i<Globales.tree.instrucciones.size(); i++){
-                    Globales.tree.instrucciones.get(i).execute(table, Globales.tree);
+                tree.instrucciones = (ArrayList<Nodo>) treeAST;
+
+                for(int i = 0; i<tree.instrucciones.size(); i++){
+                    tree.instrucciones.get(i).execute(table, tree);
                 }
 
-                for(int i = 0; i < Globales.tree.consola.size(); i++){
-                    Globales.salida += Globales.tree.consola.get(i) + "\n";
+                for(int i = 0; i < tree.consola.size(); i++){
+                    Globales.salida += tree.consola.get(i);
                 }
 
                 textArea2.setText(Globales.salida);
+
+
+                /*List<String> ruleNames = Arrays.asList(sintactico.getRuleNames());
+                TreeViewer treeViewer = new TreeViewer(ruleNames, startCtx);
+                treeViewer.open();*/
             }
         });
     }

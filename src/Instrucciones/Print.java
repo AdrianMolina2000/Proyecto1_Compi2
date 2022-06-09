@@ -5,9 +5,11 @@ import Other.Tipo;
 import Symbols.Table;
 import Symbols.Tree;
 
+import java.util.ArrayList;
+
 public class Print extends Nodo {
-    Nodo expresion;
-    public Print(Nodo expresion, int line, int column) {
+    ArrayList<Nodo> expresion;
+    public Print(ArrayList<Nodo> expresion, int line, int column) {
         super(null, line, column);
         this.expresion = expresion;
 
@@ -15,7 +17,20 @@ public class Print extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        tree.consola.add((String)this.expresion.execute(table, tree));
+        for(int i = 0; i<this.expresion.size(); i++){
+            String salida = (String)this.expresion.get(i).execute(table, tree);
+            salida = salida.replace("\"", "");
+            salida = salida.replace("'", "");
+
+            if(salida.equalsIgnoreCase(".true.")){
+                salida = "T";
+            }else if(salida.equalsIgnoreCase(".false.")){
+                salida = "F";
+            }
+
+            tree.consola.add(salida);
+        }
+        tree.consola.add("\n");
         return null;
     }
 }

@@ -12,7 +12,7 @@ import Symbols.Tree;
 
 public class Declaracion extends Nodo {
     String id;
-    Nodo valor;
+    public Nodo valor;
     public Declaracion(Tipo.Tipos tipo, String id, Nodo valor, int line, int column) {
         super(tipo, line, column);
         this.id = id;
@@ -28,9 +28,8 @@ public class Declaracion extends Nodo {
         }
 
         if (this.valor.tipo != this.tipo) {
-            Excepcion error = new Excepcion("Semantico",
-                                            "La variable no puede ser declarada debido a que son de diferentes tipos",
-                                             this.line, this.column);
+            String err = "La variable {" +this.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +this.tipo+"] y [" +valor.tipo + "] \n";
+            Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
             tree.excepciones.add(error);
             tree.consola.add(error.toString());
             return error;
@@ -43,11 +42,12 @@ public class Declaracion extends Nodo {
         if(table.getVariable(this.id) == null){
             table.setVariable(simbolo);
         }else{
-            String err = "La variable \"" + this.id + "\" ya ha sido declarada";
+            String err = "La variable {" + this.id + "} ya ha sido declarada \n";
             Excepcion error = new Excepcion("Semantico", err, line, column);
+            tree.excepciones.add(error);
             tree.consola.add(error.toString());
         }
-        System.out.println(this.id + " --> " + result);
+
 
         return null;
     }

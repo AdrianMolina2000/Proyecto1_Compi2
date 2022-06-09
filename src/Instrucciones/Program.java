@@ -26,7 +26,7 @@ public class Program extends Nodo {
                 instrucciones.get(i).execute(table, tree);
             }
         }else{
-            Excepcion error = new Excepcion("Semantico", "Los nombres de apertura y cierre deben ser iguales.",
+            Excepcion error = new Excepcion("Semantico", "Los nombres de apertura y cierre deben ser iguales \n",
                                             this.line, this.column);
             tree.consola.add(error.toString());
         }
