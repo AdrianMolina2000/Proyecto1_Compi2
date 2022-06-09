@@ -9,11 +9,11 @@ public class Table {
 
     public Table(Table anterior) {
         this.anterior = anterior;
+        Variables = new HashMap<>();
     }
 
     public void setVariable(Simbolo simbol){
-        Table ambito = this;
-        ambito.Variables.put(simbol.id, simbol);
+        this.Variables.put(simbol.id, simbol);
     }
 
     public Simbolo getVariable(String id){
@@ -21,7 +21,7 @@ public class Table {
         while (ambito != null){
 
             for (Map.Entry<String, Simbolo> entry : ambito.Variables.entrySet()) {
-                if(entry.getKey() == id){
+                if(entry.getKey().equalsIgnoreCase(id)){
                     return ambito.Variables.get(id);
                 }
             }

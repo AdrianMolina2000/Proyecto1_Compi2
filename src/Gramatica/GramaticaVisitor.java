@@ -38,6 +38,18 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrucciones2(GramaticaParser.Instrucciones2Context ctx);
 	/**
+	 * Visit a parse tree produced by {@link GramaticaParser#declaracion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracion(GramaticaParser.DeclaracionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GramaticaParser#listaDeclaracion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaDeclaracion(GramaticaParser.ListaDeclaracionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GramaticaParser#print}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -49,4 +61,10 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpresion(GramaticaParser.ExpresionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GramaticaParser#tipo}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTipo(GramaticaParser.TipoContext ctx);
 }

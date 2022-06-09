@@ -15,7 +15,7 @@ public class Tipo {
         NULL
     }
 
-    Tipos tipo;
+    public Tipos tipo;
 
     public Tipo(Tipos tipo) {
         this.tipo = tipo;

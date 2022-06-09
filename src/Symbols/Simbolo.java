@@ -1,4 +1,5 @@
 package Symbols;
+import Gramatica.Globales;
 import Other.Tipo;
 
 public class Simbolo {
@@ -18,7 +19,5 @@ public class Simbolo {
         this.line = line;
         this.column = column;
         this.ambito = ambito;
-
-
     }
 }
