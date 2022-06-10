@@ -60,19 +60,29 @@ listaPrint
 ;
 
 expresion
-    :op='-' expresion                          #expresionNegativo
-    |val1=expresion op='**' val2=expresion  #expresionPotencia
-    |val1=expresion op='*' val2=expresion      #expresionMultiplicacion
-    |val1=expresion op='/' val2=expresion      #expresionDivision
-    |val1=expresion op='+' val2=expresion      #expresionSuma
-    |val1=expresion op='-' val2=expresion      #expresionResta
-    |val=IDEN       #expresionIdentificador
-    |val=REAL       #expresionReal
-    |val=INT        #expresionInt
-    |val=CHAR       #expresionChar
-    |val=STRING     #expresionString
-    |val='.true.'   #expresionTrue
-    |val='.false.'  #expresionFalse
+    :op='-' expresion                                   #expresionNegativo
+    |op='.not.' expresion                               #expresionNot
+    |val1=expresion op='**' val2=expresion              #expresionPotencia
+    |val1=expresion op='*' val2=expresion               #expresionMultiplicacion
+    |val1=expresion op='/' val2=expresion               #expresionDivision
+    |val1=expresion op='+' val2=expresion               #expresionSuma
+    |val1=expresion op='-' val2=expresion               #expresionResta
+    |val1=expresion op=('=='|'.eq.') val2=expresion     #expresionEq
+    |val1=expresion op=('/='|'.ne.') val2=expresion     #expresionNe
+    |val1=expresion op=('>='|'.ge.') val2=expresion     #expresionGe
+    |val1=expresion op=('>' |'.gt.') val2=expresion     #expresionGt
+    |val1=expresion op=('<='|'.le.') val2=expresion     #expresionLe
+    |val1=expresion op=('<' |'.lt.') val2=expresion     #expresionLt
+    |val1=expresion op='.and.' val2=expresion           #expresionAnd
+    |val1=expresion op='.or.'  val2=expresion           #expresionOr
+    |val=IDEN                                           #expresionIdentificador
+    |val=REAL                                           #expresionReal
+    |val=INT                                            #expresionInt
+    |val=CHAR                                           #expresionChar
+    |val=STRING                                         #expresionString
+    |val='.true.'                                       #expresionTrue
+    |val='.false.'                                      #expresionFalse
+    |'(' val=expresion ')'                              #expresionParentesis
 ;
 
 tipo:

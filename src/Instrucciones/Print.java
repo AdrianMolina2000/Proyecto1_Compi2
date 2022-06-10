@@ -21,9 +21,9 @@ public class Print extends Nodo {
             salida = salida.replace("\"", "");
             salida = salida.replace("'", "");
 
-            if(salida.equalsIgnoreCase(".true.")){
+            if(salida.equalsIgnoreCase("true")){
                 salida = "T";
-            }else if(salida.equalsIgnoreCase(".false.")){
+            }else if(salida.equalsIgnoreCase("false")){
                 salida = "F";
             }
 
