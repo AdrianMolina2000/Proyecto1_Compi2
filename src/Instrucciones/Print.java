@@ -12,13 +12,12 @@ public class Print extends Nodo {
     public Print(ArrayList<Nodo> expresion, int line, int column) {
         super(null, line, column);
         this.expresion = expresion;
-
     }
 
     @Override
     public Object execute(Table table, Tree tree) {
         for(int i = 0; i<this.expresion.size(); i++){
-            String salida = (String)this.expresion.get(i).execute(table, tree);
+            String salida = String.valueOf(this.expresion.get(i).execute(table, tree));
             salida = salida.replace("\"", "");
             salida = salida.replace("'", "");
 

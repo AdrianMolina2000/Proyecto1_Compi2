@@ -106,6 +106,20 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitListaPrint(GramaticaParser.ListaPrintContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code expresionFalse}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionFalse(GramaticaParser.ExpresionFalseContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionResta}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionResta(GramaticaParser.ExpresionRestaContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code expresionReal}
 	 * labeled alternative in {@link GramaticaParser#expresion}.
 	 * @param ctx the parse tree
@@ -120,12 +134,40 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpresionInt(GramaticaParser.ExpresionIntContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code expresionChar}
+	 * Visit a parse tree produced by the {@code expresionNegativo}
 	 * labeled alternative in {@link GramaticaParser#expresion}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpresionChar(GramaticaParser.ExpresionCharContext ctx);
+	T visitExpresionNegativo(GramaticaParser.ExpresionNegativoContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionMultiplicacion}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionMultiplicacion(GramaticaParser.ExpresionMultiplicacionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionSuma}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionSuma(GramaticaParser.ExpresionSumaContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionDivision}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionDivision(GramaticaParser.ExpresionDivisionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionPotencia}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionPotencia(GramaticaParser.ExpresionPotenciaContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionString}
 	 * labeled alternative in {@link GramaticaParser#expresion}.
@@ -134,19 +176,26 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpresionString(GramaticaParser.ExpresionStringContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code expresionIdentificador}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionIdentificador(GramaticaParser.ExpresionIdentificadorContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionChar}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionChar(GramaticaParser.ExpresionCharContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code expresionTrue}
 	 * labeled alternative in {@link GramaticaParser#expresion}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExpresionTrue(GramaticaParser.ExpresionTrueContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code expresionFalse}
-	 * labeled alternative in {@link GramaticaParser#expresion}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpresionFalse(GramaticaParser.ExpresionFalseContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code tipoInteger}
 	 * labeled alternative in {@link GramaticaParser#tipo}.

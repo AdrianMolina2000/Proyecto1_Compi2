@@ -104,11 +104,33 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
 
 
+    @Override public Object visitExpresionIdentificador(GramaticaParser.ExpresionIdentificadorContext ctx) {
+        return new Identificador(ctx.val.getText(), ctx.val.getLine(), ctx.val.getCharPositionInLine());
+    }
+
+
+    @Override public Object visitExpresionResta(GramaticaParser.ExpresionRestaContext ctx) {
+        return new Aritmetica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
+    }
+    @Override public Object visitExpresionNegativo(GramaticaParser.ExpresionNegativoContext ctx) {
+        return new Aritmetica(null, (Nodo)visit(ctx.expresion()), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
+    }
+    @Override public Object visitExpresionMultiplicacion(GramaticaParser.ExpresionMultiplicacionContext ctx) {
+        return new Aritmetica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
+    }
+    @Override public Object visitExpresionSuma(GramaticaParser.ExpresionSumaContext ctx) {
+        return new Aritmetica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());    }
+    @Override public Object visitExpresionDivision(GramaticaParser.ExpresionDivisionContext ctx) {
+        return new Aritmetica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
+    }
+    @Override public Object visitExpresionPotencia(GramaticaParser.ExpresionPotenciaContext ctx) {
+        return new Aritmetica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
+    }
     @Override public Nodo visitExpresionReal(GramaticaParser.ExpresionRealContext ctx) {
-        return new Primitivo(Tipo.Tipos.REAL, ctx.val.getText(), ctx.val.getLine(), ctx.val.getCharPositionInLine());
+        return new Primitivo(Tipo.Tipos.REAL, Double.parseDouble(ctx.val.getText()), ctx.val.getLine(), ctx.val.getCharPositionInLine());
     }
     @Override public Nodo visitExpresionInt(GramaticaParser.ExpresionIntContext ctx) {
-        return new Primitivo(Tipo.Tipos.INTEGER, ctx.val.getText(), ctx.val.getLine(), ctx.val.getCharPositionInLine());
+        return new Primitivo(Tipo.Tipos.INTEGER, Integer.parseInt(ctx.val.getText()), ctx.val.getLine(), ctx.val.getCharPositionInLine());
     }
     @Override public Object visitExpresionChar(GramaticaParser.ExpresionCharContext ctx) {
         return new Primitivo(Tipo.Tipos.CHARACTER, ctx.val.getText(), ctx.val.getLine(), ctx.val.getCharPositionInLine());

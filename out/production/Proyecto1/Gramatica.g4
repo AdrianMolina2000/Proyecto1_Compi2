@@ -60,7 +60,14 @@ listaPrint
 ;
 
 expresion
-    :val=REAL       #expresionReal
+    :op='-' expresion                          #expresionNegativo
+    |val1=expresion op='**' val2=expresion  #expresionPotencia
+    |val1=expresion op='*' val2=expresion      #expresionMultiplicacion
+    |val1=expresion op='/' val2=expresion      #expresionDivision
+    |val1=expresion op='+' val2=expresion      #expresionSuma
+    |val1=expresion op='-' val2=expresion      #expresionResta
+    |val=IDEN       #expresionIdentificador
+    |val=REAL       #expresionReal
     |val=INT        #expresionInt
     |val=CHAR       #expresionChar
     |val=STRING     #expresionString
