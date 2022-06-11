@@ -32,7 +32,7 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return new Program(instrucciones, ctx.id1.getText(), ctx.id2.getText(), ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
     }
 
-
+    //Instrucciones2
     @Override public Object visitInstrucciones2Print(GramaticaParser.Instrucciones2PrintContext ctx) {
         return visit(ctx.print());
     }
@@ -44,6 +44,19 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
 
 
+    //Declaracion
+    @Override public Object visitDeclaracionArray2Dim(GramaticaParser.DeclaracionArray2DimContext ctx) {
+        return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), Integer.parseInt(ctx.dim1.getText()), Integer.parseInt(ctx.dim2.getText()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitDeclaracionArray1Dim(GramaticaParser.DeclaracionArray1DimContext ctx) {
+        return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), Integer.parseInt(ctx.dim1.getText()), null, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitDeclaracionArray2Dim2(GramaticaParser.DeclaracionArray2Dim2Context ctx) {
+        return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), Integer.parseInt(ctx.dim1.getText()), Integer.parseInt(ctx.dim2.getText()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitDeclaracionArray1Dim2(GramaticaParser.DeclaracionArray1Dim2Context ctx) {
+        return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), Integer.parseInt(ctx.dim1.getText()), null, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
     @Override public Object visitDeclaracionAsig(GramaticaParser.DeclaracionAsigContext ctx) {
         ArrayList<Nodo> listDec = new ArrayList<Nodo>();
         listDec.add(new Declaracion(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), (Nodo)visit(ctx.expresion()), ctx.id.getLine(), ctx.id.getCharPositionInLine()));
@@ -74,8 +87,6 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
 
         return new ListaDeclaraciones(listDec, ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
-
-
     @Override public Object visitListaDeclaracionAsig(GramaticaParser.ListaDeclaracionAsigContext ctx) {
         return new Declaracion(null, ctx.id.getText(), (Nodo)visit(ctx.expresion()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
@@ -84,11 +95,19 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
 
 
-    @Override public Object visitAsignacion(GramaticaParser.AsignacionContext ctx) {
-        return new Asignacion(ctx.id.getText(), (Nodo)visit(ctx.expresion()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    //Asignacion
+    @Override public Object visitAsignacionId(GramaticaParser.AsignacionIdContext ctx) {
+        return new Asignacion(ctx.id.getText(), visit(ctx.expresion()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitAsignacionArray1(GramaticaParser.AsignacionArray1Context ctx) {
+        return new AsignacionArray(ctx.id.getText(), Integer.parseInt(ctx.num.getText()), 0, (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitAsignacionArray2(GramaticaParser.AsignacionArray2Context ctx) {
+        return new AsignacionArray(ctx.id.getText(), Integer.parseInt(ctx.num1.getText()), Integer.parseInt(ctx.num2.getText()), (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
 
+    //Print
     @Override public Object visitPrint(GramaticaParser.PrintContext ctx) {
         ArrayList<Nodo> instrucciones = new ArrayList<>();
         instrucciones.add((Nodo)visit(ctx.val));
@@ -98,18 +117,22 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
 
         return new Print(instrucciones, ctx.p.getLine(), ctx.p.getCharPositionInLine());
     }
-    @Override
-    public Object visitListaPrint(GramaticaParser.ListaPrintContext ctx) {
+    @Override public Object visitListaPrint(GramaticaParser.ListaPrintContext ctx) {
         return visit(ctx.expresion());
     }
 
 
+
+    //Expresion
     @Override public Object visitExpresionIdentificador(GramaticaParser.ExpresionIdentificadorContext ctx) {
         return new Identificador(ctx.val.getText(), ctx.val.getLine(), ctx.val.getCharPositionInLine());
     }
-
-
-    //Expresion
+    @Override public Object visitExpresionArray2(GramaticaParser.ExpresionArray2Context ctx) {
+        return new ArrayPos(ctx.val.getText(), Integer.parseInt(ctx.pos1.getText()), Integer.parseInt(ctx.pos2.getText()), ctx.val.getLine(), ctx.val.getCharPositionInLine());
+    }
+    @Override public Object visitExpresionArray1(GramaticaParser.ExpresionArray1Context ctx) {
+        return new ArrayPos(ctx.val.getText(), Integer.parseInt(ctx.pos.getText()), 0, ctx.val.getLine(), ctx.val.getCharPositionInLine());
+    }
     @Override public Nodo visitExpresionResta(GramaticaParser.ExpresionRestaContext ctx) {
         return new Aritmetica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
     }
@@ -154,6 +177,9 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     @Override public Nodo visitExpresionAnd(GramaticaParser.ExpresionAndContext ctx) {
         return new Logica((Nodo)visit(ctx.val1), (Nodo)visit(ctx.val2), ctx.op.getText(), ctx.op.getLine(), ctx.op.getCharPositionInLine());
     }
+    @Override public Object visitExpresionSize(GramaticaParser.ExpresionSizeContext ctx) {
+        return new Size(ctx.val.getText(), ctx.si.getLine(), ctx.si.getCharPositionInLine());
+    }
     @Override public Nodo visitExpresionReal(GramaticaParser.ExpresionRealContext ctx) {
         return new Primitivo(Tipo.Tipos.REAL, Double.parseDouble(ctx.val.getText()), ctx.val.getLine(), ctx.val.getCharPositionInLine());
     }
@@ -173,6 +199,20 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return new Primitivo(Tipo.Tipos.LOGICAL, false, ctx.val.getLine(), ctx.val.getCharPositionInLine());
     }
     @Override public Object visitExpresionParentesis(GramaticaParser.ExpresionParentesisContext ctx) {
+        return visit(ctx.expresion());
+    }
+    @Override public Object visitExpresionListaExpresion(GramaticaParser.ExpresionListaExpresionContext ctx) {
+        ArrayList<Nodo> listDec = new ArrayList<Nodo>();
+
+        listDec.add((Nodo)visit(ctx.val));
+
+        for(ParseTree item: ctx.e){
+            Nodo valor = (Nodo)visit(item);
+            listDec.add(valor);
+        }
+        return listDec;
+    }
+    @Override public Object visitListaExpresion(GramaticaParser.ListaExpresionContext ctx) {
         return visit(ctx.expresion());
     }
 

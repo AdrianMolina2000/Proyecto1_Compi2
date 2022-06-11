@@ -35,10 +35,12 @@ instrucciones2
 ;
 
 declaracion
-
-        :tipo '::' id=IDEN '=' expresion e+=listaDeclaracion* #declaracionAsig
-        |tipo '::' id=IDEN e+=listaDeclaracion*               #declaracionUniq
-
+        :tipo ',' 'dimension' '(' dim1=INT ',' dim2=INT ')' '::' id=IDEN    #declaracionArray2Dim
+        |tipo ',' 'dimension' '(' dim1=INT ')' '::' id=IDEN                 #declaracionArray1Dim
+        |tipo '::' id=IDEN '(' dim1=INT ',' dim2=INT ')'                    #declaracionArray2Dim2
+        |tipo '::' id=IDEN '(' dim1=INT ')'                                 #declaracionArray1Dim2
+        |tipo '::' id=IDEN '=' expresion e+=listaDeclaracion*               #declaracionAsig
+        |tipo '::' id=IDEN e+=listaDeclaracion*                             #declaracionUniq
 ;
 
 listaDeclaracion
@@ -47,7 +49,9 @@ listaDeclaracion
 ;
 
 asignacion
-        :id=IDEN '=' expresion
+        :id=IDEN '=' expresion                                                  #asignacionId
+        |id=IDEN '[' num=expresion ']' '=' val=expresion                        #asignacionArray1
+        |id=IDEN '[' num1=expresion ',' num2=expresion ']' '=' val=expresion    #asignacionArray2
 ;
 
 
@@ -75,6 +79,9 @@ expresion
     |val1=expresion op=('<' |'.lt.') val2=expresion     #expresionLt
     |val1=expresion op='.and.' val2=expresion           #expresionAnd
     |val1=expresion op='.or.'  val2=expresion           #expresionOr
+    |si='size' '(' val=IDEN ')'                         #expresionSize
+    |val=IDEN '[' pos=expresion ']'                     #expresionArray1
+    |val=IDEN '[' pos1=expresion ',' pos2=expresion ']' #expresionArray2
     |val=IDEN                                           #expresionIdentificador
     |val=REAL                                           #expresionReal
     |val=INT                                            #expresionInt
@@ -82,7 +89,12 @@ expresion
     |val=STRING                                         #expresionString
     |val='.true.'                                       #expresionTrue
     |val='.false.'                                      #expresionFalse
+    |'[/' val=expresion e+=listaExpresion* '/]'         #expresionListaExpresion
     |'(' val=expresion ')'                              #expresionParentesis
+;
+
+listaExpresion
+    :',' expresion
 ;
 
 tipo:

@@ -32,7 +32,7 @@ public class Aritmetica extends Nodo {
             }
 
             if (this.operador.equalsIgnoreCase("+")) {
-                String err = "No se pueden Sumar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "]";
+                String err = "No se pueden Sumar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
                 //ENTERO +
                 if(this.operadorIzq.tipo == Tipo.Tipos.INTEGER) {
                     //ENTERO + ENTERO = ENTERO
@@ -72,7 +72,7 @@ public class Aritmetica extends Nodo {
                     return error;
                 }
             }else if (this.operador.equalsIgnoreCase( "-")) {
-                String err = "No se pueden Restar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "]";
+                String err = "No se pueden Restar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
                 if (this.operadorIzq.tipo == Tipo.Tipos.INTEGER) {
                     if (this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.INTEGER;
@@ -107,7 +107,7 @@ public class Aritmetica extends Nodo {
                     return error;
                 }
             }else if (this.operador.equalsIgnoreCase("*")) {
-                String err = "No se pueden Multiplicar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "]";
+                String err = "No se pueden Multiplicar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
                 if (this.operadorIzq.tipo == Tipo.Tipos.INTEGER) {
                     if (this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.INTEGER;
@@ -142,7 +142,7 @@ public class Aritmetica extends Nodo {
                     return error;
                 }
             } else if (this.operador.equalsIgnoreCase("/")) {
-                String err = "No se pueden Dividir los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "]";
+                String err = "No se pueden Dividir los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
                 if ((int)resultadoDerecho == 0) {
                     Excepcion error = new Excepcion("Semantico",
                             "Error aritmetico, La division con cero no esta permitida",
@@ -190,7 +190,7 @@ public class Aritmetica extends Nodo {
                     return error;
                 }
             }else if (this.operador.equalsIgnoreCase("**")) {
-                String err = "No se pueden Potenciar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "]";
+                String err = "No se pueden Potenciar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
                 if (this.operadorIzq.tipo == Tipo.Tipos.INTEGER) {
                     if (this.operadorDer.tipo == Tipo.Tipos.INTEGER){
                         this.tipo = Tipo.Tipos.INTEGER;
@@ -230,7 +230,7 @@ public class Aritmetica extends Nodo {
                     return error;
                 }
             }else {
-                String err = "Error, Operador desconocido ["+this.operador+"]";
+                String err = "Error, Operador desconocido ["+this.operador+"] \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                 tree.excepciones.add(error);
                 tree.consola.add(error.toString());
@@ -249,14 +249,14 @@ public class Aritmetica extends Nodo {
                     this.tipo = Tipo.Tipos.REAL;
                     return -1 * (double)resultadoDerecho;
                 } else {
-                    String err = "No se puede aplicar negativo al tipo " + this.operadorDer.tipo;
+                    String err = "No se puede aplicar negativo al tipo " + this.operadorDer.tipo + "\n";
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
                     tree.consola.add(error.toString());
                     return error;
                 }
-            } else {
-                Excepcion error = new Excepcion("Semantico", "Operador desconocido", this.line, this.column);
+            }else{
+                Excepcion error = new Excepcion("Semantico", "Operador desconocido \n", this.line, this.column);
                 tree.excepciones.add(error);
                 tree.consola.add(error.toString());
                 return error;

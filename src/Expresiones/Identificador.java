@@ -7,6 +7,8 @@ import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
 
+import java.util.ArrayList;
+
 public class Identificador extends Nodo {
     String id;
     Object valor;
@@ -27,14 +29,37 @@ public class Identificador extends Nodo {
             return error;
         }
 
-        this.tipo = variable.tipo.tipo;
+        if(variable.tipo2.tipo == Tipo.Tipos.VARIABLE){
+            this.tipo = variable.tipo.tipo;
+            if (variable.valor instanceof Identificador) {
+                variable.valor = ((Identificador)variable.valor).execute(table, tree);
+            }
+            this.valor = variable.valor;
+        } else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO) {
+            this.tipo = Tipo.Tipos.STRING;
+            String cadena = "";
 
-        if (variable.valor instanceof Identificador) {
-            variable.valor = ((Identificador)variable.valor).execute(table, tree);
+            for(int i = 0; i<((ArrayList<?>)variable.valor).size(); i++){
+                cadena += ((ArrayList<Nodo>) variable.valor).get(i).execute(table, tree) + " ";
+            }
+            cadena += "\n";
+            this.valor = cadena;
+        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2) {
+            this.tipo = Tipo.Tipos.STRING;
+            String cadena = "";
+
+            ArrayList<ArrayList<Nodo>> listaI = (ArrayList<ArrayList<Nodo>>) variable.valor;
+
+            for(int i = 0; i<listaI.size(); i++){
+                ArrayList<Nodo> listaJ = listaI.get(i);
+                for(int j = 0; j<listaJ.size(); j++){
+                    cadena += listaJ.get(j).execute(table, tree) + " ";
+                }
+                cadena += "\n";
+            }
+
+            this.valor = cadena;
         }
-
-        this.valor = variable.valor;
-
         return this.valor;
     }
 }

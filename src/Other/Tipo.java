@@ -8,6 +8,7 @@ public class Tipo {
         CHARACTER,
         LOGICAL,
         ARREGLO,
+        ARREGLO2,
         STRING,
         VOID,
         METODO,
