@@ -45,7 +45,9 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     @Override public Object visitInstrucciones2Allocate(GramaticaParser.Instrucciones2AllocateContext ctx) {
         return visit(ctx.allocate());
     }
-
+    @Override public Object visitInstrucciones2If(GramaticaParser.Instrucciones2IfContext ctx) {
+        return visit(ctx.if_());
+    }
 
     //Declaracion
     @Override public Object visitDeclaracionArray2Dim(GramaticaParser.DeclaracionArray2DimContext ctx) {
@@ -140,6 +142,66 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
     @Override public Object visitListaPrint(GramaticaParser.ListaPrintContext ctx) {
         return visit(ctx.expresion());
+    }
+
+
+    //IF
+    @Override public Object visitIfNormal(GramaticaParser.IfNormalContext ctx) {
+        ArrayList<Nodo> instruccionesIf = new ArrayList<>();
+        ArrayList<Nodo> instruccionesElse = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instruccionesIf.add((Nodo)visit(item));
+        }
+
+        return new If((Nodo)visit(ctx.cond), instruccionesIf, instruccionesElse, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitIfElse(GramaticaParser.IfElseContext ctx) {
+        ArrayList<Nodo> instruccionesIf = new ArrayList<>();
+        ArrayList<Nodo> instruccionesElse = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instruccionesIf.add((Nodo)visit(item));
+        }
+        for(ParseTree item: ctx.e2){
+            instruccionesElse.add((Nodo)visit(item));
+        }
+
+        return new If((Nodo)visit(ctx.cond), instruccionesIf, instruccionesElse, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitIfElseIf(GramaticaParser.IfElseIfContext ctx) {
+        ArrayList<Nodo> instruccionesIf = new ArrayList<>();
+        ArrayList<Nodo> instruccionesElse = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instruccionesIf.add((Nodo)visit(item));
+        }
+        for(ParseTree item: ctx.e2){
+            instruccionesElse.add((Nodo)visit(item));
+        }
+
+        return new If((Nodo)visit(ctx.cond), instruccionesIf, instruccionesElse, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitIfElseIfElse(GramaticaParser.IfElseIfElseContext ctx) {
+        ArrayList<Nodo> instruccionesIf = new ArrayList<>();
+        ArrayList<Nodo> instruccionesElse = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instruccionesIf.add((Nodo)visit(item));
+        }
+        for(ParseTree item: ctx.e2){
+            instruccionesElse.add((Nodo)visit(item));
+        }
+        for(ParseTree item: ctx.e3){
+            instruccionesElse.add((Nodo)visit(item));
+        }
+
+        return new If((Nodo)visit(ctx.cond), instruccionesIf, instruccionesElse, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitElseif(GramaticaParser.ElseifContext ctx) {
+        ArrayList<Nodo> instruccionesIf = new ArrayList<>();
+        ArrayList<Nodo> instruccionesElse = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instruccionesIf.add((Nodo)visit(item));
+        }
+
+        return new If((Nodo)visit(ctx.cond), instruccionesIf, instruccionesElse, ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
 

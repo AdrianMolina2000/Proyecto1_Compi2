@@ -33,6 +33,7 @@ instrucciones2
         |asignacion  #instrucciones2Asignacion
         |allocate    #instrucciones2Allocate
         |print       #instrucciones2Print
+        |if          #instrucciones2If
 ;
 
 declaracion
@@ -69,6 +70,17 @@ print:
 
 listaPrint
     :',' expresion
+;
+
+if
+    :id='if' '(' cond=expresion ')' 'then' e+=instrucciones2* 'end' 'if'                                        #ifNormal
+    |id='if' '(' cond=expresion ')' 'then' e+=instrucciones2* 'else' e2+=instrucciones2* 'end' 'if'             #ifElse
+    |id='if' '(' cond=expresion ')' 'then' e+=instrucciones2* e2+=elseif* 'end' 'if'                            #ifElseIf
+    |id='if' '(' cond=expresion ')' 'then' e+=instrucciones2* e2+=elseif* 'else' e3+=instrucciones2* 'end' 'if' #ifElseIfElse
+;
+
+elseif
+    :id='else' 'if' '(' cond=expresion ')' 'then' e+=instrucciones2*
 ;
 
 expresion

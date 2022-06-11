@@ -67,6 +67,13 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrucciones2Print(GramaticaParser.Instrucciones2PrintContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code instrucciones2If}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2If(GramaticaParser.Instrucciones2IfContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code declaracionArray2Dim}
 	 * labeled alternative in {@link GramaticaParser#declaracion}.
 	 * @param ctx the parse tree
@@ -190,6 +197,40 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitListaPrint(GramaticaParser.ListaPrintContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ifNormal}
+	 * labeled alternative in {@link GramaticaParser#if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfNormal(GramaticaParser.IfNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ifElse}
+	 * labeled alternative in {@link GramaticaParser#if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfElse(GramaticaParser.IfElseContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ifElseIf}
+	 * labeled alternative in {@link GramaticaParser#if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfElseIf(GramaticaParser.IfElseIfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ifElseIfElse}
+	 * labeled alternative in {@link GramaticaParser#if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfElseIfElse(GramaticaParser.IfElseIfElseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GramaticaParser#elseif}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseif(GramaticaParser.ElseifContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionFalse}
 	 * labeled alternative in {@link GramaticaParser#expresion}.
