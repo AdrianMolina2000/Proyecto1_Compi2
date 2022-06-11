@@ -32,10 +32,13 @@ public class Size extends Nodo {
 
         this.tipo = Tipo.Tipos.INTEGER;
 
-        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ARREGLO2){
+        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ARREGLO2
+                || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2){
             if (variable.valor instanceof ArrayList<?> listaI) {
-                if(listaI.get(0) instanceof ArrayList<?> listaJ){
-                    return listaI.size() * listaJ.size();
+                if(listaI.size() > 0) {
+                    if (listaI.get(0) instanceof ArrayList<?> listaJ) {
+                        return listaI.size() * listaJ.size();
+                    }
                 }
                 return listaI.size();
             }

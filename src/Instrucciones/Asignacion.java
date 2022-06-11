@@ -52,7 +52,7 @@ public class Asignacion extends Nodo {
             }
         }
 
-        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO){
+        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE){
             if(((ArrayList<Nodo>)variable.valor).size() == ((ArrayList<Nodo>)this.valor).size()){
                 for(int i = 0; i < ((ArrayList<Nodo>)this.valor).size(); i++){
                     ((ArrayList<Nodo>)this.valor).get(i).execute(table,tree);

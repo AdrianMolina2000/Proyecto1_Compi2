@@ -51,7 +51,7 @@ public class AsignacionArray extends Nodo {
             return error;
         }
 
-        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO){
+        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE){
             if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)){
                 ((ArrayList<Nodo>) variable.valor).set(this.pos1-1,this.valor);
                 result = this.valor;

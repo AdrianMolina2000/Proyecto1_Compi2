@@ -34,7 +34,7 @@ public class ArrayPos extends Nodo {
             return error;
         }
 
-        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO) {
+        if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
             if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)) {
                 this.tipo = variable.tipo.tipo;
                 this.valor = ((ArrayList<Nodo>) variable.valor).get(this.pos1 - 1).execute(table, tree);
@@ -45,7 +45,7 @@ public class ArrayPos extends Nodo {
                 tree.consola.add(error.toString());
                 return error;
             }
-        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2) {
+        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
             if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)){
                 this.tipo = variable.tipo.tipo;
                 ArrayList<Nodo> listaJ = ((ArrayList<ArrayList<Nodo>>)variable.valor).get(this.pos1-1);

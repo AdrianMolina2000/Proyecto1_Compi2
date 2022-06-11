@@ -42,6 +42,9 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     @Override public Object visitInstrucciones2Asignacion(GramaticaParser.Instrucciones2AsignacionContext ctx) {
         return visit(ctx.asignacion());
     }
+    @Override public Object visitInstrucciones2Allocate(GramaticaParser.Instrucciones2AllocateContext ctx) {
+        return visit(ctx.allocate());
+    }
 
 
     //Declaracion
@@ -56,6 +59,12 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
     @Override public Object visitDeclaracionArray1Dim2(GramaticaParser.DeclaracionArray1Dim2Context ctx) {
         return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), Integer.parseInt(ctx.dim1.getText()), null, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitDeclaracionAllocatable2Dim(GramaticaParser.DeclaracionAllocatable2DimContext ctx) {
+        return new DeclaracionAllocatable(((Tipo)visit(ctx.tipo())).tipo,ctx.id.getText(),false, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitDeclaracionAllocatable1Dim(GramaticaParser.DeclaracionAllocatable1DimContext ctx) {
+        return new DeclaracionAllocatable(((Tipo)visit(ctx.tipo())).tipo,ctx.id.getText(),true, ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
     @Override public Object visitDeclaracionAsig(GramaticaParser.DeclaracionAsigContext ctx) {
         ArrayList<Nodo> listDec = new ArrayList<Nodo>();
@@ -104,6 +113,18 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
     @Override public Object visitAsignacionArray2(GramaticaParser.AsignacionArray2Context ctx) {
         return new AsignacionArray(ctx.id.getText(), Integer.parseInt(ctx.num1.getText()), Integer.parseInt(ctx.num2.getText()), (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+
+
+    //Allocate
+    @Override public Object visitAllocate1Dim(GramaticaParser.Allocate1DimContext ctx) {
+        return new Allocate(ctx.id.getText(), Integer.parseInt(ctx.val1.getText()), null, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitAllocate2Dim(GramaticaParser.Allocate2DimContext ctx) {
+        return new Allocate(ctx.id.getText(), Integer.parseInt(ctx.val1.getText()), Integer.parseInt(ctx.val2.getText()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+    @Override public Object visitDeallocate(GramaticaParser.DeallocateContext ctx) {
+        return new Deallocate(ctx.id.getText(), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
 

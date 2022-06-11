@@ -9,6 +9,8 @@ public class Tipo {
         LOGICAL,
         ARREGLO,
         ARREGLO2,
+        ALLOCATE,
+        ALLOCATE2,
         STRING,
         VOID,
         METODO,

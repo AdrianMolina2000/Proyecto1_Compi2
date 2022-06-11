@@ -46,19 +46,26 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrucciones2Declaracion(GramaticaParser.Instrucciones2DeclaracionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code instrucciones2Print}
-	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstrucciones2Print(GramaticaParser.Instrucciones2PrintContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code instrucciones2Asignacion}
 	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitInstrucciones2Asignacion(GramaticaParser.Instrucciones2AsignacionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code instrucciones2Allocate}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2Allocate(GramaticaParser.Instrucciones2AllocateContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code instrucciones2Print}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2Print(GramaticaParser.Instrucciones2PrintContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code declaracionArray2Dim}
 	 * labeled alternative in {@link GramaticaParser#declaracion}.
@@ -73,6 +80,20 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDeclaracionArray1Dim(GramaticaParser.DeclaracionArray1DimContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declaracionAllocatable2Dim}
+	 * labeled alternative in {@link GramaticaParser#declaracion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracionAllocatable2Dim(GramaticaParser.DeclaracionAllocatable2DimContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declaracionAllocatable1Dim}
+	 * labeled alternative in {@link GramaticaParser#declaracion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracionAllocatable1Dim(GramaticaParser.DeclaracionAllocatable1DimContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code declaracionArray2Dim2}
 	 * labeled alternative in {@link GramaticaParser#declaracion}.
@@ -136,6 +157,27 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAsignacionArray2(GramaticaParser.AsignacionArray2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code allocate2Dim}
+	 * labeled alternative in {@link GramaticaParser#allocate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAllocate2Dim(GramaticaParser.Allocate2DimContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code allocate1Dim}
+	 * labeled alternative in {@link GramaticaParser#allocate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAllocate1Dim(GramaticaParser.Allocate1DimContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code deallocate}
+	 * labeled alternative in {@link GramaticaParser#allocate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeallocate(GramaticaParser.DeallocateContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GramaticaParser#print}.
 	 * @param ctx the parse tree

@@ -30,13 +30,16 @@ instrucciones
 
 instrucciones2
         :declaracion #instrucciones2Declaracion
-        |print       #instrucciones2Print
         |asignacion  #instrucciones2Asignacion
+        |allocate    #instrucciones2Allocate
+        |print       #instrucciones2Print
 ;
 
 declaracion
         :tipo ',' 'dimension' '(' dim1=INT ',' dim2=INT ')' '::' id=IDEN    #declaracionArray2Dim
         |tipo ',' 'dimension' '(' dim1=INT ')' '::' id=IDEN                 #declaracionArray1Dim
+        |tipo ',' 'allocatable' '::' id=IDEN '(' ':' ',' ':' ')'            #declaracionAllocatable2Dim
+        |tipo ',' 'allocatable' '::' id=IDEN '(' ':' ')'                    #declaracionAllocatable1Dim
         |tipo '::' id=IDEN '(' dim1=INT ',' dim2=INT ')'                    #declaracionArray2Dim2
         |tipo '::' id=IDEN '(' dim1=INT ')'                                 #declaracionArray1Dim2
         |tipo '::' id=IDEN '=' expresion e+=listaDeclaracion*               #declaracionAsig
@@ -54,6 +57,11 @@ asignacion
         |id=IDEN '[' num1=expresion ',' num2=expresion ']' '=' val=expresion    #asignacionArray2
 ;
 
+allocate
+        :'allocate' '(' id=IDEN '(' val1=expresion ',' val2=expresion ')' ')'   #allocate2Dim
+        |'allocate' '(' id=IDEN '(' val1=expresion ')' ')'                      #allocate1Dim
+        |'deallocate' '(' id=IDEN ')'                                           #deallocate
+;
 
 print:
     p='print' '*' ',' val=expresion e+=listaPrint*

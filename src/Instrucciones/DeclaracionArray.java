@@ -74,6 +74,7 @@ public class DeclaracionArray extends Nodo {
             Excepcion error = new Excepcion("Semantico", err, line, column);
             tree.excepciones.add(error);
             tree.consola.add(error.toString());
+            return error;
         }
 
         return null;

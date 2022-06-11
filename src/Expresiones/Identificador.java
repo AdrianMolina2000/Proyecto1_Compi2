@@ -35,7 +35,7 @@ public class Identificador extends Nodo {
                 variable.valor = ((Identificador)variable.valor).execute(table, tree);
             }
             this.valor = variable.valor;
-        } else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO) {
+        } else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
             this.tipo = Tipo.Tipos.STRING;
             String cadena = "";
 
@@ -44,7 +44,7 @@ public class Identificador extends Nodo {
             }
             cadena += "\n";
             this.valor = cadena;
-        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2) {
+        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
             this.tipo = Tipo.Tipos.STRING;
             String cadena = "";
 
