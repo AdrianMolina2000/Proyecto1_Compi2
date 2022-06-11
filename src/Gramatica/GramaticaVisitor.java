@@ -74,6 +74,13 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrucciones2If(GramaticaParser.Instrucciones2IfContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code instrucciones2Do}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2Do(GramaticaParser.Instrucciones2DoContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code declaracionArray2Dim}
 	 * labeled alternative in {@link GramaticaParser#declaracion}.
 	 * @param ctx the parse tree
@@ -231,6 +238,12 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitElseif(GramaticaParser.ElseifContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GramaticaParser#do}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDo(GramaticaParser.DoContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionFalse}
 	 * labeled alternative in {@link GramaticaParser#expresion}.

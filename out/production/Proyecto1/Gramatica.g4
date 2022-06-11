@@ -34,6 +34,7 @@ instrucciones2
         |allocate    #instrucciones2Allocate
         |print       #instrucciones2Print
         |if          #instrucciones2If
+        |do          #instrucciones2Do
 ;
 
 declaracion
@@ -81,6 +82,10 @@ if
 
 elseif
     :id='else' 'if' '(' cond=expresion ')' 'then' e+=instrucciones2*
+;
+
+do
+    :id='do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do'
 ;
 
 expresion

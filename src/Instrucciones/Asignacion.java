@@ -10,8 +10,8 @@ import Symbols.Tree;
 import java.util.ArrayList;
 
 public class Asignacion extends Nodo {
-    String id;
-    Object valor;
+    public String id;
+    public Object valor;
     Object resultado;
 
     public Asignacion(String id, Object valor, int line, int column) {
@@ -49,6 +49,8 @@ public class Asignacion extends Nodo {
                 tree.excepciones.add(error);
                 tree.consola.add(error.toString());
                 return error;
+            }else{
+                this.tipo = variable.tipo.tipo;
             }
         }
 
@@ -76,6 +78,6 @@ public class Asignacion extends Nodo {
 
         this.resultado = result;
         variable.valor = result;
-        return null;
+        return this.resultado;
     }
 }

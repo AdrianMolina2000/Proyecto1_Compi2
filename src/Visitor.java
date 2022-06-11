@@ -49,6 +49,11 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return visit(ctx.if_());
     }
 
+    @Override
+    public Object visitInstrucciones2Do(GramaticaParser.Instrucciones2DoContext ctx) {
+        return visit(ctx.do_());
+    }
+
     //Declaracion
     @Override public Object visitDeclaracionArray2Dim(GramaticaParser.DeclaracionArray2DimContext ctx) {
         return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), Integer.parseInt(ctx.dim1.getText()), Integer.parseInt(ctx.dim2.getText()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
@@ -111,10 +116,10 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return new Asignacion(ctx.id.getText(), visit(ctx.expresion()), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
     @Override public Object visitAsignacionArray1(GramaticaParser.AsignacionArray1Context ctx) {
-        return new AsignacionArray(ctx.id.getText(), Integer.parseInt(ctx.num.getText()), 0, (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+        return new AsignacionArray(ctx.id.getText(), (Nodo)visit(ctx.num), null, (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
     @Override public Object visitAsignacionArray2(GramaticaParser.AsignacionArray2Context ctx) {
-        return new AsignacionArray(ctx.id.getText(), Integer.parseInt(ctx.num1.getText()), Integer.parseInt(ctx.num2.getText()), (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
+        return new AsignacionArray(ctx.id.getText(), (Nodo)visit(ctx.num1), (Nodo)visit(ctx.num2), (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
 
@@ -205,6 +210,14 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
 
 
+    //DO
+    @Override public Object visitDo(GramaticaParser.DoContext ctx) {
+        ArrayList<Nodo> instrucciones = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instrucciones.add((Nodo)visit(item));
+        }
+        return new Do((Nodo)visit(ctx.inicio), (Nodo)visit(ctx.fin), (Nodo)visit(ctx.paso), instrucciones, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
 
     //Expresion
     @Override public Object visitExpresionIdentificador(GramaticaParser.ExpresionIdentificadorContext ctx) {

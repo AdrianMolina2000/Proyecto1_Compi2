@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Expresiones.Primitivo;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Simbolo;
@@ -13,11 +14,11 @@ public class AsignacionArray extends Nodo {
     String id;
     Nodo valor;
     Object resultado;
-    int pos1;
-    int pos2;
+    Nodo pos1;
+    Nodo pos2;
 
 
-    public AsignacionArray(String id, int pos1, int pos2, Nodo valor, int line, int column) {
+    public AsignacionArray(String id, Nodo pos1, Nodo pos2, Nodo valor, int line, int column) {
         super(null, line, column);
         this.id = id;
         this.pos1 = pos1;
@@ -27,10 +28,18 @@ public class AsignacionArray extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
+
         Object result = this.valor.execute(table, tree);
         if (result instanceof Excepcion) {
             return result;
         }
+
+        int po1 = (int)this.pos1.execute(table, tree);
+        int po2 = 0;
+        if(this.pos2 != null){
+            po2 = (int)this.pos2.execute(table, tree);
+        }
+
 
         Simbolo variable;
         variable = table.getVariable(this.id);
@@ -52,8 +61,9 @@ public class AsignacionArray extends Nodo {
         }
 
         if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE){
-            if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)){
-                ((ArrayList<Nodo>) variable.valor).set(this.pos1-1,this.valor);
+            if((po1 <= ((ArrayList<?>)variable.valor).size()) && (po1 > 0)){
+                Primitivo prim = new Primitivo(this.valor.tipo, this.valor.execute(table, tree), this.valor.line, this.valor.column);
+                ((ArrayList<Nodo>) variable.valor).set(po1-1, prim);
                 result = this.valor;
             }else{
                 String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
@@ -63,12 +73,13 @@ public class AsignacionArray extends Nodo {
                 return error;
             }
         }else{
-            if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)){
+            if((po1 <= ((ArrayList<?>)variable.valor).size()) && (po1 > 0)){
                 ArrayList<ArrayList<Nodo>> listI = (ArrayList<ArrayList<Nodo>>)variable.valor;
-                ArrayList<Nodo> listJ = listI.get(this.pos1-1);
-                if(this.pos2 <= listJ.size() && (this.pos2 > 0)) {
-                    listJ.set(this.pos2 - 1, this.valor);
-                    ((ArrayList<ArrayList<Nodo>>) variable.valor).set(this.pos1 - 1, listJ);
+                ArrayList<Nodo> listJ = listI.get(po1-1);
+                if(po2 <= listJ.size() && (po2 > 0)) {
+                    Primitivo prim = new Primitivo(this.valor.tipo, this.valor.execute(table, tree), this.valor.line, this.valor.column);
+                    listJ.set(po2 - 1, prim);
+                    ((ArrayList<ArrayList<Nodo>>) variable.valor).set(po1 - 1, listJ);
                     result = this.valor;
                 }else{
                     String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
