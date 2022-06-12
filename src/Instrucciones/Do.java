@@ -14,18 +14,30 @@ public class Do extends Nodo {
     Nodo fin;
     Nodo paso;
     ArrayList<Nodo> expresiones;
+    String id;
+    String id2;
 
 
-    public Do(Nodo inicio, Nodo fin, Nodo paso, ArrayList<Nodo> expresiones, int line, int column) {
+    public Do(String id, String id2, Nodo inicio, Nodo fin, Nodo paso, ArrayList<Nodo> expresiones, int line, int column) {
         super(null, line, column);
         this.inicio = inicio;
         this.fin = fin;
         this.paso = paso;
         this.expresiones = expresiones;
+        this.id = id;
+        this.id2 = id2;
     }
 
     @Override
     public Object execute(Table table, Tree tree) {
+        if(!this.id.equalsIgnoreCase(id2)){
+            String err = "Las etiquetas deben ser nombradas de igual forma  \n";
+            Excepcion error = new Excepcion("Semantico", err, line, column);
+            tree.excepciones.add(error);
+            tree.consola.add(error.toString());
+            return error;
+        }
+
         Table newtable = new Table(table);
 
         Object inic = this.inicio.execute(newtable, tree);
@@ -44,16 +56,24 @@ public class Do extends Nodo {
         }
 
         for(int i = (int)inic; i<(int)fine; i += (int)pas){
-
+            Object res = null;
             for(int j = 0; j<this.expresiones.size(); j++){
-
-                Object res = this.expresiones.get(j).execute(newtable, tree);
-                //            if (res instanceof Continue) {
-//                break;
-//            } else if (res instanceof Break || res instanceof Retorno) {
-//                return;
-//            }
-
+                res = this.expresiones.get(j).execute(newtable, tree);
+                if (res instanceof Exit ex) {
+                    if(ex.id.equalsIgnoreCase(this.id)){
+                        ((Asignacion) this.inicio).valor = new Primitivo(Tipo.Tipos.INTEGER, (int) inic, this.line, this.column);
+                        ((Asignacion) this.inicio).execute(newtable, tree);
+                        return null;
+                    }else{
+                        return res;
+                    }
+                }else if(res instanceof Cycle ex){
+                    if(ex.id.equalsIgnoreCase(this.id)){
+                        break;
+                    }else{
+                        return res;
+                    }
+                }
             }
             int k;
             if(i + (int)pas < (int)fine){
@@ -63,6 +83,14 @@ public class Do extends Nodo {
             }
             ((Asignacion)this.inicio).valor = new Primitivo(Tipo.Tipos.INTEGER, k, this.line, this.column);
             ((Asignacion)this.inicio).execute(newtable, tree);
+
+            if(res instanceof Cycle cy){
+                if(cy.id.equalsIgnoreCase(this.id)){
+                    continue;
+                }else{
+                    return res;
+                }
+            }
         }
 
         ((Asignacion)this.inicio).valor = new Primitivo(Tipo.Tipos.INTEGER, (int)inic, this.line, this.column);
@@ -70,3 +98,20 @@ public class Do extends Nodo {
         return null;
     }
 }
+
+/*
+program myProgram
+implicit none
+
+    integer :: i , j
+    outer_loop : do i = 1 , 10 , 1
+        inner_loop : do j = 1 , 10 , 1
+            if ((j + i) > 10) then  !imprime solo la pareja de números i, j
+					                !que suman más de 10
+                cycle inner_loop        !va a la siguiete iteración del ciclo “outer_loop”
+            end if
+            print *, "I=" , i , "J=" , j , "Sum=" , j + i
+        end do inner_loop
+    end do outer_loop
+end program myProgram
+ */

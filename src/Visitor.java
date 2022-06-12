@@ -54,6 +54,16 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return visit(ctx.do_());
     }
 
+    @Override
+    public Object visitInstrucciones2Exit(GramaticaParser.Instrucciones2ExitContext ctx) {
+        return visit(ctx.exit());
+    }
+
+    @Override
+    public Object visitInstrucciones2Cycle(GramaticaParser.Instrucciones2CycleContext ctx) {
+        return visit(ctx.cycle());
+    }
+
     //Declaracion
     @Override public Object visitDeclaracionArray2Dim(GramaticaParser.DeclaracionArray2DimContext ctx) {
         return new DeclaracionArray(((Tipo)visit(ctx.tipo())).tipo, ctx.id.getText(), (Nodo)visit(ctx.dim1), (Nodo)visit(ctx.dim2), ctx.id.getLine(), ctx.id.getCharPositionInLine());
@@ -218,18 +228,58 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         for(ParseTree item: ctx.e){
             instrucciones.add((Nodo)visit(item));
         }
-        return new Do((Nodo)visit(ctx.inicio), (Nodo)visit(ctx.fin), (Nodo)visit(ctx.paso), instrucciones, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+        return new Do("!", "!", (Nodo)visit(ctx.inicio), (Nodo)visit(ctx.fin), (Nodo)visit(ctx.paso), instrucciones, ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
+    @Override
+    public Object visitDoEtiqueta(GramaticaParser.DoEtiquetaContext ctx) {
+        ArrayList<Nodo> instrucciones = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instrucciones.add((Nodo)visit(item));
+        }
+        return new Do(ctx.id1.getText(), ctx.id2.getText(),(Nodo)visit(ctx.inicio), (Nodo)visit(ctx.fin), (Nodo)visit(ctx.paso), instrucciones, ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
+    }
+
+    //WHILE
     @Override
     public Object visitDoWhile(GramaticaParser.DoWhileContext ctx) {
         ArrayList<Nodo> instrucciones = new ArrayList<>();
         for(ParseTree item: ctx.e){
             instrucciones.add((Nodo)visit(item));
         }
-        return new DoWhile((Nodo)visit(ctx.condicion), instrucciones, ctx.id.getLine(), ctx.id.getCharPositionInLine());
+        return new DoWhile("!", "!",(Nodo)visit(ctx.condicion), instrucciones, ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
+    @Override
+    public Object visitDoWhileEtiqueta(GramaticaParser.DoWhileEtiquetaContext ctx) {
+        ArrayList<Nodo> instrucciones = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            instrucciones.add((Nodo)visit(item));
+        }
+        return new DoWhile(ctx.id1.getText(), ctx.id2.getText(),(Nodo)visit(ctx.condicion), instrucciones, ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
+    }
+
+    //EXIT
+    @Override
+    public Object visitExitNormal(GramaticaParser.ExitNormalContext ctx) {
+        return new Exit("!", ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+
+    @Override
+    public Object visitExitEtiqueta(GramaticaParser.ExitEtiquetaContext ctx) {
+        return new Exit(ctx.id2.getText(), ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
+    }
+
+    //CYCLE
+    @Override
+    public Object visitCycleNormal(GramaticaParser.CycleNormalContext ctx) {
+        return new Cycle("!", ctx.id.getLine(), ctx.id.getCharPositionInLine());
+    }
+
+    @Override
+    public Object visitCycleEtiqueta(GramaticaParser.CycleEtiquetaContext ctx) {
+        return new Cycle(ctx.id2.getText(), ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
+    }
 
     //Expresion
     @Override public Object visitExpresionIdentificador(GramaticaParser.ExpresionIdentificadorContext ctx) {

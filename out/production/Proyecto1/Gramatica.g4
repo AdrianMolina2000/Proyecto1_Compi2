@@ -15,7 +15,7 @@ REAL    : [0-9]+'.'[0-9]+;
 COMPLEX : '('[0-9]+','[0-9]+')';
 IDEN    : [a-z][a-z0-9_]* ;
 CHAR    : ["|'].["|'];
-STRING  : '"' (~["\r\n] | '""')+ '"';
+STRING  : ["|'] (~["\r\n] | '""')+ ["|'];
 WS      : [ \t\r\n]+ -> skip ;
 COMENTARIO: '!' ~( '\r' | '\n' )* -> skip;
 
@@ -35,6 +35,8 @@ instrucciones2
         |print       #instrucciones2Print
         |if          #instrucciones2If
         |do          #instrucciones2Do
+        |exit        #instrucciones2Exit
+        |cycle       #instrucciones2Cycle
 ;
 
 declaracion
@@ -85,8 +87,22 @@ elseif
 ;
 
 do
-    :id='do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do'   #doNormal
-    |id='do' 'while' '(' condicion=expresion ')' e+=instrucciones2* 'end' 'do'                      #doWhile
+    :id='do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do'                       #doNormal
+    |id1=IDEN ':' 'do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do' id2=IDEN    #doEtiqueta
+    |id='do' 'while' '(' condicion=expresion ')' e+=instrucciones2* 'end' 'do'                                          #doWhile
+    |id1=IDEN ':' 'do' 'while' '(' condicion=expresion ')' e+=instrucciones2* 'end' 'do' id2=IDEN                       #doWhileEtiqueta
+;
+
+
+
+exit
+    :id='exit'                                          #exitNormal
+    |id1='exit' id2=IDEN                                #exitEtiqueta
+;
+
+cycle
+    :id='cycle'                                         #cycleNormal
+    |id1='cycle' id2=IDEN                               #cycleEtiqueta
 ;
 
 expresion

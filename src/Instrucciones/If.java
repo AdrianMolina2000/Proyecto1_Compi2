@@ -41,25 +41,25 @@ public class If extends Nodo {
 
         if((boolean)result) {
             for(int i = 0; i<this.listaIf.size(); i++) {
-                    Object res = this.listaIf.get(i).execute(newtable, tree);
-//                if (res instanceof Continue || res instanceof Break || res instanceof Retorno) {
-//                    return res;
-//                }
+                Object res = this.listaIf.get(i).execute(newtable, tree);
+                if (res instanceof Exit || res instanceof Cycle) {
+                    return res;
+                }
             }
             return true;
         }else {
             for (int i = 0; i < this.listaElse.size(); i++) {
                 Object res = this.listaElse.get(i).execute(newtable, tree);
 
+                if (res instanceof Exit || res instanceof Cycle) {
+                    return res;
+                }
+
                 if(res != null){
                     if((boolean)res){
                         return false;
                     }
                 }
-
-//                if (res instanceof Continue || res instanceof Break || res instanceof Retorno) {
-//                    return res;
-//                }
             }
             return false;
         }

@@ -81,6 +81,20 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrucciones2Do(GramaticaParser.Instrucciones2DoContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code instrucciones2Exit}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2Exit(GramaticaParser.Instrucciones2ExitContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code instrucciones2Cycle}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2Cycle(GramaticaParser.Instrucciones2CycleContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code declaracionArray2Dim}
 	 * labeled alternative in {@link GramaticaParser#declaracion}.
 	 * @param ctx the parse tree
@@ -246,12 +260,54 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDoNormal(GramaticaParser.DoNormalContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code doEtiqueta}
+	 * labeled alternative in {@link GramaticaParser#do}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoEtiqueta(GramaticaParser.DoEtiquetaContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code doWhile}
 	 * labeled alternative in {@link GramaticaParser#do}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDoWhile(GramaticaParser.DoWhileContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code doWhileEtiqueta}
+	 * labeled alternative in {@link GramaticaParser#do}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoWhileEtiqueta(GramaticaParser.DoWhileEtiquetaContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exitNormal}
+	 * labeled alternative in {@link GramaticaParser#exit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExitNormal(GramaticaParser.ExitNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exitEtiqueta}
+	 * labeled alternative in {@link GramaticaParser#exit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExitEtiqueta(GramaticaParser.ExitEtiquetaContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cycleNormal}
+	 * labeled alternative in {@link GramaticaParser#cycle}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCycleNormal(GramaticaParser.CycleNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cycleEtiqueta}
+	 * labeled alternative in {@link GramaticaParser#cycle}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCycleEtiqueta(GramaticaParser.CycleEtiquetaContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionFalse}
 	 * labeled alternative in {@link GramaticaParser#expresion}.
