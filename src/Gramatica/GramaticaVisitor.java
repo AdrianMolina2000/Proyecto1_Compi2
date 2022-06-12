@@ -239,11 +239,19 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitElseif(GramaticaParser.ElseifContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GramaticaParser#do}.
+	 * Visit a parse tree produced by the {@code doNormal}
+	 * labeled alternative in {@link GramaticaParser#do}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDo(GramaticaParser.DoContext ctx);
+	T visitDoNormal(GramaticaParser.DoNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code doWhile}
+	 * labeled alternative in {@link GramaticaParser#do}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoWhile(GramaticaParser.DoWhileContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionFalse}
 	 * labeled alternative in {@link GramaticaParser#expresion}.

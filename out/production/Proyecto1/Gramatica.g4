@@ -38,14 +38,14 @@ instrucciones2
 ;
 
 declaracion
-        :tipo ',' 'dimension' '(' dim1=INT ',' dim2=INT ')' '::' id=IDEN    #declaracionArray2Dim
-        |tipo ',' 'dimension' '(' dim1=INT ')' '::' id=IDEN                 #declaracionArray1Dim
-        |tipo ',' 'allocatable' '::' id=IDEN '(' ':' ',' ':' ')'            #declaracionAllocatable2Dim
-        |tipo ',' 'allocatable' '::' id=IDEN '(' ':' ')'                    #declaracionAllocatable1Dim
-        |tipo '::' id=IDEN '(' dim1=INT ',' dim2=INT ')'                    #declaracionArray2Dim2
-        |tipo '::' id=IDEN '(' dim1=INT ')'                                 #declaracionArray1Dim2
-        |tipo '::' id=IDEN '=' expresion e+=listaDeclaracion*               #declaracionAsig
-        |tipo '::' id=IDEN e+=listaDeclaracion*                             #declaracionUniq
+        :tipo ',' 'dimension' '(' dim1=expresion ',' dim2=expresion ')' '::' id=IDEN    #declaracionArray2Dim
+        |tipo ',' 'dimension' '(' dim1=expresion ')' '::' id=IDEN                       #declaracionArray1Dim
+        |tipo ',' 'allocatable' '::' id=IDEN '(' ':' ',' ':' ')'                        #declaracionAllocatable2Dim
+        |tipo ',' 'allocatable' '::' id=IDEN '(' ':' ')'                                #declaracionAllocatable1Dim
+        |tipo '::' id=IDEN '(' dim1=expresion ',' dim2=expresion ')'                    #declaracionArray2Dim2
+        |tipo '::' id=IDEN '(' dim1=expresion ')'                                       #declaracionArray1Dim2
+        |tipo '::' id=IDEN '=' expresion e+=listaDeclaracion*                           #declaracionAsig
+        |tipo '::' id=IDEN e+=listaDeclaracion*                                         #declaracionUniq
 ;
 
 listaDeclaracion
@@ -85,7 +85,8 @@ elseif
 ;
 
 do
-    :id='do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do'
+    :id='do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do'   #doNormal
+    |id='do' 'while' '(' condicion=expresion ')' e+=instrucciones2* 'end' 'do'                      #doWhile
 ;
 
 expresion

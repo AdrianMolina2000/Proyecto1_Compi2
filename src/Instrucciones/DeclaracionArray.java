@@ -12,10 +12,10 @@ import java.util.ArrayList;
 
 public class DeclaracionArray extends Nodo {
     String id;
-    Object dim1;
-    Object dim2;
+    Nodo dim1;
+    Nodo dim2;
 
-    public DeclaracionArray(Tipo.Tipos tipo, String id, Object dim1, Object dim2, int line, int column) {
+    public DeclaracionArray(Tipo.Tipos tipo, String id, Nodo dim1, Nodo dim2, int line, int column) {
         super(tipo, line, column);
         this.id = id;
         this.dim1 = dim1;
@@ -27,8 +27,11 @@ public class DeclaracionArray extends Nodo {
         Simbolo simbolo;
         Object result;
 
+        Object dm1 = this.dim1.execute(table, tree);
+
+
         if(this.dim2 == null){
-            if((int)this.dim1 <= 0){
+            if((int)dm1 <= 0){
                 String err = "Las dimensiones no pueden ser menores a 1 \n";
                 Excepcion error = new Excepcion("Semantico", err, line, column);
                 tree.excepciones.add(error);
@@ -38,14 +41,15 @@ public class DeclaracionArray extends Nodo {
 
             ArrayList<Nodo> res = new ArrayList<Nodo>();
 
-            for(int i = 0; i<(int)this.dim1; i++){
+            for(int i = 0; i<(int)dm1; i++){
                 res.add(Globales.defal(this.tipo, this.line, this.column));
             }
 
             result = res;
             simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ARREGLO), this.id, result, this.line, this.column, table);
         }else{
-            if((int)this.dim1 <= 0 || (int)this.dim2 <= 0){
+            Object dm2 = this.dim2.execute(table, tree);
+            if((int)dm1 <= 0 || (int)dm2 <= 0){
                 String err = "Las dimensiones no pueden ser menores a 1 \n";
                 Excepcion error = new Excepcion("Semantico", err, line, column);
                 tree.excepciones.add(error);
@@ -55,9 +59,9 @@ public class DeclaracionArray extends Nodo {
 
             ArrayList<ArrayList<Nodo>> resI = new ArrayList<ArrayList<Nodo>>();
 
-            for(int i = 0; i<(int)this.dim1; i++){
+            for(int i = 0; i<(int)dm1; i++){
                 ArrayList<Nodo> resJ = new ArrayList<Nodo>();
-                for(int j = 0; j<(int)this.dim2; j++){
+                for(int j = 0; j<(int)dm2; j++){
                     resJ.add(Globales.defal(this.tipo, this.line, this.column));
                 }
                 resI.add(resJ);
