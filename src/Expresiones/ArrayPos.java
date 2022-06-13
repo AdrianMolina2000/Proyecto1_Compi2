@@ -11,11 +11,11 @@ import java.util.ArrayList;
 
 public class ArrayPos extends Nodo {
     String id;
-    int pos1;
-    int pos2;
+    Nodo pos1;
+    Nodo pos2;
     Object valor;
 
-    public ArrayPos(String id, int pos1, int pos2, int line, int column) {
+    public ArrayPos(String id, Nodo pos1, Nodo pos2, int line, int column) {
         super(null, line, column);
         this.id = id;
         this.pos1 = pos1;
@@ -35,22 +35,25 @@ public class ArrayPos extends Nodo {
         }
 
         if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
-            if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)) {
+            Object po1 = this.pos1.execute(table, tree);
+            if((int)po1 <= ((ArrayList<?>)variable.valor).size() && (int)po1 > 0) {
                 this.tipo = variable.tipo.tipo;
-                this.valor = ((ArrayList<Nodo>) variable.valor).get(this.pos1 - 1).execute(table, tree);
+                this.valor = ((ArrayList<Nodo>) variable.valor).get((int)po1 - 1).execute(table, tree);
             }else{
-                String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
+                String err = "El arreglo no puede ser accedido porque la posicion no es la adecuada \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                 tree.excepciones.add(error);
                 tree.consola.add(error.toString());
                 return error;
             }
         }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
-            if((this.pos1 <= ((ArrayList<?>)variable.valor).size()) && (this.pos1 > 0)){
+            Object po1 = this.pos1.execute(table, tree);
+            Object po2 = this.pos2.execute(table, tree);
+            if((int)po1 <= ((ArrayList<?>)variable.valor).size() && (int)po1 > 0){
                 this.tipo = variable.tipo.tipo;
-                ArrayList<Nodo> listaJ = ((ArrayList<ArrayList<Nodo>>)variable.valor).get(this.pos1-1);
-                if(this.pos2 <= listaJ.size() && (this.pos2 > 0)){
-                    this.valor = listaJ.get(this.pos2-1).execute(table, tree);
+                ArrayList<Nodo> listaJ = ((ArrayList<ArrayList<Nodo>>)variable.valor).get((int)po2-1);
+                if((int)po2 <= listaJ.size() && (int)po2 > 0){
+                    this.valor = listaJ.get((int)po2-1).execute(table, tree);
                 }else{
                     String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -59,7 +62,7 @@ public class ArrayPos extends Nodo {
                     return error;
                 }
             }else{
-                String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
+                String err = "El arreglo no puede ser accedido porque la posicion no es la adecuada \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                 tree.excepciones.add(error);
                 tree.consola.add(error.toString());

@@ -71,35 +71,81 @@ public class CallRutina extends Nodo {
                     dec.valor = this.parametrosEnt.get(i);
                     dec.execute(newtable, tree);
                 }
+
+
+
+
+
+
+
+
+
+
+
             }else if(parametros.get(i) instanceof DeclaracionArray decArray) {
+                Object dim1 = decArray.dim1.execute(newtable, tree);
+
+
                 if(this.parametrosEnt.get(i) instanceof Identificador ide){
-                    ide.execute(table, tree);
-                    if(ide.tipo != decArray.tipo){
-                        String err = "La variable {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +decArray.tipo+"] y [" +ide.tipo + "] \n";
-                        Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
-                        tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
-                        return error;
-                    }
-                    decArray. = ;
-                    decArray.execute(newtable, tree);
+                    Object result = ide.execute(table, tree);
 
-                }else {
-                    if(this.parametrosEnt.get(i).tipo != decArray.tipo){
-                        String err = "La variable {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +decArray.tipo+"] y [" +this.parametrosEnt.get(i).tipo+ "] \n";
-                        Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
-                        tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
-                        return error;
-                    }
-                    /*
-                    decArray.valor = this.parametrosEnt.get(i);
-                    decArray.execute(newtable, tree);
+                    if(decArray.dim2 == null){
+                        if(ide.tipo != Tipo.Tipos.ARREGLO){
+                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo + "] \n";
+                            Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
+                            tree.excepciones.add(error);
+                            tree.consola.add(error.toString());
+                            return error;
+                        }
+                        if((int)dim1 != ((ArrayList<Nodo>)result).size()){
+                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarado debido a que son de diferentes dimensiones \n";
+                            Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
+                            tree.excepciones.add(error);
+                            tree.consola.add(error.toString());
+                            return error;
+                        }
 
-                     */
+                        decArray.execute(newtable, tree);
+                        Asignacion newA = new Asignacion(decArray.id, result, decArray.line, decArray.column);
+
+                        newA.execute(newtable, tree);
+                    }else{
+                        Object dim2 = decArray.dim2.execute(newtable, tree);
+
+                        if(ide.tipo != Tipo.Tipos.ARREGLO2){
+                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo + "] \n";
+                            Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
+                            tree.excepciones.add(error);
+                            tree.consola.add(error.toString());
+                            return error;
+                        }
+
+                        ArrayList<ArrayList<Nodo>> listI = (ArrayList<ArrayList<Nodo>>) result;
+                        ArrayList<Nodo> listJ = listI.get(0);
+
+                        if((int)dim1 != listI.size() || (int)dim2 != listJ.size()){
+                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarado debido a que son de diferentes dimensiones \n";
+                            Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
+                            tree.excepciones.add(error);
+                            tree.consola.add(error.toString());
+                            return error;
+                        }
+
+                        decArray.execute(newtable, tree);
+                        Simbolo variable = newtable.getVariable(decArray.id);
+                        variable.valor = listI;
+                    }
                 }
             }
         }
+
+
+
+
+
+
+
+
 
         ArrayList<Nodo> instrucciones = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(1);
 

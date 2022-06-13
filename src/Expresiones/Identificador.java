@@ -10,7 +10,7 @@ import Symbols.Tree;
 import java.util.ArrayList;
 
 public class Identificador extends Nodo {
-    String id;
+    public String id;
     Object valor;
 
     public Identificador(String id, int line, int column) {
@@ -36,7 +36,8 @@ public class Identificador extends Nodo {
             }
             this.tipo = variable.tipo.tipo;
             this.valor = variable.valor;
-        } else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
+
+        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
             this.tipo = Tipo.Tipos.ARREGLO;
 
             ArrayList<Nodo> vieja = (ArrayList<Nodo>) variable.valor;
@@ -50,34 +51,28 @@ public class Identificador extends Nodo {
                 nueva.add(prim);
             }
 
-            /*
-            String cadena = "";
-
-            for(int i = 0; i<((ArrayList<?>)variable.valor).size(); i++){
-                cadena += ((ArrayList<Nodo>) variable.valor).get(i).execute(table, tree) + " ";
-            }
-            cadena += "\n";
-            this.valor = cadena;
-             */
-
+            this.valor = nueva;
         }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
             this.tipo = Tipo.Tipos.ARREGLO2;
 
-            /*
-            String cadena = "";
+            ArrayList<ArrayList<Nodo>> viejaI = (ArrayList<ArrayList<Nodo>>) variable.valor;
+            ArrayList<ArrayList<Nodo>> nuevaI = new ArrayList<>();
 
-            ArrayList<ArrayList<Nodo>> listaI = (ArrayList<ArrayList<Nodo>>) variable.valor;
 
-            for(int i = 0; i<listaI.size(); i++){
-                ArrayList<Nodo> listaJ = listaI.get(i);
-                for(int j = 0; j<listaJ.size(); j++){
-                    cadena += listaJ.get(j).execute(table, tree) + " ";
+            for(int i = 0; i<viejaI.size(); i++){
+                ArrayList<Nodo> viejaJ = viejaI.get(i);
+                ArrayList<Nodo> nuevaJ = new ArrayList<>();
+
+                for(int j = 0; j<viejaJ.size(); j++) {
+                    Nodo no = viejaJ.get(j);
+                    Object val = no.execute(table, tree);
+                    Primitivo prim = new Primitivo(no.tipo, val, no.line, no.column);
+                    nuevaJ.add(prim);
                 }
-                cadena += "\n";
+                nuevaI.add(nuevaJ);
             }
 
-            this.valor = cadena;
-            */
+            this.valor = nuevaI;
         }
         return this.valor;
     }

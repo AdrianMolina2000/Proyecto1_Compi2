@@ -26,7 +26,6 @@ public class DeclaracionArray extends Nodo {
     @Override
     public Object execute(Table table, Tree tree) {
         Simbolo simbolo;
-        Object result;
 
         Object dm1 = this.dim1.execute(table, tree);
 
@@ -46,8 +45,8 @@ public class DeclaracionArray extends Nodo {
                 res.add(Globales.defal(this.tipo, this.line, this.column));
             }
 
-            result = res;
-            simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ARREGLO), this.id, result, this.line, this.column, table);
+            this.valor = res;
+            simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ARREGLO), this.id, this.valor, this.line, this.column, table);
         }else{
             Object dm2 = this.dim2.execute(table, tree);
             if((int)dm1 <= 0 || (int)dm2 <= 0){
@@ -67,8 +66,8 @@ public class DeclaracionArray extends Nodo {
                 }
                 resI.add(resJ);
             }
-            result = resI;
-            simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ARREGLO2), this.id, result, this.line, this.column, table);
+            this.valor = resI;
+            simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ARREGLO2), this.id, this.valor, this.line, this.column, table);
         }
 
 
