@@ -46,6 +46,7 @@ listaDeclaracionParams
 instrucciones2
         :declaracion #instrucciones2Declaracion
         |asignacion  #instrucciones2Asignacion
+        |asignacionA #instrucciones2AsignacionA
         |allocate    #instrucciones2Allocate
         |print       #instrucciones2Print
         |if          #instrucciones2If
@@ -75,6 +76,11 @@ asignacion
         :id=IDEN '=' expresion                                                  #asignacionId
         |id=IDEN '[' num=expresion ']' '=' val=expresion                        #asignacionArray1
         |id=IDEN '[' num1=expresion ',' num2=expresion ']' '=' val=expresion    #asignacionArray2
+;
+
+asignacionA
+        :id=IDEN '[' ':' ']' '=' val=expresion                                  #asignacionArray1D
+        |id=IDEN '[' ':' ',' ':' ']' '=' val=expresion                          #asignacionArray2D
 ;
 
 allocate

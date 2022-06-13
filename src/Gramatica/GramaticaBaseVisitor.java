@@ -110,6 +110,13 @@ public class GramaticaBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitInstrucciones2AsignacionA(GramaticaParser.Instrucciones2AsignacionAContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitInstrucciones2Allocate(GramaticaParser.Instrucciones2AllocateContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -244,6 +251,20 @@ public class GramaticaBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAsignacionArray2(GramaticaParser.AsignacionArray2Context ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitAsignacionArray1D(GramaticaParser.AsignacionArray1DContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitAsignacionArray2D(GramaticaParser.AsignacionArray2DContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

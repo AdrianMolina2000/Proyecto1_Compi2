@@ -47,7 +47,7 @@ public class Funcion extends Nodo {
             return error;
         }
 
-        if (table.getVariable(this.id1) == null) {
+        if (tree.getFuncion(this.id1) == null) {
             this.tipo = Tipo.Tipos.FUNCION;
 
             for(int i = 0; i<listaParams2.size(); i++){
@@ -123,7 +123,7 @@ public class Funcion extends Nodo {
             metodoValor.add(retorno);
 
             Simbolo metodo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.FUNCION), this.id1, metodoValor, this.line, this.column, table);
-            table.setVariable(metodo);
+            tree.setFuncion(metodo);
             return null;
 
         }else {

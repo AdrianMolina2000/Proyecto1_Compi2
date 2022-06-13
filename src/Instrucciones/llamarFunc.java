@@ -25,7 +25,7 @@ public class llamarFunc extends Nodo {
     public Object execute(Table table, Tree tree) {
         Table newtable = new Table(null);
 
-        Simbolo simboloMetodo = table.getVariable(this.id);
+        Simbolo simboloMetodo = tree.getFuncion(this.id);
 
         if (simboloMetodo == null) {
             String err = "La Funcion {"+this.id+"} no ha sido encontrada \n";
@@ -34,6 +34,7 @@ public class llamarFunc extends Nodo {
             tree.consola.add(error.toString());
             return error;
         }
+
 
         this.tipo = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(2).get(0).tipo;
 
@@ -138,7 +139,8 @@ public class llamarFunc extends Nodo {
             Object res = instrucciones.get(i).execute(newtable, tree);
         }
 
-        Identificador iden = new Identificador("", declaRet.line, declaRet.column);;
+        Identificador iden = new Identificador("", declaRet.line, declaRet.column);
+
         if(declaRet instanceof Declaracion dec){
             iden = new Identificador(dec.id, dec.line, dec.column);
         }else if(declaRet instanceof DeclaracionArray decA){

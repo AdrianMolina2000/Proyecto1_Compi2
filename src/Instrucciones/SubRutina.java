@@ -42,7 +42,7 @@ public class SubRutina extends Nodo {
             return error;
         }
 
-        if (table.getVariable(this.id1) == null) {
+        if (tree.getMetodo(this.id1) == null) {
             this.tipo = Tipo.Tipos.METODO;
 
             for(int i = 0; i<listaParams2.size(); i++){
@@ -72,7 +72,7 @@ public class SubRutina extends Nodo {
             metodoValor.add(instrucciones);
 
             Simbolo metodo = new Simbolo(new Tipo(Tipo.Tipos.VOID), new Tipo(Tipo.Tipos.METODO), this.id1, metodoValor, this.line, this.column, table);
-            table.setVariable(metodo);
+            tree.setMetodo(metodo);
             return null;
         } else {
             String err = "La subrutina [" +this.id1+ "] ya ha sido creado con anterioridad";

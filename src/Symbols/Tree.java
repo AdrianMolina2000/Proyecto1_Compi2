@@ -3,6 +3,7 @@ package Symbols;
 import Abstract.Nodo;
 import Other.Excepcion;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Tree {
@@ -20,6 +21,8 @@ public class Tree {
         excepciones = new ArrayList<Excepcion>();
         consola = new ArrayList<String>();
         Variables = new ArrayList<Simbolo>();
+        funciones = new HashMap<>();
+        metodos = new HashMap<>();
     }
 
     public void setFuncion(Simbolo simbol){

@@ -121,7 +121,10 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return visit(ctx.call());
     }
 
-
+    @Override
+    public Object visitInstrucciones2AsignacionA(GramaticaParser.Instrucciones2AsignacionAContext ctx) {
+        return visit(ctx.asignacionA());
+    }
 
     //DECLARACION
     @Override public Object visitDeclaracionArray2Dim(GramaticaParser.DeclaracionArray2DimContext ctx) {
@@ -191,6 +194,15 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return new AsignacionArray(ctx.id.getText(), (Nodo)visit(ctx.num1), (Nodo)visit(ctx.num2), (Nodo)visit(ctx.val), ctx.id.getLine(), ctx.id.getCharPositionInLine());
     }
 
+    @Override
+    public Object visitAsignacionArray1D(GramaticaParser.AsignacionArray1DContext ctx) {
+        return new AsignacionArrayD(ctx.id.getText(), (Nodo)visit(ctx.val), ctx.id.getLine(),ctx.id.getCharPositionInLine());
+    }
+
+    @Override
+    public Object visitAsignacionArray2D(GramaticaParser.AsignacionArray2DContext ctx) {
+        return new AsignacionArrayD(ctx.id.getText(), (Nodo)visit(ctx.val), ctx.id.getLine(),ctx.id.getCharPositionInLine());
+    }
 
     //ALLOCATE
     @Override public Object visitAllocate1Dim(GramaticaParser.Allocate1DimContext ctx) {

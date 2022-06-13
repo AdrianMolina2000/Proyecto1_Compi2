@@ -102,6 +102,13 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrucciones2Asignacion(GramaticaParser.Instrucciones2AsignacionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code instrucciones2AsignacionA}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2AsignacionA(GramaticaParser.Instrucciones2AsignacionAContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code instrucciones2Allocate}
 	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
 	 * @param ctx the parse tree
@@ -241,6 +248,20 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAsignacionArray2(GramaticaParser.AsignacionArray2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code asignacionArray1D}
+	 * labeled alternative in {@link GramaticaParser#asignacionA}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAsignacionArray1D(GramaticaParser.AsignacionArray1DContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code asignacionArray2D}
+	 * labeled alternative in {@link GramaticaParser#asignacionA}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAsignacionArray2D(GramaticaParser.AsignacionArray2DContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code allocate2Dim}
 	 * labeled alternative in {@link GramaticaParser#allocate}.

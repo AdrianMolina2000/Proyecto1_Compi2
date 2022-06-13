@@ -25,7 +25,7 @@ public class CallRutina extends Nodo {
     public Object execute(Table table, Tree tree) {
         Table newtable = new Table(null);
 
-        Simbolo simboloMetodo = table.getVariable(this.id);
+        Simbolo simboloMetodo = tree.getMetodo(this.id);
 
         if (simboloMetodo == null) {
             String err = "La subrutina {"+this.id+"} no ha sido encontrada \n";
