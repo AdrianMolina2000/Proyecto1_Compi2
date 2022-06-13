@@ -21,9 +21,10 @@ public class Program extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
+        Table newTable = new Table(table);
         if(abre.equalsIgnoreCase(cierra)){
             for(int i = 0; i<instrucciones.size(); i++){
-                instrucciones.get(i).execute(table, tree);
+                instrucciones.get(i).execute(newTable, tree);
             }
         }else{
             Excepcion error = new Excepcion("Semantico", "Los nombres de apertura y cierre deben ser iguales \n",

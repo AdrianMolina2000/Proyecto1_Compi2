@@ -39,6 +39,48 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstruccionesProgram(GramaticaParser.InstruccionesProgramContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code instruccionesSubrutina}
+	 * labeled alternative in {@link GramaticaParser#instrucciones}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstruccionesSubrutina(GramaticaParser.InstruccionesSubrutinaContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaParamsNormal}
+	 * labeled alternative in {@link GramaticaParser#listaParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaParamsNormal(GramaticaParser.ListaParamsNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaParamsComa}
+	 * labeled alternative in {@link GramaticaParser#listaParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaParamsComa(GramaticaParser.ListaParamsComaContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaDeclaracionParamsNormal}
+	 * labeled alternative in {@link GramaticaParser#listaDeclaracionParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaDeclaracionParamsNormal(GramaticaParser.ListaDeclaracionParamsNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaDeclaracionParamsArray2Dim}
+	 * labeled alternative in {@link GramaticaParser#listaDeclaracionParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaDeclaracionParamsArray2Dim(GramaticaParser.ListaDeclaracionParamsArray2DimContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaDeclaracionParamsArray1Dim}
+	 * labeled alternative in {@link GramaticaParser#listaDeclaracionParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaDeclaracionParamsArray1Dim(GramaticaParser.ListaDeclaracionParamsArray1DimContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code instrucciones2Declaracion}
 	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
 	 * @param ctx the parse tree
@@ -94,6 +136,13 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInstrucciones2Cycle(GramaticaParser.Instrucciones2CycleContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code instrucciones2Call}
+	 * labeled alternative in {@link GramaticaParser#instrucciones2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstrucciones2Call(GramaticaParser.Instrucciones2CallContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code declaracionArray2Dim}
 	 * labeled alternative in {@link GramaticaParser#declaracion}.
@@ -260,12 +309,26 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDoNormal(GramaticaParser.DoNormalContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code doNormalSinPaso}
+	 * labeled alternative in {@link GramaticaParser#do}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoNormalSinPaso(GramaticaParser.DoNormalSinPasoContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code doEtiqueta}
 	 * labeled alternative in {@link GramaticaParser#do}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDoEtiqueta(GramaticaParser.DoEtiquetaContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code doEtiquetaSinPaso}
+	 * labeled alternative in {@link GramaticaParser#do}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoEtiquetaSinPaso(GramaticaParser.DoEtiquetaSinPasoContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code doWhile}
 	 * labeled alternative in {@link GramaticaParser#do}.
@@ -308,6 +371,26 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCycleEtiqueta(GramaticaParser.CycleEtiquetaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GramaticaParser#call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCall(GramaticaParser.CallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaCallNormal}
+	 * labeled alternative in {@link GramaticaParser#listaCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaCallNormal(GramaticaParser.ListaCallNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listaCallComma}
+	 * labeled alternative in {@link GramaticaParser#listaCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaCallComma(GramaticaParser.ListaCallCommaContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionFalse}
 	 * labeled alternative in {@link GramaticaParser#expresion}.

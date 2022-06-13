@@ -47,6 +47,48 @@ public class GramaticaBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitInstruccionesSubrutina(GramaticaParser.InstruccionesSubrutinaContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaParamsNormal(GramaticaParser.ListaParamsNormalContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaParamsComa(GramaticaParser.ListaParamsComaContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaDeclaracionParamsNormal(GramaticaParser.ListaDeclaracionParamsNormalContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaDeclaracionParamsArray2Dim(GramaticaParser.ListaDeclaracionParamsArray2DimContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaDeclaracionParamsArray1Dim(GramaticaParser.ListaDeclaracionParamsArray1DimContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitInstrucciones2Declaracion(GramaticaParser.Instrucciones2DeclaracionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -97,6 +139,13 @@ public class GramaticaBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitInstrucciones2Cycle(GramaticaParser.Instrucciones2CycleContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInstrucciones2Call(GramaticaParser.Instrucciones2CallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -271,7 +320,21 @@ public class GramaticaBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitDoNormalSinPaso(GramaticaParser.DoNormalSinPasoContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitDoEtiqueta(GramaticaParser.DoEtiquetaContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDoEtiquetaSinPaso(GramaticaParser.DoEtiquetaSinPasoContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -314,6 +377,27 @@ public class GramaticaBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCycleEtiqueta(GramaticaParser.CycleEtiquetaContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitCall(GramaticaParser.CallContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaCallNormal(GramaticaParser.ListaCallNormalContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitListaCallComma(GramaticaParser.ListaCallCommaContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

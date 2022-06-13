@@ -25,7 +25,20 @@ listaInstrucciones: e+=instrucciones*
 ;
 
 instrucciones
-        :'program' id1=IDEN 'implicit' 'none' e+=instrucciones2* 'end' 'program' id2=IDEN #instruccionesProgram
+        :'program' id1=IDEN 'implicit' 'none' e+=instrucciones2* 'end' 'program' id2=IDEN               #instruccionesProgram
+        |'subroutine' id1=IDEN '(' e1+=listaParams* ')'
+         'implicit' 'none' e2+=listaDeclaracionParams* e3+=instrucciones2* 'end' 'subroutine' id2=IDEN     #instruccionesSubrutina
+;
+
+listaParams
+    :id=IDEN        #listaParamsNormal
+    |',' id=IDEN    #listaParamsComa
+;
+
+listaDeclaracionParams
+    :tip=tipo ',' 'intent' '(' 'in' ')' '::' id=IDEN                                           #listaDeclaracionParamsNormal
+    |tip=tipo ',' 'intent' '(' 'in' ')' '::' id=IDEN '(' dim1=expresion ',' dim2=expresion ')' #listaDeclaracionParamsArray2Dim
+    |tip=tipo ',' 'intent' '(' 'in' ')' '::' id=IDEN '(' dim1=expresion ')'                    #listaDeclaracionParamsArray1Dim
 ;
 
 instrucciones2
@@ -37,6 +50,7 @@ instrucciones2
         |do          #instrucciones2Do
         |exit        #instrucciones2Exit
         |cycle       #instrucciones2Cycle
+        |call        #instrucciones2Call
 ;
 
 declaracion
@@ -88,7 +102,9 @@ elseif
 
 do
     :id='do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do'                       #doNormal
+    |id='do' inicio=asignacion ',' fin=expresion e+=instrucciones2* 'end' 'do'                                          #doNormalSinPaso
     |id1=IDEN ':' 'do' inicio=asignacion ',' fin=expresion ',' paso=expresion e+=instrucciones2* 'end' 'do' id2=IDEN    #doEtiqueta
+    |id1=IDEN ':' 'do' inicio=asignacion ',' fin=expresion e+=instrucciones2* 'end' 'do' id2=IDEN                       #doEtiquetaSinPaso
     |id='do' 'while' '(' condicion=expresion ')' e+=instrucciones2* 'end' 'do'                                          #doWhile
     |id1=IDEN ':' 'do' 'while' '(' condicion=expresion ')' e+=instrucciones2* 'end' 'do' id2=IDEN                       #doWhileEtiqueta
 ;
@@ -104,6 +120,16 @@ cycle
     :id='cycle'                                         #cycleNormal
     |id1='cycle' id2=IDEN                               #cycleEtiqueta
 ;
+
+call
+    :'call' id=IDEN '(' e+=listaCall* ')'
+;
+
+listaCall
+    :val=expresion          #listaCallNormal
+    |',' val=expresion      #listaCallComma
+;
+
 
 expresion
     :op='-' expresion                                   #expresionNegativo

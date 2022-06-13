@@ -14,6 +14,7 @@ public class DeclaracionArray extends Nodo {
     String id;
     Nodo dim1;
     Nodo dim2;
+    public Object valor;
 
     public DeclaracionArray(Tipo.Tipos tipo, String id, Nodo dim1, Nodo dim2, int line, int column) {
         super(tipo, line, column);
