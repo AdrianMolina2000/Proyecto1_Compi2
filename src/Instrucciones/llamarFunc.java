@@ -11,11 +11,11 @@ import Symbols.Tree;
 
 import java.util.ArrayList;
 
-public class CallRutina extends Nodo {
+public class llamarFunc extends Nodo {
     String id;
     ArrayList<Nodo> parametrosEnt;
 
-    public CallRutina(String id, ArrayList<Nodo> parametrosEnt, int line, int column) {
+    public llamarFunc(String id, ArrayList<Nodo> parametrosEnt, int line, int column) {
         super(null, line, column);
         this.id = id;
         this.parametrosEnt = parametrosEnt;
@@ -28,14 +28,14 @@ public class CallRutina extends Nodo {
         Simbolo simboloMetodo = table.getVariable(this.id);
 
         if (simboloMetodo == null) {
-            String err = "La subrutina {"+this.id+"} no ha sido encontrada \n";
+            String err = "La Funcion {"+this.id+"} no ha sido encontrada \n";
             Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
             tree.excepciones.add(error);
             tree.consola.add(error.toString());
             return error;
         }
 
-        this.tipo = simboloMetodo.tipo.tipo;
+        this.tipo = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(2).get(0).tipo;
 
         ArrayList<Nodo> parametros = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(0);
 
@@ -131,18 +131,20 @@ public class CallRutina extends Nodo {
         }
 
         ArrayList<Nodo> instrucciones = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(1);
+        Nodo declaRet = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(2).get(0);
+        declaRet.execute(newtable, tree);
 
         for (int i = 0; i < instrucciones.size(); i++) {
-
             Object res = instrucciones.get(i).execute(newtable, tree);
-
-            if (res instanceof Return re) {
-                Excepcion error = new Excepcion("Semantico", "No se esperaba un retorno en esta subrutina", re.line, re.column);
-                tree.excepciones.add(error);
-                tree.consola.add(error.toString());
-                return error;
-            }
         }
-        return null;
+
+        Identificador iden = new Identificador("", declaRet.line, declaRet.column);;
+        if(declaRet instanceof Declaracion dec){
+            iden = new Identificador(dec.id, dec.line, dec.column);
+        }else if(declaRet instanceof DeclaracionArray decA){
+            iden = new Identificador(decA.id, decA.line, decA.column);
+        }
+
+        return new Return(iden, iden.line, iden.column).execute(newtable, tree);
     }
 }

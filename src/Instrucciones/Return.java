@@ -1,17 +1,22 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Expresiones.Primitivo;
 import Other.Tipo;
 import Symbols.Table;
 import Symbols.Tree;
 
 public class Return extends Nodo {
-    public Return(Tipo.Tipos tipo, int line, int column) {
-        super(tipo, line, column);
+    Nodo expresion;
+    public Return(Nodo expresion, int line, int column) {
+        super(null, line, column);
+        this.expresion = expresion;
     }
 
     @Override
     public Object execute(Table table, Tree tree) {
-        return null;
+        Object expr = this.expresion.execute(table, tree);
+        Primitivo prim =  new Primitivo(this.expresion.tipo, expr, this.line, this.column);
+        return expr;
     }
 }

@@ -25,9 +25,11 @@ listaInstrucciones: e+=instrucciones*
 ;
 
 instrucciones
-        :'program' id1=IDEN 'implicit' 'none' e+=instrucciones2* 'end' 'program' id2=IDEN               #instruccionesProgram
+        :'program' id1=IDEN 'implicit' 'none' e+=instrucciones2* 'end' 'program' id2=IDEN                       #instruccionesProgram
         |'subroutine' id1=IDEN '(' e1+=listaParams* ')'
-         'implicit' 'none' e2+=listaDeclaracionParams* e3+=instrucciones2* 'end' 'subroutine' id2=IDEN     #instruccionesSubrutina
+         'implicit' 'none' e2+=listaDeclaracionParams* e3+=instrucciones2* 'end' 'subroutine' id2=IDEN          #instruccionesSubrutina
+        |'function' id1=IDEN '(' e1+=listaParams* ')' 'result' '(' id3=IDEN ')'
+                 'implicit' 'none' e2+=listaDeclaracionParams* e3+=instrucciones2* 'end' 'function' id2=IDEN    #instruccionesFuncion
 ;
 
 listaParams
@@ -130,7 +132,6 @@ listaCall
     |',' val=expresion      #listaCallComma
 ;
 
-
 expresion
     :op='-' expresion                                   #expresionNegativo
     |op='.not.' expresion                               #expresionNot
@@ -159,6 +160,7 @@ expresion
     |val='.false.'                                      #expresionFalse
     |'[/' val=expresion e+=listaExpresion* '/]'         #expresionListaExpresion
     |'(' val=expresion ')'                              #expresionParentesis
+    |id1=IDEN '(' e+=listaCall* ')'                     #expresionFuncion
 ;
 
 listaExpresion

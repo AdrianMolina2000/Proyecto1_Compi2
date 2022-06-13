@@ -46,6 +46,13 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstruccionesSubrutina(GramaticaParser.InstruccionesSubrutinaContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code instruccionesFuncion}
+	 * labeled alternative in {@link GramaticaParser#instrucciones}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstruccionesFuncion(GramaticaParser.InstruccionesFuncionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code listaParamsNormal}
 	 * labeled alternative in {@link GramaticaParser#listaParams}.
 	 * @param ctx the parse tree
@@ -398,6 +405,13 @@ public interface GramaticaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpresionFalse(GramaticaParser.ExpresionFalseContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expresionFuncion}
+	 * labeled alternative in {@link GramaticaParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpresionFuncion(GramaticaParser.ExpresionFuncionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code expresionLt}
 	 * labeled alternative in {@link GramaticaParser#expresion}.

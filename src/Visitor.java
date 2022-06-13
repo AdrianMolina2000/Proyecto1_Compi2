@@ -52,6 +52,24 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
 
         return new SubRutina(ctx.id1.getText(), ctx.id2.getText(), listaParams1, listaParams2, instrucciones, ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
     }
+    @Override public Object visitInstruccionesFuncion(GramaticaParser.InstruccionesFuncionContext ctx) {
+        ArrayList<String> listaParams1 = new ArrayList<>();
+        for(ParseTree item: ctx.e1){
+            listaParams1.add((String)visit(item));
+        }
+
+        ArrayList<Nodo> listaParams2 = new ArrayList<>();
+        for(ParseTree item: ctx.e2){
+            listaParams2.add((Nodo)visit(item));
+        }
+
+        ArrayList<Nodo> instrucciones = new ArrayList<>();
+        for(ParseTree item: ctx.e3){
+            instrucciones.add((Nodo)visit(item));
+        }
+
+        return new Funcion(ctx.id1.getText(), ctx.id2.getText(), ctx.id3.getText(), listaParams1, listaParams2, instrucciones, ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
+    }
 
     //LISTAPARAMS
     @Override public Object visitListaParamsNormal(GramaticaParser.ListaParamsNormalContext ctx) {
@@ -102,6 +120,7 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     @Override public Object visitInstrucciones2Call(GramaticaParser.Instrucciones2CallContext ctx) {
         return visit(ctx.call());
     }
+
 
 
     //DECLARACION
@@ -438,6 +457,14 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
         return visit(ctx.expresion());
     }
 
+    @Override
+    public Object visitExpresionFuncion(GramaticaParser.ExpresionFuncionContext ctx) {
+        ArrayList<Nodo> parametros = new ArrayList<>();
+        for(ParseTree item: ctx.e){
+            parametros.add((Nodo)visit(item));
+        }
+        return new llamarFunc(ctx.id1.getText(), parametros, ctx.id1.getLine(), ctx.id1.getCharPositionInLine());
+    }
 
     //TIPO
     @Override public Object visitTipoInteger(GramaticaParser.TipoIntegerContext ctx) {
