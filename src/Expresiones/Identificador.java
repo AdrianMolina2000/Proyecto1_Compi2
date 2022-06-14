@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Identificador extends Nodo {
     public String id;
-    Object valor;
+    public Object valor;
 
     public Identificador(String id, int line, int column) {
         super(null, line, column);
@@ -38,7 +38,7 @@ public class Identificador extends Nodo {
             this.valor = variable.valor;
 
         }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
-            this.tipo = Tipo.Tipos.ARREGLO;
+            this.tipo = variable.tipo.tipo;
 
             ArrayList<Nodo> vieja = (ArrayList<Nodo>) variable.valor;
             ArrayList<Nodo> nueva = new ArrayList<>();
@@ -53,7 +53,7 @@ public class Identificador extends Nodo {
 
             this.valor = nueva;
         }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
-            this.tipo = Tipo.Tipos.ARREGLO2;
+            this.tipo = variable.tipo.tipo;
 
             ArrayList<ArrayList<Nodo>> viejaI = (ArrayList<ArrayList<Nodo>>) variable.valor;
             ArrayList<ArrayList<Nodo>> nuevaI = new ArrayList<>();
