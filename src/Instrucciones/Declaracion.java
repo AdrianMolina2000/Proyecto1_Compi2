@@ -14,7 +14,7 @@ import Symbols.Tree;
 public class Declaracion extends Nodo {
     String id;
     public Nodo valor;
-    Object result;
+    NodoAST nodoExp;
     public Declaracion(Tipo.Tipos tipo, String id, Nodo valor, int line, int column) {
         super(tipo, line, column);
         this.id = id;
@@ -23,11 +23,14 @@ public class Declaracion extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        result = this.valor.execute(table, tree);
+        Object result = this.valor.execute(table, tree);
+
 
         if (result instanceof Excepcion) {
             return result;
         }
+
+        nodoExp = this.valor.getAST();
 
         if (this.valor.tipo != this.tipo) {
             String err = "La variable {" +this.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +this.tipo+"] y [" +valor.tipo + "] \n";
@@ -60,7 +63,7 @@ public class Declaracion extends Nodo {
         variable.agregarHijo(new NodoAST(tipo.toString()));
         variable.agregarHijo(new NodoAST(id));
         nodo.agregarHijo(variable);
-        nodo.agregarHijo(new NodoAST(String.valueOf(result)));
+        nodo.agregarHijo(nodoExp);
         return nodo;
     }
 }

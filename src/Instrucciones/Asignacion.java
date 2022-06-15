@@ -17,6 +17,7 @@ public class Asignacion extends Nodo {
 
     //PARA AST
     String resultado;
+    NodoAST nodoExp;
 
     public Asignacion(String id, Object valor, int line, int column) {
         super(null, line, column);
@@ -31,6 +32,7 @@ public class Asignacion extends Nodo {
 
         if(this.expresion instanceof Nodo res){
             result = res.execute(table, tree);
+            nodoExp = res.getAST();
             if (result instanceof Excepcion) {
                 return result;
             }
@@ -159,7 +161,11 @@ public class Asignacion extends Nodo {
     public NodoAST getAST() {
         NodoAST nodo = new NodoAST("ASIGNACION");
         nodo.agregarHijo(new NodoAST(this.id));
-        nodo.agregarHijo(resultado);
+        if(nodoExp != null){
+            nodo.agregarHijo(nodoExp);
+        }else{
+            nodo.agregarHijo(resultado);
+        }
         return nodo;
     }
 }

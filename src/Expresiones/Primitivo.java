@@ -19,6 +19,7 @@ public class Primitivo extends Nodo {
     }
 
     public Object execute(Table table, Tree tree){
+        //RETORNA EL VALOR GENERAL
         return this.valor;
     }
 
