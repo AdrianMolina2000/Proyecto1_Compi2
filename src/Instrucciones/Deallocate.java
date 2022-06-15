@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Simbolo;
@@ -47,5 +48,12 @@ public class Deallocate extends Nodo {
             }
         }
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo =  new NodoAST("DEALLOCATE");
+        nodo.agregarHijo(new NodoAST(this.id));
+        return nodo;
     }
 }

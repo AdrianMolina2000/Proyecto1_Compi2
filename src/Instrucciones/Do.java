@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Expresiones.Primitivo;
 import Other.Excepcion;
 import Other.Tipo;
@@ -18,6 +19,8 @@ public class Do extends Nodo {
     String id;
     String id2;
 
+    //PARA AST
+    ArrayList<NodoAST> instrEjec = new ArrayList<>();
 
     public Do(String id, String id2, Nodo inicio, Nodo fin, Nodo paso, ArrayList<Nodo> expresiones, int line, int column) {
         super(null, line, column);
@@ -58,9 +61,14 @@ public class Do extends Nodo {
 
         for(int i = (int)inic; i <= (int)fine  ; i += (int)pas){
 
-            Object res = null;
+            Object res;
+            NodoAST nodoIteracion = new NodoAST("ITERACION");
+
             for(int j = 0; j<this.expresiones.size(); j++){
                 res = this.expresiones.get(j).execute(newtable, tree);
+
+
+
                 if (res instanceof Exit ex) {
                     if(ex.id.equalsIgnoreCase(this.id)){
                         Simbolo in = table.getVariable(((Asignacion)this.inicio).id);
@@ -68,18 +76,22 @@ public class Do extends Nodo {
                         Asignacion nueva = new Asignacion(in.id, new Primitivo(Tipo.Tipos.INTEGER, inic, this.line, this.column), this.line, this.column);
                         nueva.execute(newtable, tree);
 
+                        nodoIteracion.agregarHijo(this.expresiones.get(j).getAST());
+                        nodoIteracion.agregarHijo(nueva.getAST());
                         return null;
                     }else{
                         return res;
                     }
                 }else if(res instanceof Cycle ex){
                     if(ex.id.equalsIgnoreCase(this.id)){
-                        cont = true;
+                        nodoIteracion.agregarHijo(this.expresiones.get(j).getAST());
                         break;
                     }else{
                         return res;
                     }
                 }
+
+                nodoIteracion.agregarHijo(this.expresiones.get(j).getAST());
             }
             int k;
             if(i + (int)pas <= (int)fine){
@@ -92,6 +104,8 @@ public class Do extends Nodo {
             Asignacion nueva = new Asignacion(in.id, new Primitivo(Tipo.Tipos.INTEGER, k, this.line, this.column), this.line, this.column);
             nueva.execute(newtable, tree);
 
+            nodoIteracion.agregarHijo(nueva.getAST());
+            instrEjec.add(nodoIteracion);
         }
 
         Simbolo in = table.getVariable(((Asignacion)this.inicio).id);
@@ -100,6 +114,29 @@ public class Do extends Nodo {
         nueva.execute(newtable, tree);
 
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("DO");
+
+        NodoAST nodoI = new NodoAST("INICIO");
+        nodoI.agregarHijo(this.inicio.getAST());
+        nodo.agregarHijo(nodoI);
+
+        NodoAST nodoF = new NodoAST("FIN");
+        nodoF.agregarHijo(this.fin.getAST());
+        nodo.agregarHijo(nodoF);
+
+        NodoAST nodoP = new NodoAST("PASO");
+        nodoP.agregarHijo(this.paso.getAST());
+        nodo.agregarHijo(nodoP);
+
+        NodoAST nodoIns = new NodoAST("INSTRUCCIONES");
+        nodoIns.agregarHijos(instrEjec);
+        nodo.agregarHijo(nodoIns);
+
+        return nodo;
     }
 }
 

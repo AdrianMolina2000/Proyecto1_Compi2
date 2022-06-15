@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
@@ -82,5 +83,21 @@ public class DeclaracionArray extends Nodo {
         }
 
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo =  new NodoAST("DECLARACION");
+        NodoAST nodoId =  new NodoAST("ID");
+        nodoId.agregarHijo(new NodoAST(tipo.toString()));
+        nodoId.agregarHijo(new NodoAST(this.id));
+        nodo.agregarHijo(nodoId);
+        NodoAST nodoDim =  new NodoAST("DIMENSIONES");
+        nodoDim.agregarHijo(this.dim1.getAST());
+        if(this.dim2 != null){
+            nodoDim.agregarHijo(this.dim2.getAST());
+        }
+        nodo.agregarHijo(nodoDim);
+        return nodo;
     }
 }

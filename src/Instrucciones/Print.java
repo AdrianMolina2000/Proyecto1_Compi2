@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Expresiones.Identificador;
 import Other.Excepcion;
 import Other.Tipo;
@@ -12,6 +13,9 @@ import java.util.ArrayList;
 
 public class Print extends Nodo {
     ArrayList<Nodo> expresion;
+
+    ArrayList<NodoAST> nodoIns = new ArrayList<>();
+
     public Print(ArrayList<Nodo> expresion, int line, int column) {
         super(null, line, column);
         this.expresion = expresion;
@@ -22,6 +26,9 @@ public class Print extends Nodo {
         for(int i = 0; i<this.expresion.size(); i++){
             if(this.expresion.get(i) instanceof Identificador iden){
                 iden.execute(table, tree);
+
+                nodoIns.add(iden.getAST());
+
                 Simbolo ide = table.getVariable(iden.id);
                 if(ide == null){
                     String err = "La variable {"+iden.id+"} no ha sido encontrada \n";
@@ -77,9 +84,18 @@ public class Print extends Nodo {
                 }
 
                 tree.consola.add(salida);
+
+                nodoIns.add(this.expresion.get(i).getAST());
             }
         }
         tree.consola.add("\n");
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("PRINT");
+        nodo.agregarHijos(nodoIns);
+        return nodo;
     }
 }

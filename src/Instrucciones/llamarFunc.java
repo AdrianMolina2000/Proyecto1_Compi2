@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Expresiones.Identificador;
 import Expresiones.Primitivo;
 import Other.Excepcion;
@@ -14,6 +15,11 @@ import java.util.ArrayList;
 public class llamarFunc extends Nodo {
     String id;
     ArrayList<Nodo> parametrosEnt;
+
+    //PARA AST
+    ArrayList<NodoAST> paramsEjec = new ArrayList<>();
+    ArrayList<NodoAST> instrEjec = new ArrayList<>();
+    NodoAST nodoRet = new NodoAST("RETORNO");
 
     public llamarFunc(String id, ArrayList<Nodo> parametrosEnt, int line, int column) {
         super(null, line, column);
@@ -48,10 +54,12 @@ public class llamarFunc extends Nodo {
             return error;
         }
 
+
         for (int i = 0; i < parametros.size(); i++) {
             if(parametros.get(i) instanceof Declaracion dec){
                 if(this.parametrosEnt.get(i) instanceof Identificador ide){
                     ide.execute(table, tree);
+
                     if(ide.tipo != dec.tipo){
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +ide.tipo + "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
@@ -61,6 +69,9 @@ public class llamarFunc extends Nodo {
                     }
                     dec.valor = new Primitivo(ide.tipo, ide.execute(table, tree), dec.line, dec.column);
                     dec.execute(newtable, tree);
+
+                    paramsEjec.add(ide.getAST());
+                    instrEjec.add(dec.getAST());
                 }else {
                     this.parametrosEnt.get(i).execute(table, tree);
                     if(this.parametrosEnt.get(i).tipo != dec.tipo){
@@ -72,11 +83,13 @@ public class llamarFunc extends Nodo {
                     }
                     dec.valor = this.parametrosEnt.get(i);
                     dec.execute(newtable, tree);
+
+                    paramsEjec.add(this.parametrosEnt.get(i).getAST());
+                    instrEjec.add(dec.getAST());
                 }
 
             }else if(parametros.get(i) instanceof DeclaracionArray decArray) {
                 Object dim1 = decArray.dim1.execute(newtable, tree);
-
 
                 if(this.parametrosEnt.get(i) instanceof Identificador ide){
                     Object result = ide.execute(table, tree);
@@ -99,8 +112,11 @@ public class llamarFunc extends Nodo {
 
                         decArray.execute(newtable, tree);
                         Asignacion newA = new Asignacion(decArray.id, result, decArray.line, decArray.column);
-
                         newA.execute(newtable, tree);
+
+                        paramsEjec.add(ide.getAST());
+                        instrEjec.add(decArray.getAST());
+                        instrEjec.add(newA.getAST());
                     }else{
                         Object dim2 = decArray.dim2.execute(newtable, tree);
 
@@ -126,17 +142,26 @@ public class llamarFunc extends Nodo {
                         decArray.execute(newtable, tree);
                         Simbolo variable = newtable.getVariable(decArray.id);
                         variable.valor = listI;
+
+                        paramsEjec.add(ide.getAST());
+                        instrEjec.add(decArray.getAST());
                     }
                 }
             }
         }
 
+
+
         ArrayList<Nodo> instrucciones = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(1);
+
         Nodo declaRet = ((ArrayList<ArrayList<Nodo>>)simboloMetodo.valor).get(2).get(0);
         declaRet.execute(newtable, tree);
 
+        instrEjec.add(declaRet.getAST());
+
         for (int i = 0; i < instrucciones.size(); i++) {
             Object res = instrucciones.get(i).execute(newtable, tree);
+            instrEjec.add(instrucciones.get(i).getAST());
         }
 
         Identificador iden = new Identificador("", declaRet.line, declaRet.column);
@@ -147,6 +172,31 @@ public class llamarFunc extends Nodo {
             iden = new Identificador(decA.id, decA.line, decA.column);
         }
 
-        return new Return(iden, iden.line, iden.column).execute(newtable, tree);
+        Return retu = new Return(iden, iden.line, iden.column);
+        Object ret = retu.execute(newtable, tree);
+
+        nodoRet.agregarHijo(retu.getAST());
+
+        return ret;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("LLAMAR FUNCION");
+        nodo.agregarHijo(new NodoAST(this.id));
+
+        if (this.parametrosEnt.size() != 0) {
+            NodoAST nodo2 = new NodoAST("PARAMETROS");
+            nodo.agregarHijos(paramsEjec);
+            nodo.agregarHijo(nodo2);
+        }
+
+        NodoAST nodoIns = new NodoAST("INSTRUCCIONES");
+        nodoIns.agregarHijos(instrEjec);
+
+        nodo.agregarHijo(nodoIns);
+
+        nodo.agregarHijo(nodoRet);
+        return nodo;
     }
 }

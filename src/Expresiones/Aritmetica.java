@@ -1,6 +1,7 @@
 package Expresiones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
@@ -33,13 +34,10 @@ public class Aritmetica extends Nodo {
 
             if (this.operador.equalsIgnoreCase("+")) {
                 String err = "No se pueden Sumar los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
-                //ENTERO +
                 if(this.operadorIzq.tipo == Tipo.Tipos.INTEGER) {
-                    //ENTERO + ENTERO = ENTERO
                     if (this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.INTEGER;
                         return (int)resultadoIzq + (int)resultadoDerecho;
-                    //ENTERO + DECIMAL = DECIMAL
                     }else if (this.operadorDer.tipo == Tipo.Tipos.REAL) {
                         this.tipo = Tipo.Tipos.REAL;
                         return (int)resultadoIzq + (double)resultadoDerecho;
@@ -49,13 +47,10 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                //DOUBLE +
                 }else if (this.operadorIzq.tipo == Tipo.Tipos.REAL) {
-                    //DOUBLE + ENTERO = DOUBLE
                     if(this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.REAL;
                         return (double)resultadoIzq + (int)resultadoDerecho;
-                    //DOUBLE + DOUBLE = DOUBLE
                     }else if (this.operadorDer.tipo == Tipo.Tipos.REAL) {
                         this.tipo = Tipo.Tipos.REAL;
                         return (double)resultadoIzq + (double)resultadoDerecho;
@@ -86,7 +81,6 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                //DOUBLE -
                 }else if (this.operadorIzq.tipo == Tipo.Tipos.REAL) {
                     if (this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.REAL;
@@ -121,7 +115,6 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                //DOUBLE *
                 }else if (this.operadorIzq.tipo == Tipo.Tipos.REAL) {
                     if (this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.INTEGER;
@@ -166,7 +159,6 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                //DOUBLE /
                 }else if (this.operadorIzq.tipo == Tipo.Tipos.REAL) {
                     if(this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.REAL;
@@ -182,7 +174,6 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                    //CHAR /
                 }else {
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
@@ -206,7 +197,6 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                //DOUBLE **
                 }else if (this.operadorIzq.tipo == Tipo.Tipos.REAL) {
                     if(this.operadorDer.tipo == Tipo.Tipos.INTEGER) {
                         this.tipo = Tipo.Tipos.REAL;
@@ -222,7 +212,6 @@ public class Aritmetica extends Nodo {
                         tree.consola.add(error.toString());
                         return error;
                     }
-                    //CHAR /
                 }else {
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
@@ -262,5 +251,17 @@ public class Aritmetica extends Nodo {
                 return error;
             }
         }
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST(this.operador);
+        if (this.operadorIzq != null) {
+            nodo.agregarHijo(this.operadorIzq.getAST());
+            nodo.agregarHijo(this.operadorDer.getAST());
+        } else {
+            nodo.agregarHijo(this.operadorDer.getAST());
+        }
+        return nodo;
     }
 }

@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
@@ -42,5 +43,13 @@ public class DeclaracionAllocatable extends Nodo {
         }
 
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("ALLOCATABLE");
+        nodo.agregarHijo(new NodoAST(tipo.toString()));
+        nodo.agregarHijo(new NodoAST(this.id));
+        return nodo;
     }
 }

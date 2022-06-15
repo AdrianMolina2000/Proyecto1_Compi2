@@ -1,6 +1,7 @@
 package Expresiones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Simbolo;
@@ -13,9 +14,14 @@ public class Identificador extends Nodo {
     public String id;
     public Object valor;
 
+
+    //PARA EL AST
+    String resultado;
+
     public Identificador(String id, int line, int column) {
         super(null, line, column);
         this.id = id;
+        resultado = "";
     }
     @Override
     public Object execute(Table table, Tree tree) {
@@ -36,20 +42,23 @@ public class Identificador extends Nodo {
             }
             this.tipo = variable.tipo.tipo;
             this.valor = variable.valor;
-
+            resultado = String.valueOf(variable.valor);
         }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
             this.tipo = variable.tipo.tipo;
 
             ArrayList<Nodo> vieja = (ArrayList<Nodo>) variable.valor;
             ArrayList<Nodo> nueva = new ArrayList<>();
 
-
+            resultado += "[";
             for(int i = 0; i<vieja.size(); i++){
                 Nodo no = vieja.get(i);
                 Object val = no.execute(table, tree);
                 Primitivo prim =  new Primitivo(no.tipo, val, no.line, no.column);
                 nueva.add(prim);
+
+                resultado += String.valueOf(val) + ", ";
             }
+            resultado += "]";
 
             this.valor = nueva;
         }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
@@ -58,22 +67,33 @@ public class Identificador extends Nodo {
             ArrayList<ArrayList<Nodo>> viejaI = (ArrayList<ArrayList<Nodo>>) variable.valor;
             ArrayList<ArrayList<Nodo>> nuevaI = new ArrayList<>();
 
-
+            resultado += "[";
             for(int i = 0; i<viejaI.size(); i++){
                 ArrayList<Nodo> viejaJ = viejaI.get(i);
                 ArrayList<Nodo> nuevaJ = new ArrayList<>();
 
+                resultado += "[";
                 for(int j = 0; j<viejaJ.size(); j++) {
                     Nodo no = viejaJ.get(j);
                     Object val = no.execute(table, tree);
                     Primitivo prim = new Primitivo(no.tipo, val, no.line, no.column);
                     nuevaJ.add(prim);
+
+                    resultado += String.valueOf(val) + ", ";
                 }
+                resultado += "]";
                 nuevaI.add(nuevaJ);
             }
-
+            resultado += "]";
             this.valor = nuevaI;
         }
         return this.valor;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST(this.id);
+        nodo.agregarHijo(new NodoAST(this.resultado));
+        return nodo;
     }
 }

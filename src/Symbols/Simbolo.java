@@ -11,7 +11,7 @@ public class Simbolo {
     int column;
     Table ambito;
 
-    public Simbolo(Tipo tipo, Tipo tipo2, String id, Object valor, int line, int column, Table ambito) {
+    public Simbolo(Tipo tipo, Tipo tipo2, String id, Object valor, int line, int column, Table ambito){
         this.tipo = tipo;
         this.tipo2 = tipo2;
         this.id = id;
@@ -20,4 +20,5 @@ public class Simbolo {
         this.column = column;
         this.ambito = ambito;
     }
+
 }

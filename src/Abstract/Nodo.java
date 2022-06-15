@@ -10,6 +10,7 @@ public abstract class Nodo {
     public Tipo.Tipos tipo;
 
     public abstract Object execute(Table table, Tree tree);
+    public abstract NodoAST getAST();
 
     public Nodo(Tipo.Tipos tipo, int line, int column) {
         this.line = line;

@@ -1,6 +1,7 @@
 package Expresiones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
@@ -19,5 +20,11 @@ public class Primitivo extends Nodo {
 
     public Object execute(Table table, Tree tree){
         return this.valor;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST(String.valueOf(this.valor));
+        return nodo;
     }
 }

@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Expresiones.Primitivo;
 import Other.Excepcion;
 import Other.Tipo;
@@ -16,7 +17,11 @@ public class AsignacionArray extends Nodo {
     Object resultado;
     Nodo pos1;
     Nodo pos2;
+    Object po1;
+    Object po2;
 
+    //PARA AST
+    String rest;
 
     public AsignacionArray(String id, Nodo pos1, Nodo pos2, Nodo valor, int line, int column) {
         super(null, line, column);
@@ -34,12 +39,12 @@ public class AsignacionArray extends Nodo {
             return result;
         }
 
-        int po1 = (int)this.pos1.execute(table, tree);
-        int po2 = 0;
-        if(this.pos2 != null){
-            po2 = (int)this.pos2.execute(table, tree);
-        }
+        po1 = (int)this.pos1.execute(table, tree);
+        po2 = 0;
 
+        if(this.pos2 != null){
+            po2 = this.pos2.execute(table, tree);
+        }
 
         Simbolo variable;
         variable = table.getVariable(this.id);
@@ -61,10 +66,12 @@ public class AsignacionArray extends Nodo {
         }
 
         if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE){
-            if((po1 <= ((ArrayList<?>)variable.valor).size()) && (po1 > 0)){
+            if(((int)po1 <= ((ArrayList<?>)variable.valor).size()) && ((int)po1 > 0)){
                 Primitivo prim = new Primitivo(this.valor.tipo, this.valor.execute(table, tree), this.valor.line, this.valor.column);
-                ((ArrayList<Nodo>) variable.valor).set(po1-1, prim);
+                ((ArrayList<Nodo>) variable.valor).set((int)po1-1, prim);
                 result = this.valor;
+
+                rest = String.valueOf(this.valor.execute(table, tree));
             }else{
                 String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -73,14 +80,16 @@ public class AsignacionArray extends Nodo {
                 return error;
             }
         }else{
-            if((po1 <= ((ArrayList<?>)variable.valor).size()) && (po1 > 0)){
+            if(((int)po1 <= ((ArrayList<?>)variable.valor).size()) && ((int)po1 > 0)){
                 ArrayList<ArrayList<Nodo>> listI = (ArrayList<ArrayList<Nodo>>)variable.valor;
-                ArrayList<Nodo> listJ = listI.get(po1-1);
-                if(po2 <= listJ.size() && (po2 > 0)) {
+                ArrayList<Nodo> listJ = listI.get((int)po1-1);
+                if((int)po2 <= listJ.size() && ((int)po2 > 0)) {
                     Primitivo prim = new Primitivo(this.valor.tipo, this.valor.execute(table, tree), this.valor.line, this.valor.column);
-                    listJ.set(po2 - 1, prim);
-                    ((ArrayList<ArrayList<Nodo>>) variable.valor).set(po1 - 1, listJ);
+                    listJ.set((int)po2 - 1, prim);
+                    ((ArrayList<ArrayList<Nodo>>) variable.valor).set((int)po1 - 1, listJ);
                     result = this.valor;
+
+                    rest = String.valueOf(this.valor.execute(table, tree));
                 }else{
                     String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -99,5 +108,23 @@ public class AsignacionArray extends Nodo {
 
         this.resultado = result;
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("ASIGNACION");
+        NodoAST dimen = new NodoAST("ID");
+        dimen.agregarHijo(this.id);
+        NodoAST posi = new NodoAST("POSICION");
+        if(this.pos2 == null){
+            posi.agregarHijo(new NodoAST(String.valueOf(po1)));
+        }else{
+            posi.agregarHijo(new NodoAST(String.valueOf(po1)));
+            posi.agregarHijo(new NodoAST(String.valueOf(po2)));
+        }
+        dimen.agregarHijo(posi);
+        nodo.agregarHijo(dimen);
+        nodo.agregarHijo(new NodoAST(rest));
+        return nodo;
     }
 }

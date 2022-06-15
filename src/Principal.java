@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Gramatica.*;
 import Symbols.Table;
 import Symbols.Tree;
@@ -60,15 +61,21 @@ public class Principal extends JFrame{
                 Table table = new Table(null);
                 tree.instrucciones = (ArrayList<Nodo>) treeAST;
 
+                NodoAST nodoRaiz = new NodoAST("RAIZ");
+
                 for(int i = 0; i<tree.instrucciones.size(); i++){
                     tree.instrucciones.get(i).execute(table, tree);
+                    nodoRaiz.agregarHijo(tree.instrucciones.get(i).getAST());
                 }
+
+
 
                 for(int i = 0; i < tree.consola.size(); i++){
                     Globales.salida += tree.consola.get(i);
                 }
 
                 textArea2.setText(Globales.salida);
+                Globales.graphAST(nodoRaiz);
 
 
                 /*List<String> ruleNames = Arrays.asList(sintactico.getRuleNames());

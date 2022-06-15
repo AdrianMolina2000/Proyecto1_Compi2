@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
@@ -13,6 +14,10 @@ public class If extends Nodo {
     ArrayList<Nodo> listaIf;
     ArrayList<Nodo> listaElse;
 
+    ArrayList<NodoAST> listaIfAST = new ArrayList<>();
+    ArrayList<NodoAST> listaElseAST = new ArrayList<>();
+    NodoAST nodoCond = new NodoAST("CONDICION");
+
     public If(Nodo condicion, ArrayList<Nodo> listaIf, ArrayList<Nodo> listaElse, int line, int column) {
         super(null, line, column);
         this.condicion = condicion;
@@ -22,11 +27,10 @@ public class If extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        int cont1=0;
-        int cont2=0;
-
         Table newtable = new Table(table);
+
         Object result = this.condicion.execute(newtable, tree);
+        nodoCond.agregarHijo(this.condicion.getAST());
 
         if (result instanceof Excepcion) {
             return result;
@@ -42,6 +46,7 @@ public class If extends Nodo {
         if((boolean)result) {
             for(int i = 0; i<this.listaIf.size(); i++) {
                 Object res = this.listaIf.get(i).execute(newtable, tree);
+                listaIfAST.add(this.listaIf.get(i).getAST());
                 if (res instanceof Exit || res instanceof Cycle) {
                     return res;
                 }
@@ -50,7 +55,7 @@ public class If extends Nodo {
         }else {
             for (int i = 0; i < this.listaElse.size(); i++) {
                 Object res = this.listaElse.get(i).execute(newtable, tree);
-
+                listaElseAST.add(this.listaElse.get(i).getAST());
                 if (res instanceof Exit || res instanceof Cycle) {
                     return res;
                 }
@@ -63,5 +68,21 @@ public class If extends Nodo {
             }
             return false;
         }
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("IF");
+        nodo.agregarHijo(nodoCond);
+        if(listaIfAST.size() != 0){
+            NodoAST nodoIf = new NodoAST("INSTRUCCIONES IF");
+            nodoIf.agregarHijos(listaIfAST);
+            nodo.agregarHijo(nodoIf);
+        }else{
+            NodoAST nodoElse = new NodoAST("INSTRUCCIONES ELSE");
+            nodoElse.agregarHijos(listaElseAST);
+            nodo.agregarHijo(nodoElse);
+        }
+        return nodo;
     }
 }

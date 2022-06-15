@@ -1,6 +1,7 @@
 package Expresiones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Simbolo;
@@ -12,9 +13,13 @@ import java.util.ArrayList;
 public class Size extends Nodo {
     String id;
 
+    //PARA EL AST
+    String resultado;
+
     public Size(String id, int line, int column) {
         super(null, line, column);
         this.id = id;
+        this.resultado = "";
     }
 
     @Override
@@ -37,9 +42,12 @@ public class Size extends Nodo {
             if (variable.valor instanceof ArrayList<?> listaI) {
                 if(listaI.size() > 0) {
                     if (listaI.get(0) instanceof ArrayList<?> listaJ) {
-                        return listaI.size() * listaJ.size();
+                        int ret = listaI.size() * listaJ.size();
+                        resultado += String.valueOf(ret);
+                        return ret;
                     }
                 }
+                resultado += String.valueOf(listaI.size());
                 return listaI.size();
             }
         }else{
@@ -50,5 +58,13 @@ public class Size extends Nodo {
             return error;
         }
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("Size");
+        nodo.agregarHijo(new NodoAST(this.id));
+        nodo.agregarHijo(new NodoAST(resultado));
+        return nodo;
     }
 }

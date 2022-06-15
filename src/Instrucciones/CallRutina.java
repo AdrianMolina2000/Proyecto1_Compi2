@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Expresiones.Identificador;
 import Expresiones.Primitivo;
 import Other.Excepcion;
@@ -15,10 +16,17 @@ public class CallRutina extends Nodo {
     String id;
     ArrayList<Nodo> parametrosEnt;
 
+    //PARA AST
+    ArrayList<NodoAST> paramsEjec;
+    ArrayList<NodoAST> instrEjec;
+
     public CallRutina(String id, ArrayList<Nodo> parametrosEnt, int line, int column) {
         super(null, line, column);
         this.id = id;
         this.parametrosEnt = parametrosEnt;
+
+        paramsEjec = new ArrayList<>();
+        instrEjec = new ArrayList<>();
     }
 
     @Override
@@ -60,6 +68,8 @@ public class CallRutina extends Nodo {
                     }
                     dec.valor = new Primitivo(ide.tipo, ide.execute(table, tree), dec.line, dec.column);
                     dec.execute(newtable, tree);
+                    paramsEjec.add(ide.getAST());
+                    instrEjec.add(dec.getAST());
                 }else {
                     this.parametrosEnt.get(i).execute(table, tree);
                     if(this.parametrosEnt.get(i).tipo != dec.tipo){
@@ -71,6 +81,9 @@ public class CallRutina extends Nodo {
                     }
                     dec.valor = this.parametrosEnt.get(i);
                     dec.execute(newtable, tree);
+
+                    paramsEjec.add(this.parametrosEnt.get(i).getAST());
+                    instrEjec.add(dec.getAST());
                 }
 
             }else if(parametros.get(i) instanceof DeclaracionArray decArray) {
@@ -100,6 +113,10 @@ public class CallRutina extends Nodo {
                         Asignacion newA = new Asignacion(decArray.id, result, decArray.line, decArray.column);
                         newA.execute(newtable, tree);
 
+                        paramsEjec.add(ide.getAST());
+                        instrEjec.add(decArray.getAST());
+                        instrEjec.add(newA.getAST());
+
                     }else{
                         Object dim2 = decArray.dim2.execute(newtable, tree);
 
@@ -117,6 +134,9 @@ public class CallRutina extends Nodo {
                         decArray.execute(newtable, tree);
                         Simbolo variable = newtable.getVariable(decArray.id);
                         variable.valor = listI;
+
+                        paramsEjec.add(ide.getAST());
+                        instrEjec.add(decArray.getAST());
                     }
                 }
             }
@@ -132,8 +152,28 @@ public class CallRutina extends Nodo {
                 tree.consola.add(error.toString());
                 return error;
             }
+            instrEjec.add(instrucciones.get(i).getAST());
         }
 
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("CALL");
+        nodo.agregarHijo(new NodoAST(this.id));
+
+
+        if (this.parametrosEnt.size() != 0) {
+            NodoAST nodo2 = new NodoAST("PARAMETROS");
+            nodo.agregarHijos(paramsEjec);
+            nodo.agregarHijo(nodo2);
+        }
+
+        NodoAST nodoIns = new NodoAST("INSTRUCCIONES");
+        nodoIns.agregarHijos(instrEjec);
+
+        nodo.agregarHijo(nodoIns);
+        return nodo;
     }
 }

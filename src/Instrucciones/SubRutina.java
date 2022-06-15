@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Simbolo;
@@ -81,5 +82,19 @@ public class SubRutina extends Nodo {
             tree.consola.add(error.toString());
             return error;
         }
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("FUNCION");
+        nodo.agregarHijo(new NodoAST(id1));
+        if(listaParams1.size() != 0){
+            NodoAST nodoParam = new NodoAST("PARAMETROS");
+            for(String param: listaParams1){
+                nodoParam.agregarHijo(param);
+            }
+            nodo.agregarHijo(nodoParam);
+        }
+        return nodo;
     }
 }

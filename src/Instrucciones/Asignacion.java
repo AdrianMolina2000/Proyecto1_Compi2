@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Expresiones.Identificador;
 import Other.Excepcion;
 import Other.Tipo;
@@ -13,12 +14,15 @@ import java.util.ArrayList;
 public class Asignacion extends Nodo {
     public String id;
     public Object expresion;
-    Object resultado;
+
+    //PARA AST
+    String resultado;
 
     public Asignacion(String id, Object valor, int line, int column) {
         super(null, line, column);
         this.id = id;
         this.expresion = valor;
+        resultado = "";
     }
 
     @Override
@@ -60,6 +64,7 @@ public class Asignacion extends Nodo {
                 ArrayList<Nodo> variableValor = (ArrayList<Nodo>)variable.valor;
 
                 if(variableValor.size() == result2.size()){
+                    resultado += "[";
                     for(int i = 0; i < result2.size(); i++){
                         if(((ArrayList<Nodo>)result2).get(i).tipo != variable.tipo.tipo){
                             String err = "El arreglo no puede ser asignado porque no poseen los mismos tipos \n";
@@ -68,7 +73,9 @@ public class Asignacion extends Nodo {
                             tree.consola.add(error.toString());
                             return error;
                         }
+                        resultado += String.valueOf(((ArrayList<Nodo>)result2).get(i).execute(table, tree)) + ", ";
                     }
+                    resultado += "]";
                 }else{
                     String err = "El arreglo no puede ser asignado porque no poseen las mismas dimensiones \n";
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -95,24 +102,36 @@ public class Asignacion extends Nodo {
                     return error;
                 }
 
-                ArrayList<Nodo> listaJ = listaI.get(0);
-                ArrayList<Nodo> result3 = (ArrayList<Nodo>) result2.get(0);
+                resultado += "[";
+                for(int i = 0; i < result2.size(); i++){
+                    resultado += "[";
+                    ArrayList<Nodo> listaJ = listaI.get(i);
+                    ArrayList<Nodo> result3 = (ArrayList<Nodo>) result2.get(i);
 
-                if(result3.size() != listaJ.size()){
-                    String err = "El arreglo no puede ser asignado porque no poseen las mismas dimensiones \n";
-                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
-                    tree.excepciones.add(error);
-                    tree.consola.add(error.toString());
-                    return error;
-                }
+                    if(result3.size() != listaJ.size()){
+                        String err = "El arreglo no puede ser asignado porque no poseen las mismas dimensiones \n";
+                        Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                        tree.excepciones.add(error);
+                        tree.consola.add(error.toString());
+                        return error;
+                    }
 
-                if( result3.get(0).tipo != variable.tipo.tipo){
-                    String err = "El arreglo no puede ser asignado porque no poseen los mismos tipos \n";
-                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
-                    tree.excepciones.add(error);
-                    tree.consola.add(error.toString());
-                    return error;
+                    for(int j=0; j < result3.size(); j++){
+
+                        if(result3.get(j).tipo != variable.tipo.tipo){
+                            String err = "El arreglo no puede ser asignado porque no poseen los mismos tipos \n";
+                            Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                            tree.excepciones.add(error);
+                            tree.consola.add(error.toString());
+                            return error;
+                        }
+
+                        resultado += String.valueOf(result3.get(j).execute(table, tree)) + ", ";
+                    }
+                    resultado += "]";
                 }
+                resultado += "]";
+
             }else{
                 String err = "No esta asignando un arreglo a la variable [" +variable.id+ "] \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -128,10 +147,19 @@ public class Asignacion extends Nodo {
                 tree.consola.add(error.toString());
                 return error;
             }
+            resultado += String.valueOf(result);
         }
 
-        this.resultado = result;
+
         variable.valor = result;
         return result;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("ASIGNACION");
+        nodo.agregarHijo(new NodoAST(this.id));
+        nodo.agregarHijo(resultado);
+        return nodo;
     }
 }

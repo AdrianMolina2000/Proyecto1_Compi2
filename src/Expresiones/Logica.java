@@ -1,6 +1,7 @@
 package Expresiones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
@@ -82,5 +83,17 @@ public class Logica extends Nodo {
                 return error;
             }
         }
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST(this.operador);
+        if (this.operadorIzq != null) {
+            nodo.agregarHijo(this.operadorIzq.getAST());
+            nodo.agregarHijo(this.operadorDer.getAST());
+        } else {
+            nodo.agregarHijo(this.operadorDer.getAST());
+        }
+        return nodo;
     }
 }

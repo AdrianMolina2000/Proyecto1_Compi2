@@ -1,6 +1,7 @@
 package Expresiones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
@@ -196,5 +197,13 @@ public class Relacional extends Nodo {
             tree.consola.add(error.toString());
             return error;
         }
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST(this.operador);
+        nodo.agregarHijo(this.operadorIzq.getAST());
+        nodo.agregarHijo(this.operadorDer.getAST());
+        return nodo;
     }
 }

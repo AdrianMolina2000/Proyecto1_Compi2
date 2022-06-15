@@ -1,6 +1,7 @@
 package Instrucciones;
 
 import Abstract.Nodo;
+import Abstract.NodoAST;
 import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
@@ -13,6 +14,10 @@ public class DoWhile extends Nodo {
     ArrayList<Nodo> expresiones;
     String id;
     String id2;
+
+    //PARA AST
+    NodoAST nodoCond = new NodoAST("CONDICION");
+    ArrayList<NodoAST> instrEjec;
 
     public DoWhile(String id, String id2, Nodo condicion, ArrayList<Nodo> expresiones, int line, int column) {
         super(null, line, column);
@@ -35,6 +40,7 @@ public class DoWhile extends Nodo {
         Table newtable = new Table(table);
 
         Object cond = this.condicion.execute(newtable, tree);
+        nodoCond.agregarHijo(this.condicion.getAST());
 
         if(this.condicion.tipo != Tipo.Tipos.LOGICAL ){
             String err = "La codicion debe ser de tipo Logical, ["+this.condicion.tipo+"] \n";
@@ -44,17 +50,23 @@ public class DoWhile extends Nodo {
             return error;
         }
 
-        while ((boolean)this.condicion.execute(newtable, tree)){
+        int i = 0;
+        while ((boolean)cond || i<1000){
             Object res = null;
+            NodoAST nodoIteracion = new NodoAST("ITERACION");
+
             for(int j = 0; j<this.expresiones.size(); j++){
                 res = this.expresiones.get(j).execute(newtable, tree);
+
+                nodoIteracion.agregarHijo(this.expresiones.get(j).getAST());
+
                 if(res instanceof Exit ex){
                     if(ex.id.equalsIgnoreCase(this.id)){
                         return null;
                     }else{
                         return res;
                     }
-                } else if (res instanceof Cycle cy) {
+                }else if (res instanceof Cycle cy) {
                     if(cy.id.equalsIgnoreCase(this.id)){
                         break;
                     }else{
@@ -62,6 +74,7 @@ public class DoWhile extends Nodo {
                     }
                 }
             }
+
             if (res instanceof Cycle cy){
                 if(cy.id.equalsIgnoreCase(this.id)){
                     continue;
@@ -69,7 +82,20 @@ public class DoWhile extends Nodo {
                     return res;
                 }
             }
+            i += 1;
         }
         return null;
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo = new NodoAST("DO WHILE");
+        nodo.agregarHijo(nodoCond);
+
+        NodoAST nodoIns = new NodoAST("INSTRUCCIONES");
+        nodoIns.agregarHijos(instrEjec);
+        nodo.agregarHijo(nodoIns);
+
+        return nodo;
     }
 }
