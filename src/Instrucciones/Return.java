@@ -3,13 +3,16 @@ package Instrucciones;
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Primitivo;
+import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
 import Symbols.Tree;
 
 public class Return extends Nodo {
     Nodo expresion;
-    NodoAST nodoExp;
+
+    //Para el AST
+    NodoAST nodoMain;
 
     public Return(Nodo expresion, int line, int column) {
         super(null, line, column);
@@ -18,16 +21,35 @@ public class Return extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
+        //ERROR
+        if(this.expresion == null){
+            String err = "La expresion no es valida \n";
+            Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
+            tree.excepciones.add(error);
+            return error;
+        }
+
+
         Object expr = this.expresion.execute(table, tree);
-        nodoExp = new NodoAST(expr.toString());
-        Primitivo prim =  new Primitivo(this.expresion.tipo, expr, this.line, this.column);
+        if (expr instanceof Excepcion) {
+            return expr;
+        }
+
+        //Creo el nodo Main AST
+        nodoMain = new NodoAST("RETURN");
+        nodoMain.agregarHijo(this.expresion.getAST());
+
         return expr;
     }
 
     @Override
     public NodoAST getAST() {
         NodoAST nodo = new NodoAST("RETURN");
-        nodo.agregarHijo(nodoExp);
+
+        if(nodoMain != null){
+            return nodoMain;
+        }
+
         return nodo;
     }
 }

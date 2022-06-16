@@ -14,6 +14,8 @@ import java.util.ArrayList;
 public class DeclaracionAllocatable extends Nodo {
     String id;
     boolean flag;
+
+    NodoAST nodoMain;
     public DeclaracionAllocatable(Tipo.Tipos tipo, String id, boolean flag, int line, int column) {
         super(tipo, line, column);
         this.id = id;
@@ -24,32 +26,52 @@ public class DeclaracionAllocatable extends Nodo {
     public Object execute(Table table, Tree tree) {
         Simbolo simbolo;
 
+        Tipo nuevoTipo;
+        Tipo nuevoTipo2;
+        Object result;
+
+        //Verifico si es de una o dos dimensiones
         if(this.flag){
-            ArrayList<Nodo> res = new ArrayList<Nodo>();
-            simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ALLOCATE), this.id, res, this.line, this.column, table);
+            result = new ArrayList<Nodo>();
+
+            nuevoTipo = new Tipo(this.tipo);
+            nuevoTipo2 = new Tipo(Tipo.Tipos.ALLOCATE);
         }else{
-            ArrayList<ArrayList<Nodo>> res = new ArrayList<ArrayList<Nodo>>();
-            simbolo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.ALLOCATE2), this.id, res, this.line, this.column, table);
+            result = new ArrayList<ArrayList<Nodo>>();
+
+            nuevoTipo = new Tipo(this.tipo);
+            nuevoTipo2 = new Tipo(Tipo.Tipos.ALLOCATE2);
         }
 
+        //Creo la nueva variable
+        simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
+
+        //Verifico si existe en la tabla de simbolos
         if(table.getVariable(this.id) == null){
             table.setVariable(simbolo);
+
+            nodoMain = new NodoAST("ALLOCATABLE");
+            nodoMain.agregarHijo(new NodoAST(this.tipo.toString()));
+            nodoMain.agregarHijo(new NodoAST(this.id));
+
+            //Termino la ejecucion
+            return null;
         }else{
             String err = "La variable {" + this.id + "} ya ha sido declarada \n";
             Excepcion error = new Excepcion("Semantico", err, line, column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
             return error;
         }
-
-        return null;
     }
 
     @Override
     public NodoAST getAST() {
         NodoAST nodo = new NodoAST("ALLOCATABLE");
-        nodo.agregarHijo(new NodoAST(tipo.toString()));
-        nodo.agregarHijo(new NodoAST(this.id));
+
+        if(nodoMain != null){
+            return nodoMain;
+        }
+
         return nodo;
     }
 }

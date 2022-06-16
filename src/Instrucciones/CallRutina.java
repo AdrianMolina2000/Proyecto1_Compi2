@@ -39,7 +39,6 @@ public class CallRutina extends Nodo {
             String err = "La subrutina {"+this.id+"} no ha sido encontrada \n";
             Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
             return error;
         }
 
@@ -51,7 +50,6 @@ public class CallRutina extends Nodo {
             String err = "Los parametros de entrada y parametros declarados no son los mismos \n";
             Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
             return error;
         }
 
@@ -63,7 +61,6 @@ public class CallRutina extends Nodo {
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +ide.tipo + "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
                         tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
                         return error;
                     }
                     dec.valor = new Primitivo(ide.tipo, ide.execute(table, tree), dec.line, dec.column);
@@ -76,7 +73,6 @@ public class CallRutina extends Nodo {
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +this.parametrosEnt.get(i).tipo+ "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
                         tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
                         return error;
                     }
                     dec.valor = this.parametrosEnt.get(i);
@@ -96,7 +92,6 @@ public class CallRutina extends Nodo {
                         String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos ["+decArray.tipo+"] y [" +ide.tipo + "] \n";
                         Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                         tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
                         return error;
                     }
 
@@ -105,7 +100,6 @@ public class CallRutina extends Nodo {
                             String err = "El arreglo {" +decArray.id+ "} no puede ser declarado debido a que son de diferentes dimensiones \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
-                            tree.consola.add(error.toString());
                             return error;
                         }
 
@@ -127,7 +121,6 @@ public class CallRutina extends Nodo {
                             String err = "El arreglo {" +decArray.id+ "} no puede ser declarado debido a que son de diferentes dimensiones \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
-                            tree.consola.add(error.toString());
                             return error;
                         }
 
@@ -146,10 +139,15 @@ public class CallRutina extends Nodo {
 
         for (int i = 0; i < instrucciones.size(); i++) {
             Object res = instrucciones.get(i).execute(newtable, tree);
+
+            //ERROR
+            if(res instanceof Excepcion e){
+                tree.consola.add(e.toString());
+            }
+
             if (res instanceof Return re) {
                 Excepcion error = new Excepcion("Semantico", "No se esperaba un retorno en esta subrutina", re.line, re.column);
                 tree.excepciones.add(error);
-                tree.consola.add(error.toString());
                 return error;
             }
             instrEjec.add(instrucciones.get(i).getAST());
@@ -166,7 +164,7 @@ public class CallRutina extends Nodo {
 
         if (this.parametrosEnt.size() != 0) {
             NodoAST nodo2 = new NodoAST("PARAMETROS");
-            nodo.agregarHijos(paramsEjec);
+            nodo2.agregarHijos(paramsEjec);
             nodo.agregarHijo(nodo2);
         }
 

@@ -21,9 +21,11 @@ public class Exit extends Nodo {
     @Override
     public NodoAST getAST() {
         NodoAST nodo = new NodoAST("EXIT");
+
         if(!id.equalsIgnoreCase("!")){
             nodo.agregarHijo(new NodoAST(id));
         }
+
         return nodo;
     }
 }

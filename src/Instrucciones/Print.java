@@ -25,18 +25,27 @@ public class Print extends Nodo {
     public Object execute(Table table, Tree tree) {
         for(int i = 0; i<this.expresion.size(); i++){
             if(this.expresion.get(i) instanceof Identificador iden){
-                iden.execute(table, tree);
+                //Obtengo la variable de la tabla de simbolos
+                Simbolo ide = table.getVariable(iden.id);
+
+                Object val = iden.execute(table, tree);
+
+                //ERROR
+                if(val instanceof Excepcion e){
+                    return val;
+                }
 
                 nodoIns.add(iden.getAST());
 
-                Simbolo ide = table.getVariable(iden.id);
+                //ERROR
                 if(ide == null){
                     String err = "La variable {"+iden.id+"} no ha sido encontrada \n";
                     Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
                     tree.excepciones.add(error);
-                    tree.consola.add(error.toString());
                     return error;
                 }
+
+                //Verifico si la variable es del tipo ARREGLO
                 if(ide.tipo2.tipo == Tipo.Tipos.ARREGLO || ide.tipo2.tipo == Tipo.Tipos.ALLOCATE){
                     String cadena = "";
 
@@ -46,7 +55,10 @@ public class Print extends Nodo {
                     }
 
                     tree.consola.add(cadena);
-                }else if(ide.tipo2.tipo == Tipo.Tipos.ARREGLO2 || ide.tipo2.tipo == Tipo.Tipos.ALLOCATE2){
+                }
+
+                //Verifico si la variable es del tipo ARREGLO2
+                else if(ide.tipo2.tipo == Tipo.Tipos.ARREGLO2 || ide.tipo2.tipo == Tipo.Tipos.ALLOCATE2){
                     String cadena = "";
 
                     ArrayList<ArrayList<Nodo>> valorJ = (ArrayList<ArrayList<Nodo>>) ide.valor;
@@ -59,7 +71,9 @@ public class Print extends Nodo {
                     }
 
                     tree.consola.add(cadena);
-                }else{
+                }
+
+                else{
                     String salida = String.valueOf(this.expresion.get(i).execute(table, tree));
                     salida = salida.replace("\"", "");
                     salida = salida.replace("'", "");

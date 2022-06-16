@@ -14,12 +14,16 @@ public class ArrayPos extends Nodo {
     String id;
     Nodo pos1;
     Nodo pos2;
-    Object valor;
 
-    //PARA EL AST
     Object po1;
     Object po2;
-    NodoAST nodoVal = new NodoAST("VALOR");
+
+    //PARA EL AST
+    NodoAST nodoMain;
+    NodoAST nodoId;
+    NodoAST nodoPosicion;
+    NodoAST nodoValor;
+
     public ArrayPos(String id, Nodo pos1, Nodo pos2, int line, int column) {
         super(null, line, column);
         this.id = id;
@@ -29,71 +33,233 @@ public class ArrayPos extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        Simbolo variable;
-        variable = table.getVariable(this.id);
+
+        Simbolo variable = table.getVariable(this.id);
+
         if (variable == null) {
             String err = "La variable {"+this.id+"} no ha sido encontrada \n";
             Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
+            //tree.consola.add(error.toString());
             return error;
         }
 
+        //Verifico que venga una posicion
+        if(this.pos1 == null){
+            String err = "Debe enviar una posicion del arreglo para acceder a su contenido \n";
+            Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+            tree.excepciones.add(error);
+            //tree.consola.add(error.toString());
+            return error;
+        }
+
+        //Verifico si el arreglo es de una dimension
         if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE) {
-            this.po1 = this.pos1.execute(table, tree);
-            if((int)po1 <= ((ArrayList<?>)variable.valor).size() && (int)po1 > 0) {
-                this.tipo = variable.tipo.tipo;
-                Nodo val = ((ArrayList<Nodo>) variable.valor).get((int)po1 - 1);
-                this.valor = val.execute(table, tree);
-                nodoVal.agregarHijo(val.getAST());
-            }else{
-                String err = "El arreglo no puede ser accedido porque la posicion no es la adecuada \n";
+            po1 = this.pos1.execute(table, tree);
+            if (po1 instanceof Excepcion) {
+                return po1;
+            }
+
+            //Verifico que la primera posicion sea un INTEGER
+            if(this.pos1.tipo != Tipo.Tipos.INTEGER){
+                String err = "La posicion ingresada debe ser un INTEGER \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                 tree.excepciones.add(error);
-                tree.consola.add(error.toString());
+                //tree.consola.add(error.toString());
                 return error;
             }
-        }else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
-            po1 = this.pos1.execute(table, tree);
-            po2 = this.pos2.execute(table, tree);
-            if((int)po1 <= ((ArrayList<?>)variable.valor).size() && (int)po1 > 0){
-                this.tipo = variable.tipo.tipo;
-                ArrayList<Nodo> listaJ = ((ArrayList<ArrayList<Nodo>>)variable.valor).get((int)po2-1);
-                if((int)po2 <= listaJ.size() && (int)po2 > 0){
-                    this.valor = listaJ.get((int)po2-1).execute(table, tree);
-                    nodoVal.agregarHijo(listaJ.get((int)po2-1).getAST());
-                }else{
-                    String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
-                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
-                    tree.excepciones.add(error);
-                    tree.consola.add(error.toString());
-                    return error;
-                }
-            }else{
-                String err = "El arreglo no puede ser accedido porque la posicion no es la adecuada \n";
+
+            //Verifico que solo venga una posicion
+            if(this.pos2 != null){
+                String err = "Este arreglo unicamente tiene una dimension \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                 tree.excepciones.add(error);
-                tree.consola.add(error.toString());
+                //tree.consola.add(error.toString());
+                return error;
+            }
+
+            if(po1 instanceof Integer p1){
+                ArrayList<Nodo> listaI = (ArrayList<Nodo>) variable.valor;
+                if(p1 <= listaI.size() && p1 > 0) {
+                    //Le coloco tipo a esta clase
+                    this.tipo = variable.tipo.tipo;
+
+                    //Obtengo el nodo de la posicion buscada
+                    Nodo val = listaI.get(p1 - 1);
+                    Object result = val.execute(table, tree);
+
+                    //Creo los nodos del AST;
+                    nodoMain = new NodoAST("ARRAY");
+
+                    nodoId = new NodoAST("ID");
+                    nodoId.agregarHijo(new NodoAST(this.id));
+
+                    nodoPosicion = new NodoAST("Posicion");
+                    nodoPosicion.agregarHijo(this.pos1.getAST());
+
+                    nodoId.agregarHijo(nodoPosicion);
+
+                    nodoMain.agregarHijo(nodoId);
+                    nodoMain.agregarHijo(val.getAST());
+
+                    //Retorno el valor
+                    return result;
+                }
+
+                //ERROR
+                else{
+                    String err = "El arreglo no puede ser accedido porque la posicion no es la adecuada \n";
+                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                    tree.excepciones.add(error);
+                    //tree.consola.add(error.toString());
+                    return error;
+                }
+            }
+
+            //ERROR
+            else{
+                String err = "El arreglo no puede ser accedido porque la posicion no es INTEGER \n";
+                Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                tree.excepciones.add(error);
+                //tree.consola.add(error.toString());
                 return error;
             }
         }
-        return this.valor;
+
+        //Verifico si el arreglo es de 2 dimensiones
+        else if (variable.tipo2.tipo == Tipo.Tipos.ARREGLO2 || variable.tipo2.tipo == Tipo.Tipos.ALLOCATE2) {
+            po1 = this.pos1.execute(table, tree);
+            if (po1 instanceof Excepcion) {
+                return po1;
+            }
+
+            //Verifico que la primera posicion sea un INTEGER
+            if(this.pos1.tipo != Tipo.Tipos.INTEGER){
+                String err = "La posicion ingresada debe ser un INTEGER \n";
+                Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                tree.excepciones.add(error);
+                //tree.consola.add(error.toString());
+                return error;
+            }
+
+            //Verifico que vengan 2 posiciones
+            if(this.pos2 == null){
+                String err = "Debe enviar 2 posiciones, para acceder al contenido del arreglo \n";
+                Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                tree.excepciones.add(error);
+                //tree.consola.add(error.toString());
+                return error;
+            }
+
+            po2 = this.pos2.execute(table, tree);
+            if (po2 instanceof Excepcion) {
+                return po1;
+            }
+
+            //Verifico que la segunda posicion sea un INTEGER
+            if(this.pos1.tipo != Tipo.Tipos.INTEGER){
+                String err = "La posicion ingresada debe ser un INTEGER \n";
+                Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                tree.excepciones.add(error);
+                //tree.consola.add(error.toString());
+                return error;
+            }
+
+            if(po1 instanceof Integer p1) {
+                //Obtengo la lista de listas de la variable
+                ArrayList<ArrayList<Nodo>> listaI = (ArrayList<ArrayList<Nodo>>) variable.valor;
+
+                if (p1 <= listaI.size() && p1 > 0) {
+                    //Obtengo la lista de nodos necesaria
+                    ArrayList<Nodo> listaJ = listaI.get(p1 - 1);
+
+                    if(po2 instanceof Integer p2) {
+                        if (p2 <= listaJ.size() && p2 > 0) {
+                            //Le coloco el tipo a esta clase
+                            this.tipo = variable.tipo.tipo;
+
+                            //Obtengo el nodo de la posicion buscada
+                            Nodo val = listaJ.get(p2 - 1);
+                            Object result = val.execute(table, tree);
+
+                            //Creo los nodos del AST;
+                            nodoMain = new NodoAST("ARRAY");
+
+                            nodoId = new NodoAST("ID");
+                            nodoId.agregarHijo(new NodoAST(this.id));
+
+                            nodoPosicion = new NodoAST("Posicion");
+                            nodoPosicion.agregarHijo(this.pos1.getAST());
+                            nodoPosicion.agregarHijo(this.pos2.getAST());
+
+                            nodoId.agregarHijo(nodoPosicion);
+
+                            nodoMain.agregarHijo(nodoId);
+                            nodoMain.agregarHijo(val.getAST());
+
+                            //Retorno el valor
+                            return result;
+                        }
+
+                        //ERROR
+                        else {
+                            String err = "El arreglo no puede ser asignado porque la posicion no es la adecuada \n";
+                            Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                            tree.excepciones.add(error);
+                            //tree.consola.add(error.toString());
+                            return error;
+                        }
+                    }
+
+                    //ERROR
+                    else{
+                        String err = "El arreglo no puede ser accedido porque la posicion no es INTEGER \n";
+                        Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                        tree.excepciones.add(error);
+                        //tree.consola.add(error.toString());
+                        return error;
+                    }
+
+                }
+
+                //ERROR
+                else {
+                    String err = "El arreglo no puede ser accedido porque la posicion no es la adecuada \n";
+                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                    tree.excepciones.add(error);
+                    //tree.consola.add(error.toString());
+                    return error;
+                }
+            }
+
+            //ERROR
+            else{
+                String err = "El arreglo no puede ser accedido porque la posicion no es INTEGER \n";
+                Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                tree.excepciones.add(error);
+                //tree.consola.add(error.toString());
+                return error;
+            }
+        }
+
+        //ERROR
+        else{
+            String err = "La variable no puede ser accedida porque no es un arreglo \n";
+            Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+            tree.excepciones.add(error);
+            //tree.consola.add(error.toString());
+            return error;
+        }
     }
 
     @Override
     public NodoAST getAST() {
-        NodoAST nodo = new NodoAST(this.id);
-        NodoAST nodoPos = new NodoAST("Posicion");
+        NodoAST nodo = new NodoAST("ARRAY");
 
-        if(this.pos2 == null){
-            nodoPos.agregarHijo(String.valueOf(this.po1));
-        }else{
-            nodoPos.agregarHijo(String.valueOf(this.po1));
-            nodoPos.agregarHijo(String.valueOf(this.po2));
+        if(nodoMain != null){
+            return nodoMain;
         }
-        nodo.agregarHijo(nodoPos);
 
-        nodo.agregarHijo(nodoVal);
         return nodo;
     }
 }

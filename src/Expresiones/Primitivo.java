@@ -2,12 +2,9 @@ package Expresiones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
-import Other.Excepcion;
 import Other.Tipo;
 import Symbols.Table;
 import Symbols.Tree;
-
-import java.util.ArrayList;
 
 
 public class Primitivo extends Nodo {
@@ -25,7 +22,13 @@ public class Primitivo extends Nodo {
 
     @Override
     public NodoAST getAST() {
-        NodoAST nodo = new NodoAST(String.valueOf(this.valor));
+        NodoAST nodo;
+        if(Tipo.Tipos.STRING == this.tipo){
+            String val = String.valueOf(this.valor).replace("\"", "");
+            nodo = new NodoAST(val);
+        }else{
+            nodo = new NodoAST(String.valueOf(this.valor));
+        }
         return nodo;
     }
 }

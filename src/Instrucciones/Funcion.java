@@ -35,7 +35,6 @@ public class Funcion extends Nodo {
         if(!id1.equalsIgnoreCase(id2)){
             Excepcion error = new Excepcion("Semantico", "Los nombres de apertura y cierre deben ser iguales \n",
                     this.line, this.column);
-            tree.consola.add(error.toString());
             tree.excepciones.add(error);
             return error;
         }
@@ -43,7 +42,6 @@ public class Funcion extends Nodo {
         if(this.listaParams1.size() != this.listaParams2.size()){
             Excepcion error = new Excepcion("Semantico", "Los parametros estan incompletos \n",
                     this.line, this.column);
-            tree.consola.add(error.toString());
             tree.excepciones.add(error);
             return error;
         }
@@ -57,7 +55,6 @@ public class Funcion extends Nodo {
                     if(!dec.id.equalsIgnoreCase(listaParams1.get(i))){
                         String err = "Los parametros deben tener el mismo nombre ["+dec.id+"] ["+listaParams1.get(i)+"] \n";
                         Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
-                        tree.consola.add(error.toString());
                         tree.excepciones.add(error);
                         return error;
                     }
@@ -65,7 +62,6 @@ public class Funcion extends Nodo {
                     if(!dec.id.equalsIgnoreCase(listaParams1.get(i))){
                         String err = "Los parametros deben tener el mismo nombre ["+dec.id+"] ["+listaParams1.get(i)+"] \n";
                         Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
-                        tree.consola.add(error.toString());
                         tree.excepciones.add(error);
                         return error;
                     }
@@ -112,7 +108,6 @@ public class Funcion extends Nodo {
             }else{
                 String err = "La variable de retorno no ha sido encontrada ["+this.id3+"] \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
-                tree.consola.add(error.toString());
                 tree.excepciones.add(error);
                 return error;
             }
@@ -128,10 +123,9 @@ public class Funcion extends Nodo {
             return null;
 
         }else {
-            String err = "La subrutina [" +this.id1+ "] ya ha sido creado con anterioridad";
+            String err = "La funcion [" +this.id1+ "] ya ha sido creado con anterioridad";
             Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
             return error;
         }
     }

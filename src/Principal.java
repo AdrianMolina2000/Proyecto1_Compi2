@@ -9,6 +9,7 @@ import java.util.List;
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Gramatica.*;
+import Other.Excepcion;
 import Symbols.Table;
 import Symbols.Tree;
 import org.antlr.v4.gui.TreeViewer;
@@ -64,10 +65,13 @@ public class Principal extends JFrame{
                 NodoAST nodoRaiz = new NodoAST("RAIZ");
 
                 for(int i = 0; i<tree.instrucciones.size(); i++){
-                    tree.instrucciones.get(i).execute(table, tree);
+                    Object res = tree.instrucciones.get(i).execute(table, tree);
+                    //ERROR
+                    if(res instanceof Excepcion er){
+                        tree.consola.add(er.toString());
+                    }
                     nodoRaiz.agregarHijo(tree.instrucciones.get(i).getAST());
                 }
-
 
 
                 for(int i = 0; i < tree.consola.size(); i++){
@@ -75,7 +79,7 @@ public class Principal extends JFrame{
                 }
 
                 textArea2.setText(Globales.salida);
-                Globales.graphAST(nodoRaiz);
+                //Globales.graphAST(nodoRaiz);
 
 
                 /*List<String> ruleNames = Arrays.asList(sintactico.getRuleNames());

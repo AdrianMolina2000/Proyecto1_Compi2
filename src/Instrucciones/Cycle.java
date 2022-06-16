@@ -21,9 +21,11 @@ public class Cycle extends Nodo {
     @Override
     public NodoAST getAST() {
         NodoAST nodo = new NodoAST("CYCLE");
+
         if(!id.equalsIgnoreCase("!")){
             nodo.agregarHijo(new NodoAST(id));
         }
+
         return nodo;
     }
 }

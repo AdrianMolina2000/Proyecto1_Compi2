@@ -37,7 +37,6 @@ public class llamarFunc extends Nodo {
             String err = "La Funcion {"+this.id+"} no ha sido encontrada \n";
             Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
             return error;
         }
 
@@ -50,7 +49,6 @@ public class llamarFunc extends Nodo {
             String err = "Los parametros de entrada y parametros declarados no son los mismos \n";
             Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
             tree.excepciones.add(error);
-            tree.consola.add(error.toString());
             return error;
         }
 
@@ -64,7 +62,6 @@ public class llamarFunc extends Nodo {
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +ide.tipo + "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
                         tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
                         return error;
                     }
                     dec.valor = new Primitivo(ide.tipo, ide.execute(table, tree), dec.line, dec.column);
@@ -78,7 +75,6 @@ public class llamarFunc extends Nodo {
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +this.parametrosEnt.get(i).tipo+ "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
                         tree.excepciones.add(error);
-                        tree.consola.add(error.toString());
                         return error;
                     }
                     dec.valor = this.parametrosEnt.get(i);
@@ -99,14 +95,12 @@ public class llamarFunc extends Nodo {
                             String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo + "] \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
-                            tree.consola.add(error.toString());
                             return error;
                         }
                         if((int)dim1 != ((ArrayList<Nodo>)result).size()){
                             String err = "El arreglo {" +decArray.id+ "} no puede ser declarado debido a que son de diferentes dimensiones \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
-                            tree.consola.add(error.toString());
                             return error;
                         }
 
@@ -124,7 +118,6 @@ public class llamarFunc extends Nodo {
                             String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo + "] \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
-                            tree.consola.add(error.toString());
                             return error;
                         }
 
@@ -135,7 +128,6 @@ public class llamarFunc extends Nodo {
                             String err = "El arreglo {" +decArray.id+ "} no puede ser declarado debido a que son de diferentes dimensiones \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
-                            tree.consola.add(error.toString());
                             return error;
                         }
 
@@ -161,6 +153,11 @@ public class llamarFunc extends Nodo {
 
         for (int i = 0; i < instrucciones.size(); i++) {
             Object res = instrucciones.get(i).execute(newtable, tree);
+            //ERROR
+            if(res instanceof Excepcion e){
+                tree.consola.add(e.toString());
+            }
+
             instrEjec.add(instrucciones.get(i).getAST());
         }
 
