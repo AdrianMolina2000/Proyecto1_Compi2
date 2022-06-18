@@ -87,6 +87,7 @@ public class DeclaracionArray extends Nodo {
 
                 //Agrego la variable a la tabla de simbolos
                 table.setVariable(simbolo);
+                tree.Variables.add(simbolo);
 
                 //Termino la ejecucion
                 return null;

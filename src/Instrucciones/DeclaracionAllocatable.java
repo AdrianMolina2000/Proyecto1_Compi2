@@ -49,6 +49,7 @@ public class DeclaracionAllocatable extends Nodo {
         //Verifico si existe en la tabla de simbolos
         if(table.getVariable(this.id) == null){
             table.setVariable(simbolo);
+            tree.Variables.add(simbolo);
 
             nodoMain = new NodoAST("ALLOCATABLE");
             nodoMain.agregarHijo(new NodoAST(this.tipo.toString()));

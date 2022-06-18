@@ -7,8 +7,8 @@ public class Simbolo {
     public Tipo tipo2;
     public String id;
     public Object valor;
-    int line;
-    int column;
+    public int line;
+    public int column;
     Table ambito;
 
     public Simbolo(Tipo tipo, Tipo tipo2, String id, Object valor, int line, int column, Table ambito){

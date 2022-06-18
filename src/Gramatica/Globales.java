@@ -4,6 +4,7 @@ import Abstract.NodoAST;
 import Expresiones.Primitivo;
 import Other.Tipo;
 import Symbols.Tree;
+import org.antlr.v4.gui.TreeViewer;
 
 import java.io.*;
 
@@ -11,6 +12,9 @@ public class Globales {
 
     public static String entrada = "";
     public static String salida = "";
+    public static Tree tree;
+    public static NodoAST nodoRaiz;
+    public static TreeViewer treeViewer;
 
     public static Primitivo defal(Tipo.Tipos tipo, int line, int column) {
         if (tipo == Tipo.Tipos.INTEGER) {

@@ -65,6 +65,7 @@ public class Declaracion extends Nodo {
 
         if(table.getVariable(this.id) == null){
             table.setVariable(simbolo);
+            tree.Variables.add(simbolo);
 
             //Creacion de nodoMain AST
             nodoMain = new NodoAST("DECLARACION");

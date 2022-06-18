@@ -28,25 +28,31 @@ public class Tipo {
     @Override
     public String toString() {
         if (this.tipo == Tipos.INTEGER) {
-            return "entero";
+            return "Entero";
         } else if (this.tipo == Tipos.REAL) {
-            return "real";
+            return "Real";
         } else if (this.tipo == Tipos.COMPLEX) {
-            return "complex";
+            return "Complex";
         } else if (this.tipo == Tipos.CHARACTER) {
-            return "caracter";
+            return "Caracter";
         } else if (this.tipo == Tipos.LOGICAL) {
-            return "logico";
+            return "Logico";
         }else if (this.tipo == Tipos.ARREGLO) {
-            return "arreglo";
+            return "Arreglo";
+        }else if (this.tipo == Tipos.ARREGLO2) {
+            return "Arreglo2D";
+        }else if (this.tipo == Tipos.ALLOCATE) {
+            return "Allocatable";
+        }else if (this.tipo == Tipos.ALLOCATE2) {
+            return "Allocate2";
         }else if (this.tipo == Tipos.VOID) {
-            return "void";
+            return "Void";
         }else if (this.tipo == Tipos.METODO) {
-            return "metodo";
+            return "Metodo";
         }else if (this.tipo == Tipos.FUNCION) {
-            return "funcion";
+            return "Funcion";
         }else if (this.tipo == Tipos.VARIABLE) {
-            return "variable";
+            return "Variable";
         }else if (this.tipo == Tipos.NULL) {
             return "Lista";
         }
