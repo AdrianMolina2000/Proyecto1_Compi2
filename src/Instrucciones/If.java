@@ -140,23 +140,25 @@ public class If extends Nodo {
 
                     //Es una condicion para validar si es un Else If
                     if(res != null){
-                        if((boolean)res){
-                            //Creo el nodoMain para el AST
-                            nodoMain = new NodoAST("ELSE IF");
+                        if(res instanceof Boolean){
+                            if((boolean)res){
+                                //Creo el nodoMain para el AST
+                                nodoMain = new NodoAST("ELSE IF");
 
-                            NodoAST nodoCond = new NodoAST("CONDICION");
-                            nodoCond.agregarHijo(this.condicion.getAST());
-                            nodoMain.agregarHijo(nodoCond);
+                                NodoAST nodoCond = new NodoAST("CONDICION");
+                                nodoCond.agregarHijo(this.condicion.getAST());
+                                nodoMain.agregarHijo(nodoCond);
 
-                            NodoAST nodoElse = new NodoAST("INSTRUCCIONES ELSE IF");
-                            if(this.listaIf.size() != 0){
-                                nodoElse.agregarHijos(listaElseAST);
+                                NodoAST nodoElse = new NodoAST("INSTRUCCIONES ELSE IF");
+                                if(this.listaIf.size() != 0){
+                                    nodoElse.agregarHijos(listaElseAST);
+                                }
+
+                                nodoMain.agregarHijo(nodoElse);
+
+                                //Detengo la ejecucion
+                                return false;
                             }
-
-                            nodoMain.agregarHijo(nodoElse);
-
-                            //Detengo la ejecucion
-                            return false;
                         }
                     }
                 }

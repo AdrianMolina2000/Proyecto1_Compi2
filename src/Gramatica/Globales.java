@@ -3,6 +3,7 @@ package Gramatica;
 import Abstract.NodoAST;
 import Expresiones.Primitivo;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Tree;
 import org.antlr.v4.gui.TreeViewer;
 
@@ -15,6 +16,7 @@ public class Globales {
     public static Tree tree;
     public static NodoAST nodoRaiz;
     public static TreeViewer treeViewer;
+    public static C3D gen;
 
     public static Primitivo defal(Tipo.Tipos tipo, int line, int column) {
         if (tipo == Tipo.Tipos.INTEGER) {

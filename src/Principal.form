@@ -87,6 +87,14 @@
               <text value="Errores"/>
             </properties>
           </component>
+          <component id="2e102" class="javax.swing.JButton" binding="c3DButton" default-binding="true">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="C3D"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <component id="18c94" class="javax.swing.JLabel">

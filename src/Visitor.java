@@ -212,11 +212,12 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
 
     //PRINT
     @Override public Object visitPrint(GramaticaParser.PrintContext ctx) {
+
         ArrayList<Nodo> instrucciones = new ArrayList<>();
-        instrucciones.add((Nodo)visit(ctx.val));
-        for(ParseTree item: ctx.e){
-            instrucciones.add((Nodo)visit(item));
-        }
+        instrucciones.add((Nodo) visit(ctx.val));
+        for (ParseTree item : ctx.e) {
+                instrucciones.add((Nodo) visit(item));
+            }
 
         return new Print(instrucciones, ctx.p.getLine(), ctx.p.getCharPositionInLine());
     }
@@ -486,5 +487,12 @@ public class Visitor extends GramaticaBaseVisitor<Object> {
     }
     @Override public Object visitTipoLogical(GramaticaParser.TipoLogicalContext ctx) {
         return new Tipo(Tipo.Tipos.LOGICAL);
+    }
+
+    @Override
+    protected Object defaultResult() {
+        Excepcion err = new Excepcion("Sintactico", "ERROR DESCONOCIDO, Revise porfa", -1, -1);
+        Primitivo prim = new Primitivo(Tipo.Tipos.NULL, err, -1, -1);
+        return prim;
     }
 }

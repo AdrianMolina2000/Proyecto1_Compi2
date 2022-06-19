@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Gramatica.*;
 import Other.Excepcion;
-import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -37,6 +36,7 @@ public class Principal extends JFrame{
     private JTextArea textArea3;
     private JScrollPane scrollPane1;
     private JScrollPane scrollPane2;
+    private JButton c3DButton;
 
     public static void main(String[] args) {
         JFrame frame = new Principal("Compilador");
@@ -56,6 +56,11 @@ public class Principal extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Globales.tree = new Tree();
+
+                //Para 3D
+                C3D genAux = new C3D();
+                Globales.gen = genAux.getInstance();
+
                 Globales.entrada = textArea1.getText();
                 Globales.salida = "";
 
@@ -127,7 +132,6 @@ public class Principal extends JFrame{
                 Globales.graphAST(Globales.nodoRaiz);
             }
         });
-
         CSTButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,7 +208,6 @@ public class Principal extends JFrame{
                 }
             }
         });
-
         erroresButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -240,6 +243,18 @@ public class Principal extends JFrame{
                     throw new RuntimeException(ex);
                 }
 
+            }
+        });
+        c3DButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(Globales.gen == null){
+                    //Para 3D
+                    C3D genAux = new C3D();
+                    Globales.gen = genAux.getInstance();
+                }
+
+                textArea3.setText(Globales.gen.getCode());
             }
         });
     }
