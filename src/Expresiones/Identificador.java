@@ -2,8 +2,10 @@ package Expresiones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -50,6 +52,36 @@ public class Identificador extends Nodo {
             nodoMain = new NodoAST("ID");
             nodoMain.agregarHijo(this.id);
             nodoMain.agregarHijo(String.valueOf(result));
+
+            //Para el C3D;
+            if(Globales.gen == null){
+                C3D genAux = new C3D();
+                Globales.gen = genAux.getInstance();
+            }
+            Globales.gen.addComment("Empezando Acceder Variable");
+            String temp = Globales.gen.addTemp();
+            String tempPos = String.valueOf(variable.pos);
+
+            Globales.gen.getStack(temp, tempPos);
+            if (variable.tipo.tipo != Tipo.Tipos.LOGICAL) {
+                this.valor3D = temp;
+                this.tmp = true;
+
+                //Devuelvo el valor resultante
+                return result;
+            }
+            if(this.ev == null) {
+                this.ev = Globales.gen.newLabel();
+            }
+            if(this.ef == null){
+                this.ef = Globales.gen.newLabel();
+            }
+
+            Globales.gen.newIF(temp, "==", "1", this.ev);
+            Globales.gen.addGoto(this.ef);
+            this.valor3D = "";
+            this.tmp = false;
+            Globales.gen.addComment("Fin variable");
 
             //Devuelvo el valor resultante
             return result;

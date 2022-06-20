@@ -3,8 +3,10 @@ package Instrucciones;
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Primitivo;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -27,7 +29,6 @@ public class Declaracion extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-
         //ERROR
         if(this.valor == null){
             String err = "La expresion no es valida \n";
@@ -35,7 +36,6 @@ public class Declaracion extends Nodo {
             tree.excepciones.add(error);
             return error;
         }
-
 
         Object result = this.valor.execute(table, tree);
         if (result instanceof Excepcion) {
@@ -58,31 +58,62 @@ public class Declaracion extends Nodo {
             return error;
         }
 
-        Tipo nuevoTipo = new Tipo(this.tipo);
-        Tipo nuevoTipo2 = new Tipo(Tipo.Tipos.VARIABLE);
-
-        Simbolo simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
-
-        if(table.getVariable(this.id) == null){
-            table.setVariable(simbolo);
-            tree.Variables.add(simbolo);
-
-            //Creacion de nodoMain AST
-            nodoMain = new NodoAST("DECLARACION");
-            NodoAST nodoId = new NodoAST("ID");
-            nodoId.agregarHijo(new NodoAST(tipo.toString()));
-            nodoId.agregarHijo(new NodoAST(id));
-            nodoMain.agregarHijo(nodoId);
-            nodoMain.agregarHijo(this.valor.getAST());
-
-            //Termino la ejecucion
-            return null;
-        }else{
+        //Verifico si la variable ya existe
+        if(table.getVariable(this.id) != null){
             String err = "La variable {" + this.id + "} ya ha sido declarada \n";
             Excepcion error = new Excepcion("Semantico", err, line, column);
             tree.excepciones.add(error);
             return error;
         }
+
+        //Creo la variable
+        Tipo nuevoTipo = new Tipo(this.tipo);
+        Tipo nuevoTipo2 = new Tipo(Tipo.Tipos.VARIABLE);
+
+        Simbolo simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
+
+
+        //Para 3D
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        Globales.gen.addComment("Empezando Declarar Variable");
+
+        simbolo.pos = table.size;
+        simbolo.heap = false;
+        int pos = simbolo.pos;
+
+        if(this.valor.tipo == Tipo.Tipos.LOGICAL){
+            String ev = Globales.gen.newLabel();
+            Globales.gen.addLabel(this.valor.ev);
+            Globales.gen.setStack(String.valueOf(pos), "1");
+            Globales.gen.addGoto(ev);
+            Globales.gen.addLabel(this.valor.ef);
+            Globales.gen.setStack(String.valueOf(pos), "0");
+            Globales.gen.addLabel(ev);
+        }else{
+            Globales.gen.setStack(String.valueOf(pos), this.valor.valor3D);
+        }
+
+        Globales.gen.addComment("Fin declaracion varible");
+
+
+
+
+        table.setVariable(simbolo);
+        tree.Variables.add(simbolo);
+
+        //Creacion de nodoMain AST
+        nodoMain = new NodoAST("DECLARACION");
+        NodoAST nodoId = new NodoAST("ID");
+        nodoId.agregarHijo(new NodoAST(tipo.toString()));
+        nodoId.agregarHijo(new NodoAST(id));
+        nodoMain.agregarHijo(nodoId);
+        nodoMain.agregarHijo(this.valor.getAST());
+
+        //Termino la ejecucion
+        return null;
     }
 
     @Override

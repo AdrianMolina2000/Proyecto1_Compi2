@@ -88,16 +88,73 @@ public class Print extends Nodo {
                     }
 
                     tree.consola.add(salida);
+
+                    //PARA C3D
+                    if(this.expresion.get(i).valor3D != null){
+                        Nodo prim = this.expresion.get(i);
+                        if(Globales.gen == null){
+                            C3D genAux = new C3D();
+                            Globales.gen = genAux.getInstance();
+                        }
+
+                        if(prim.tipo == Tipo.Tipos.INTEGER){
+                            Globales.gen.addComment("Imprimiendo un Integer");
+                            Globales.gen.addPrint("d", String.valueOf(prim.valor3D));
+                            Globales.gen.addPrint("c",  String.valueOf(10));
+                            Globales.gen.addComment("Imprimiendo un Integer");
+                        }
+
+                        else if(prim.tipo == Tipo.Tipos.REAL){
+                            Globales.gen.addComment("Imprimiendo un Real");
+                            Globales.gen.printFloat("f", String.valueOf(prim.valor3D));
+                            Globales.gen.addPrint("c",  String.valueOf(10));
+                            Globales.gen.addComment("Imprimiendo un Real");
+                        }
+
+                        else if(prim.tipo == Tipo.Tipos.CHARACTER){
+                            Globales.gen.addComment("Imprimiendo un Character");
+                            Globales.gen.addPrint("c", prim.valor3D);
+                            Globales.gen.addPrint("c",  String.valueOf(10));
+                            Globales.gen.addComment("Imprimiendo un Character");
+                        }
+
+                        else if(prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX){
+                            Globales.gen.addComment("Imprimiendo Cadena");
+                            Globales.gen.printString();
+                            String tmp = Globales.gen.addTemp();
+                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(table.size));
+                            Globales.gen.addExp(tmp, tmp, "+", "1");
+                            Globales.gen.setStack(tmp, prim.valor3D);
+                            Globales.gen.newTable(String.valueOf(table.size));
+                            Globales.gen.callFun("printString");
+                            Globales.gen.getStack(Globales.gen.addTemp(), "P");
+                            Globales.gen.getTable(String.valueOf(table.size));
+                            Globales.gen.addPrint("c",  String.valueOf(10));
+                            Globales.gen.addComment("Imprimiendo Cadena");
+                        }
+
+                        else if(prim.tipo == Tipo.Tipos.LOGICAL){
+                            Globales.gen.addComment("Imprimiendo un Logical");
+                            String tempLbl = Globales.gen.newLabel();
+                            Globales.gen.addLabel(prim.ev);
+                            Globales.gen.printTrue();
+                            Globales.gen.addGoto(tempLbl);
+                            Globales.gen.addLabel(prim.ef);
+                            Globales.gen.printFalse();
+                            Globales.gen.addLabel(tempLbl);
+                            Globales.gen.addPrint("c",  String.valueOf(10));
+                            Globales.gen.addComment("Imprimiendo un Logical");
+                        }
+                    }
                 }
             }else {
                 Object val = this.expresion.get(i).execute(table, tree);
+
                 if(val instanceof Excepcion){
                     return val;
                 }
 
                 String salida = String.valueOf(val);
-                salida = salida.replace("\"", "");
-                salida = salida.replace("'", "");
 
                 if (salida.equalsIgnoreCase("true")) {
                     salida = "T";
@@ -111,62 +168,41 @@ public class Print extends Nodo {
                 nodoIns.add(this.expresion.get(i).getAST());
 
                 //PARA C3D
-                if(this.expresion.get(i) instanceof Primitivo prim){
+                if(this.expresion.get(i).valor3D != null){
+                    Nodo prim = this.expresion.get(i);
                     if(Globales.gen == null){
-                        //Para 3D
                         C3D genAux = new C3D();
                         Globales.gen = genAux.getInstance();
                     }
 
                     if(prim.tipo == Tipo.Tipos.INTEGER){
                         Globales.gen.addComment("Imprimiendo un Integer");
-                        Globales.gen.addPrint("d", String.valueOf(val));
+                        Globales.gen.addPrint("d", prim.valor3D);
                         Globales.gen.addPrint("c",  String.valueOf(10));
                         Globales.gen.addComment("Imprimiendo un Integer");
                     }
 
                     else if(prim.tipo == Tipo.Tipos.REAL){
                         Globales.gen.addComment("Imprimiendo un Real");
-                        Globales.gen.printFloat("f", String.valueOf(val));
+                        Globales.gen.printFloat("f", prim.valor3D);
                         Globales.gen.addPrint("c",  String.valueOf(10));
                         Globales.gen.addComment("Imprimiendo un Real");
                     }
 
                     else if(prim.tipo == Tipo.Tipos.CHARACTER){
                         Globales.gen.addComment("Imprimiendo un Character");
-                        if(salida.length() == 1){
-                            char character = salida.charAt(0);
-                            int ascii = character;
-                            Globales.gen.addPrint("c",  String.valueOf(ascii));
-                        }
+                        Globales.gen.addPrint("c", prim.valor3D);
                         Globales.gen.addPrint("c",  String.valueOf(10));
                         Globales.gen.addComment("Imprimiendo un Character");
                     }
 
                     else if(prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX){
-                        Globales.gen.addComment("Guardando cadena en el heap");
-                        String temp = Globales.gen.addTemp();
-                        Globales.gen.addExp(temp, "H", "", "");
-
-                        for(int c = 0; c < salida.length(); c++){
-                            char character = salida.charAt(c);
-                            int ascii = character;
-
-                            Globales.gen.setHeap("H", String.valueOf(ascii)); //heap[H] = NUM;
-                            Globales.gen.nextHeap(); //H = H + 1;
-                        }
-
-                        Globales.gen.setHeap("H", "-1");
-                        Globales.gen.nextHeap();
-                        Globales.gen.addComment("Fin cadena en el heap");
-
-                        //Imprimiendola
                         Globales.gen.addComment("Imprimiendo Cadena");
                         Globales.gen.printString();
                         String tmp = Globales.gen.addTemp();
                         Globales.gen.addExp(tmp, "P", "+", String.valueOf(table.size));
                         Globales.gen.addExp(tmp, tmp, "+", "1");
-                        Globales.gen.setStack(tmp, temp);
+                        Globales.gen.setStack(tmp, prim.valor3D);
                         Globales.gen.newTable(String.valueOf(table.size));
                         Globales.gen.callFun("printString");
                         Globales.gen.getStack(Globales.gen.addTemp(), "P");
@@ -176,15 +212,16 @@ public class Print extends Nodo {
                     }
 
                     else if(prim.tipo == Tipo.Tipos.LOGICAL){
-                        Globales.gen.addComment("Imprimiendo un Integer");
-                        if(salida.equalsIgnoreCase("T")){
-                            Globales.gen.addPrint("d", String.valueOf(1));
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }else{
-                            Globales.gen.addPrint("d", String.valueOf(0));
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }
-                        Globales.gen.addComment("Imprimiendo un Integer");
+                        Globales.gen.addComment("Imprimiendo un Logical");
+                        String tempLbl = Globales.gen.newLabel();
+                        Globales.gen.addLabel(prim.ev);
+                        Globales.gen.printTrue();
+                        Globales.gen.addGoto(tempLbl);
+                        Globales.gen.addLabel(prim.ef);
+                        Globales.gen.printFalse();
+                        Globales.gen.addLabel(tempLbl);
+                        Globales.gen.addPrint("c",  String.valueOf(10));
+                        Globales.gen.addComment("Imprimiendo un Logical");
                     }
                 }
             }

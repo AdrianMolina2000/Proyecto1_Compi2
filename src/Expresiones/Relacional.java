@@ -2,8 +2,10 @@ package Expresiones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Table;
 import Symbols.Tree;
 
@@ -27,6 +29,14 @@ public class Relacional extends Nodo {
     @Override
     public Object execute(Table table, Tree tree) {
 
+        //Para 3D
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        Globales.gen.addComment("Empezando Relacional");
+
+        //Verifico que ambos operadores existan
         if(this.operadorIzq == null){
             String err = "No existe el operador izquierdo";
             Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -66,7 +76,110 @@ public class Relacional extends Nodo {
                 nodoDer = this.operadorDer.getAST();
 
                 //Retorno la igualacion de los valores
-                return resultadoIzq == resultadoDerecho;
+                if(this.operadorIzq.tipo == Tipo.Tipos.STRING){
+
+                    //Termina la ejecucion
+                    return String.valueOf(resultadoIzq).equalsIgnoreCase(String.valueOf(resultadoDerecho));
+
+                }else if(this.operadorIzq.tipo == Tipo.Tipos.CHARACTER) {
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "==", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return String.valueOf(resultadoIzq).equalsIgnoreCase(String.valueOf(resultadoDerecho));
+                }else if(this.operadorIzq.tipo == Tipo.Tipos.INTEGER || this.operadorIzq.tipo == Tipo.Tipos.REAL){
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "==", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return resultadoIzq.equals(resultadoDerecho);
+                }else if(this.operadorIzq.tipo == Tipo.Tipos.LOGICAL){
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    String gote = Globales.gen.newLabel();
+                    String tmp1 = Globales.gen.addTemp();
+
+                    Globales.gen.addLabel(operadorIzq.ev);
+                    Globales.gen.addExp(tmp1, "1", "", "");
+                    Globales.gen.addGoto(gote);
+
+                    Globales.gen.addLabel(operadorIzq.ef);
+                    Globales.gen.addExp(tmp1, "0", "", "");
+
+                    Globales.gen.addLabel(gote);
+
+                    //Verificando el false derecho
+                    String salida = Globales.gen.newLabel();
+                    String temp2 = Globales.gen.addTemp();
+
+                    if((boolean)resultadoDerecho){
+                        Globales.gen.addLabel(operadorDer.ev);
+
+                        Globales.gen.addExp(temp2, "1", "", "");
+                        Globales.gen.addGoto(salida);
+
+                        Globales.gen.addLabel(operadorDer.ef);
+                        Globales.gen.addExp(temp2, "0", "", "");
+
+                        Globales.gen.addLabel(salida);
+                    }else{
+                        Globales.gen.addLabel(operadorDer.ev);
+
+                        Globales.gen.addExp(temp2, "0", "", "");
+                        Globales.gen.addGoto(salida);
+
+                        Globales.gen.addLabel(operadorDer.ef);
+                        Globales.gen.addExp(temp2, "1", "", "");
+
+                        Globales.gen.addLabel(salida);
+                    }
+
+                    Globales.gen.newIF(tmp1, "==", temp2, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return resultadoIzq == resultadoDerecho;
+                }else{
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return resultadoIzq == resultadoDerecho;
+                }
             }
 
             //TIPOS DIFERENTES = ERROR
@@ -91,8 +204,111 @@ public class Relacional extends Nodo {
                 nodoIzq = this.operadorIzq.getAST();
                 nodoDer = this.operadorDer.getAST();
 
-                //Retorno el resultado de los valores
-                return resultadoIzq != resultadoDerecho;
+                //Retorno la Des igualacion de los valores
+                if(this.operadorIzq.tipo == Tipo.Tipos.STRING){
+
+                    //Termina la ejecucion
+                    return !String.valueOf(resultadoIzq).equalsIgnoreCase(String.valueOf(resultadoDerecho));
+
+                }else if(this.operadorIzq.tipo == Tipo.Tipos.CHARACTER) {
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "!=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return !String.valueOf(resultadoIzq).equalsIgnoreCase(String.valueOf(resultadoDerecho));
+                }else if(this.operadorIzq.tipo == Tipo.Tipos.INTEGER || this.operadorIzq.tipo == Tipo.Tipos.REAL){
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "!=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return !resultadoIzq.equals(resultadoDerecho);
+                }else if(this.operadorIzq.tipo == Tipo.Tipos.LOGICAL){
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    String gote = Globales.gen.newLabel();
+                    String tmp1 = Globales.gen.addTemp();
+
+                    Globales.gen.addLabel(operadorIzq.ev);
+                    Globales.gen.addExp(tmp1, "1", "", "");
+                    Globales.gen.addGoto(gote);
+
+                    Globales.gen.addLabel(operadorIzq.ef);
+                    Globales.gen.addExp(tmp1, "0", "", "");
+
+                    Globales.gen.addLabel(gote);
+
+                    //Verificando el false derecho
+                    String salida = Globales.gen.newLabel();
+                    String temp2 = Globales.gen.addTemp();
+
+                    if((boolean)resultadoDerecho){
+                        Globales.gen.addLabel(operadorDer.ev);
+
+                        Globales.gen.addExp(temp2, "1", "", "");
+                        Globales.gen.addGoto(salida);
+
+                        Globales.gen.addLabel(operadorDer.ef);
+                        Globales.gen.addExp(temp2, "0", "", "");
+
+                        Globales.gen.addLabel(salida);
+                    }else{
+                        Globales.gen.addLabel(operadorDer.ev);
+
+                        Globales.gen.addExp(temp2, "0", "", "");
+                        Globales.gen.addGoto(salida);
+
+                        Globales.gen.addLabel(operadorDer.ef);
+                        Globales.gen.addExp(temp2, "1", "", "");
+
+                        Globales.gen.addLabel(salida);
+                    }
+
+                    Globales.gen.newIF(tmp1, "!=", temp2, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return resultadoIzq != resultadoDerecho;
+                }else{
+                    Globales.gen.addComment("Terminando Relacional");
+
+                    //Termino ejecucion
+                    return resultadoIzq != resultadoDerecho;
+                }
             }
 
             //TIPOS DIFERENTES = ERROR
@@ -122,6 +338,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq > (int)resultadoDerecho;
                 }
@@ -135,6 +366,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST(">");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq > (double)resultadoDerecho;
@@ -162,6 +408,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq > (int)resultadoDerecho;
                 }
@@ -175,6 +436,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST(">");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq > (double)resultadoDerecho;
@@ -215,6 +491,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq >= (int)resultadoDerecho;
                 }
@@ -228,6 +519,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST(">=");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq >= (double)resultadoDerecho;
@@ -255,6 +561,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq >= (int)resultadoDerecho;
                 }
@@ -268,6 +589,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST(">=");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, ">=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq >= (double)resultadoDerecho;
@@ -308,6 +644,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq < (int)resultadoDerecho;
                 }
@@ -321,6 +672,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST("<");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq < (double)resultadoDerecho;
@@ -348,6 +714,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq < (int)resultadoDerecho;
                 }
@@ -361,6 +742,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST("<");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq < (double)resultadoDerecho;
@@ -401,6 +797,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq <= (int)resultadoDerecho;
                 }
@@ -414,6 +825,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST("<=");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq <= (double)resultadoDerecho;
@@ -441,6 +867,21 @@ public class Relacional extends Nodo {
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
 
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
+
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq <= (int)resultadoDerecho;
                 }
@@ -454,6 +895,21 @@ public class Relacional extends Nodo {
                     nodoOp = new NodoAST("<=");
                     nodoIzq = this.operadorIzq.getAST();
                     nodoDer = this.operadorDer.getAST();
+
+                    //Para C3D
+                    if(this.ev == null){
+                        this.ev = Globales.gen.newLabel();
+                    }
+                    if(this.ef == null){
+                        this.ef = Globales.gen.newLabel();
+                    }
+
+                    Globales.gen.newIF(this.operadorIzq.valor3D, "<=", this.operadorDer.valor3D, this.ev);
+                    Globales.gen.addGoto(this.ef);
+
+                    this.valor3D = "";
+                    this.tmp = false;
+                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq <= (double)resultadoDerecho;

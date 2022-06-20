@@ -2,8 +2,10 @@ package Expresiones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Table;
 import Symbols.Tree;
 
@@ -34,69 +36,131 @@ public class Logica extends Nodo {
             return error;
         }
 
+        //Para 3D
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        Globales.gen.addComment("Empezando Logica");
+
+        //Verifico si existen las etiquetas de verdadero y falso
+        if(this.ev == null){
+            this.ev = Globales.gen.newLabel();
+        }
+        if(this.ef == null){
+            this.ef = Globales.gen.newLabel();
+        }
+
         if (this.operadorIzq != null) {
-            Object resultadoIzq = this.operadorIzq.execute(table, tree);
-            if (resultadoIzq instanceof Excepcion) {
-                return resultadoIzq;
-            }
-
-            Object resultadoDerecho = this.operadorDer.execute(table, tree);
-            if (resultadoDerecho instanceof Excepcion) {
-                return resultadoDerecho;
-            }
-
             //AND
             if (this.operador.equalsIgnoreCase(".and.")) {
                 String err = "No se pueden operar logicamente los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
 
-                //LOGICAL AND LOGICAL
-                if(this.operadorIzq.tipo == Tipo.Tipos.LOGICAL && this.operadorDer.tipo == Tipo.Tipos.LOGICAL) {
-                    //Le coloco tipo a esta clase
-                    this.tipo = Tipo.Tipos.LOGICAL;
+                //Para C3D
+                String lbl = Globales.gen.newLabel();
+                operadorIzq.ev = lbl;
+                operadorDer.ev = this.ev;
+                operadorIzq.ef = this.ef;
+                operadorDer.ef = this.ef;
 
-                    //Creo los nodos que usare en el AST
-                    nodoOp = new NodoAST(".and.");
-                    nodoIzq = this.operadorIzq.getAST();
-                    nodoDer = this.operadorDer.getAST();
-
-                    //Retorno el valor resultante
-                    return (boolean)resultadoIzq && (boolean)resultadoDerecho;
+                Object resultadoIzq = this.operadorIzq.execute(table, tree);
+                if (resultadoIzq instanceof Excepcion) {
+                    return resultadoIzq;
                 }
 
-                //OTHER AND OTHER = ERROR
-                else {
+                //ERROR
+                if(this.operadorIzq.tipo != Tipo.Tipos.LOGICAL) {
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
-                    //tree.consola.add(error.toString());
                     return error;
                 }
-            }
 
-            //OR
-            else if (this.operador.equalsIgnoreCase(".or.")) {
+                Globales.gen.addLabel(lbl);
+
+                Object resultadoDerecho = this.operadorDer.execute(table, tree);
+                if (resultadoDerecho instanceof Excepcion) {
+                    return resultadoDerecho;
+                }
+
+                //ERROR
+                if(this.operadorDer.tipo != Tipo.Tipos.LOGICAL) {
+                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                    tree.excepciones.add(error);
+                    return error;
+                }
+
+                this.valor3D = "";
+                this.tmp = false;
+
+                Globales.gen.addComment("Terminando Logica");
+
+
+                //Le coloco tipo a esta clase
+                this.tipo = Tipo.Tipos.LOGICAL;
+
+                //Creo los nodos que usare en el AST
+                nodoOp = new NodoAST(".and.");
+                nodoIzq = this.operadorIzq.getAST();
+                nodoDer = this.operadorDer.getAST();
+
+                //Retorno el valor resultante
+                return (boolean)resultadoIzq && (boolean)resultadoDerecho;
+
+
+            } else if (this.operador.equalsIgnoreCase(".or.")) {
                 String err = "No se pueden operar logicamente los tipos [" + this.operadorIzq.tipo + "] y [" + this.operadorDer.tipo + "] \n";
 
-                //LOGICAL OR LOGICAL
-                if(this.operadorIzq.tipo == Tipo.Tipos.LOGICAL && this.operadorDer.tipo == Tipo.Tipos.LOGICAL) {
-                    //Le coloco tipo a esta clase
-                    this.tipo = Tipo.Tipos.LOGICAL;
+                //Para C3D
+                operadorIzq.ev = this.ev;
+                operadorDer.ev = this.ev;
 
-                    //Creo los nodos que usare en el AST
-                    nodoOp = new NodoAST(".or.");
-                    nodoIzq = this.operadorIzq.getAST();
-                    nodoDer = this.operadorDer.getAST();
+                String lbl = Globales.gen.newLabel();
+                operadorIzq.ef = lbl;
 
-                    //Retorno el valor resultante
-                    return (boolean)resultadoIzq || (boolean)resultadoDerecho;
+                operadorDer.ef = this.ef;
+
+                Object resultadoIzq = this.operadorIzq.execute(table, tree);
+                if (resultadoIzq instanceof Excepcion) {
+                    return resultadoIzq;
                 }
 
-                //OTHER OR OTHER = ERROR
-                else {
+                //ERROR
+                if(this.operadorIzq.tipo != Tipo.Tipos.LOGICAL) {
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
-                    //tree.consola.add(error.toString());
                     return error;
                 }
+
+                Globales.gen.addLabel(lbl);
+
+                Object resultadoDerecho = this.operadorDer.execute(table, tree);
+                if (resultadoDerecho instanceof Excepcion) {
+                    return resultadoDerecho;
+                }
+
+                //ERROR
+                if(this.operadorDer.tipo != Tipo.Tipos.LOGICAL) {
+                    Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
+                    tree.excepciones.add(error);
+                    return error;
+                }
+
+                this.valor3D = "";
+                this.tmp = false;
+
+                Globales.gen.addComment("Terminando Logica");
+
+
+                //Le coloco tipo a esta clase
+                this.tipo = Tipo.Tipos.LOGICAL;
+
+                //Creo los nodos que usare en el AST
+                nodoOp = new NodoAST(".or.");
+                nodoIzq = this.operadorIzq.getAST();
+                nodoDer = this.operadorDer.getAST();
+
+                //Retorno el valor resultante
+                return (boolean)resultadoIzq || (boolean)resultadoDerecho;
             }
 
             //OPERADOR DESCONOCIDO
@@ -104,44 +168,54 @@ public class Logica extends Nodo {
                 String err = "Error, Operador desconocido ["+this.operador+"] \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                 tree.excepciones.add(error);
-                //tree.consola.add(error.toString());
                 return error;
             }
         }
 
         //OPERADOR UNARIO
         else {
-            Object resultadoDerecho = this.operadorDer.execute(table, tree);
-            if (resultadoDerecho instanceof Excepcion) {
-                return resultadoDerecho;
-            }
-
             //NOT
             if (this.operador.equalsIgnoreCase(".not.")) {
-                if (this.operadorDer.tipo == Tipo.Tipos.LOGICAL) {
-                    //Le coloco tipo a la clase
-                    this.tipo = Tipo.Tipos.LOGICAL;
+                //Para C3D
+                String lbl = Globales.gen.newLabel();
 
-                    //Creo los nodos que usare en el AST
-                    nodoOp = new NodoAST(".not.");
-                    nodoDer = this.operadorDer.getAST();
+                operadorDer.ev = this.ef;
+                operadorDer.ef = this.ev;
 
-                    //Retorno el valor negativo
-                    return !(boolean)resultadoDerecho;
-                }else {
-                    String err = "No se puede aplicar not al tipo " + this.operadorDer.tipo + "\n";
+                Object resultadoDerecho = this.operadorDer.execute(table, tree);
+                if (resultadoDerecho instanceof Excepcion) {
+                    return resultadoDerecho;
+                }
+
+                //ERROR
+                if(this.operadorDer.tipo != Tipo.Tipos.LOGICAL) {
+                    String err = "No se puede operar porque no es del tipo logical";
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
-                    //tree.consola.add(error.toString());
                     return error;
                 }
+
+                this.valor3D = "";
+                this.tmp = false;
+
+                Globales.gen.addComment("Terminando Logica");
+
+
+                //Le coloco tipo a la clase
+                this.tipo = Tipo.Tipos.LOGICAL;
+
+                //Creo los nodos que usare en el AST
+                nodoOp = new NodoAST(".not.");
+                nodoDer = this.operadorDer.getAST();
+
+                //Retorno el valor negativo
+                return !(boolean)resultadoDerecho;
             }
 
             //ERROR
             else {
                 Excepcion error = new Excepcion("Semantico", "Operador desconocido \n", this.line, this.column);
                 tree.excepciones.add(error);
-                //tree.consola.add(error.toString());
                 return error;
             }
         }

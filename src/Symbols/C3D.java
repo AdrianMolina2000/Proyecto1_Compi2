@@ -93,7 +93,7 @@ public class C3D {
         ret += funcs + "\n";
         ret += "void main() { \n";
         ret += code += "\n";
-        ret += "}";
+        ret += "return;\n}";
         return ret;
     }
 
@@ -285,6 +285,77 @@ public class C3D {
         addExp(tmpH, tmpH, "+", "1");
         addGoto(comprobar);
         addLabel(salida);
+        endFun();
+        inNatives = false;
+    }
+
+    public void potencia(){
+        if(Bpotencia) {
+            return;
+        }
+        Bpotencia = true;
+        inNatives = true;
+
+        initFun("potencia");
+
+        String tmpH = addTemp();
+        String tmpP = addTemp();
+
+        addExp(tmpH, "H", "", "");
+        addExp(tmpP, "P", "+", "1");
+
+        String tmp = addTemp();
+        getStack(tmp, tmpP);
+
+        String base = tmp;
+
+        tmpP = addTemp();
+        addExp(tmpP, "P", "+", "2");
+        tmp = addTemp();
+        getStack(tmp, tmpP);
+        String exponente = tmp;
+
+        String exp0 = newLabel();
+        String exp1 = newLabel();
+        String retornando = newLabel();
+        String condicional = newLabel();
+        String salida = newLabel();
+        String continuando = newLabel();
+
+        newIF(exponente, "==", "0", exp0);
+        addGoto(exp1);
+        addLabel(exp0);
+        setStack("P", "1");
+        addGoto(retornando);
+        addLabel(exp1);
+
+        String contador = addTemp();
+        addExp(contador, "1", "", "");
+        String elevado = addTemp();
+        addExp(elevado, "1", "", "");
+
+        addLabel(continuando);
+        newIF(contador, "<=", exponente, condicional);
+        addGoto(salida);
+        addLabel(condicional);
+
+        String tmp2 = addTemp();
+        addExp(tmp2, elevado, "*", base);
+        addExp(elevado, tmp2, "", "");
+        setStack(tmpP, tmp2);
+
+        addExp(contador, contador, "+", "1");
+
+        addGoto(continuando);
+        addLabel(salida);
+
+        tmp = addTemp();
+        getStack(tmp, tmpP) ;
+        setStack("P", tmp);
+
+        addGoto(retornando);
+        addLabel(retornando);
+
         endFun();
         inNatives = false;
     }
