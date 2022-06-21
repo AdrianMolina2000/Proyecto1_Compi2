@@ -34,7 +34,7 @@ public class Aritmetica extends Nodo {
             Globales.gen = genAux.getInstance();
         }
 
-        Globales.gen.addComment("Empezando aritmetica");
+        Globales.gen.addComment("Aritmetica");
 
         if(this.operadorDer == null){
             String err = "No existe el operador derecho";
@@ -80,8 +80,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
-
 
                         //Retorno la suma de los valores
                         return (int)resultadoIzq + (int)resultadoDerecho;
@@ -104,7 +102,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la suma de los valores
                         return (int)resultadoIzq + (double)resultadoDerecho;
@@ -139,7 +136,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la suma de los valores
                         return (double)resultadoIzq + (int)resultadoDerecho;
@@ -162,7 +158,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la suma de los valores
                         return (double)resultadoIzq + (double)resultadoDerecho;
@@ -210,7 +205,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la resta de los valores
                         return (int)resultadoIzq - (int)resultadoDerecho;
@@ -233,7 +227,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la resta de los valores
                         return (int)resultadoIzq - (double)resultadoDerecho;
@@ -268,7 +261,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la resta de los valores
                         return (double)resultadoIzq - (int)resultadoDerecho;
@@ -291,7 +283,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la resta de los valores
                         return (double)resultadoIzq - (double)resultadoDerecho;
@@ -339,7 +330,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la multiplicacion de los valores
                         return (int)resultadoIzq * (int)resultadoDerecho;
@@ -362,7 +352,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la multiplicacion de los valores
                         return (int)resultadoIzq * (double)resultadoDerecho;
@@ -397,7 +386,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la multiplicacion de los valores
                         return (double) resultadoIzq * (int)resultadoDerecho;
@@ -420,7 +408,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addExp(temp, left, this.operador, right);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la multiplicacion de los valores
                         return (double)resultadoIzq * (double)resultadoDerecho;
@@ -493,7 +480,6 @@ public class Aritmetica extends Nodo {
                     this.valor3D = temp;
                     this.tmp = true;
                     Globales.gen.addPrint("c", "10");
-                    Globales.gen.addComment("Terminando aritmetica");
 
                     return error;
                 }
@@ -516,7 +502,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addLabel(salida2);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la Division de los valores
                         int x = (int)resultadoIzq/(int)resultadoDerecho;
@@ -538,7 +523,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addLabel(salida2);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la division de los valores
                         double x = (int)resultadoIzq / (double)resultadoDerecho;
@@ -572,7 +556,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addLabel(salida2);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la division de los valores
                         double x = (double)resultadoIzq / (int)resultadoDerecho;
@@ -594,7 +577,6 @@ public class Aritmetica extends Nodo {
                         Globales.gen.addLabel(salida2);
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la division de los valores
                         double x = (double)resultadoIzq / (double)resultadoDerecho;
@@ -659,7 +641,6 @@ public class Aritmetica extends Nodo {
 
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la potencia de los valores
                         int x = (int)Math.pow((int)resultadoIzq,(int)resultadoDerecho);
@@ -699,7 +680,6 @@ public class Aritmetica extends Nodo {
 
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la potencia de los valores
                         double x = Math.pow((int)resultadoIzq,(double)resultadoDerecho);
@@ -751,7 +731,6 @@ public class Aritmetica extends Nodo {
 
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la potencia de los valores
                         double x = Math.pow((double)resultadoIzq,(int)resultadoDerecho);
@@ -791,7 +770,6 @@ public class Aritmetica extends Nodo {
 
                         this.valor3D = temp;
                         this.tmp = true;
-                        Globales.gen.addComment("Terminando aritmetica");
 
                         //Retorno la potencia de los valores
                         double x = Math.pow((double)resultadoIzq,(double)resultadoDerecho);
@@ -851,7 +829,6 @@ public class Aritmetica extends Nodo {
                     Globales.gen.addExp(temp, "0", this.operador, right);
                     this.valor3D = temp;
                     this.tmp = true;
-                    Globales.gen.addComment("Terminando aritmetica");
 
                     //Retorno el valor negativo
                     return -1 * (int)resultadoDerecho;
@@ -872,7 +849,6 @@ public class Aritmetica extends Nodo {
                     Globales.gen.addExp(temp, "0", this.operador, right);
                     this.valor3D = temp;
                     this.tmp = true;
-                    Globales.gen.addComment("Terminando aritmetica");
 
                     //Retorno el valor negativo
                     return -1 * (double)resultadoDerecho;

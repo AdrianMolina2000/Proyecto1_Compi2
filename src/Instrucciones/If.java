@@ -2,8 +2,10 @@ package Instrucciones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Table;
 import Symbols.Tree;
 
@@ -18,6 +20,9 @@ public class If extends Nodo {
     NodoAST nodoMain;
     ArrayList<NodoAST> listaIfAST = new ArrayList<>();
     ArrayList<NodoAST> listaElseAST = new ArrayList<>();
+
+    //Para C3D
+    Table tableElseif;
 
 
     public If(Nodo condicion, ArrayList<Nodo> listaIf, ArrayList<Nodo> listaElse, int line, int column) {
@@ -52,8 +57,25 @@ public class If extends Nodo {
             return error;
         }
 
+        //Para C3D
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        Globales.gen.addComment("Sentencia IF");
+        String salida = Globales.gen.newLabel();
+
+        //Para el C3D
+        Globales.gen.addLabel(condicion.ev);
+
         //Verifico si la condicion de entrada es verdadera
         if((boolean)result) {
+
+            if(this.tableElseif != null){
+                Globales.gen.addExp("P", "P", "+", String.valueOf(tableElseif.size));
+            }else{
+                Globales.gen.addExp("P", "P", "+", String.valueOf(table.size));
+            }
 
             //Ejecuto las instrucciones por si la condicion es verdadera
             for(int i = 0; i<this.listaIf.size(); i++) {
@@ -101,6 +123,16 @@ public class If extends Nodo {
 
             nodoMain.agregarHijo(nodoIf);
 
+            //Para el C3D
+            if(this.tableElseif != null){
+                Globales.gen.addExp("P", "P", "-", String.valueOf(tableElseif.size));
+            }else{
+                Globales.gen.addExp("P", "P", "-", String.valueOf(table.size));
+            }
+            Globales.gen.addGoto(salida);
+            Globales.gen.addLabel(condicion.ef);
+            Globales.gen.addLabel(salida);
+
             //Detengo la ejecucion
             return true;
         }
@@ -108,9 +140,28 @@ public class If extends Nodo {
         //Verifico si la condicion de entrada es falsa
         else {
 
+            //Para C3D
+            Globales.gen.addComment("Sentencia ELSE");
+            Globales.gen.addLabel(condicion.ef);
+            if(this.tableElseif != null){
+                Globales.gen.addExp("P", "P", "+", String.valueOf(tableElseif.size));
+            }else{
+                Globales.gen.addExp("P", "P", "+", String.valueOf(table.size));
+            }
+
+
             //Ejecuto las instrucciones por si la condicion es falsa
             for (int i = 0; i < this.listaElse.size(); i++) {
-                Object res = this.listaElse.get(i).execute(newtable, tree);
+                Object res;
+
+                //Para C3D
+                if(this.listaElse.get(i) instanceof If){
+                    Globales.gen.addComment("Sentencia Else If");
+                    ((If) this.listaElse.get(i)).tableElseif = table;
+                    res = this.listaElse.get(i).execute(newtable, tree);
+                }else{
+                    res = this.listaElse.get(i).execute(newtable, tree);
+                }
 
                 if (res instanceof Excepcion e) {
                     tree.consola.add(e.toString());
@@ -160,6 +211,8 @@ public class If extends Nodo {
                                 return false;
                             }
                         }
+
+
                     }
                 }
             }
@@ -177,6 +230,15 @@ public class If extends Nodo {
             }
 
             nodoMain.agregarHijo(nodoElse);
+
+            //Para el C3D
+            if(this.tableElseif != null){
+                Globales.gen.addExp("P", "P", "-", String.valueOf(tableElseif.size));
+            }else{
+                Globales.gen.addExp("P", "P", "-", String.valueOf(table.size));
+            }
+            Globales.gen.addGoto(salida);
+            Globales.gen.addLabel(salida);
 
             //Detengo la ejecucion
             return false;

@@ -26,7 +26,7 @@ public class Program extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        Table newTable = new Table(table);
+        Table newTable = new Table(null);
 
         //Verifico que el nombre de apertura y cierre sean iguales
         if(abre.equalsIgnoreCase(cierra)){

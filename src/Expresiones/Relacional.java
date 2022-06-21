@@ -34,7 +34,7 @@ public class Relacional extends Nodo {
             C3D genAux = new C3D();
             Globales.gen = genAux.getInstance();
         }
-        Globales.gen.addComment("Empezando Relacional");
+        Globales.gen.addComment("Relacional");
 
         //Verifico que ambos operadores existan
         if(this.operadorIzq == null){
@@ -95,7 +95,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return String.valueOf(resultadoIzq).equalsIgnoreCase(String.valueOf(resultadoDerecho));
@@ -113,7 +112,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return resultadoIzq.equals(resultadoDerecho);
@@ -170,12 +168,10 @@ public class Relacional extends Nodo {
                     this.valor3D = "";
                     this.tmp = false;
 
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return resultadoIzq == resultadoDerecho;
                 }else{
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return resultadoIzq == resultadoDerecho;
@@ -224,7 +220,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return !String.valueOf(resultadoIzq).equalsIgnoreCase(String.valueOf(resultadoDerecho));
@@ -242,7 +237,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return !resultadoIzq.equals(resultadoDerecho);
@@ -299,12 +293,9 @@ public class Relacional extends Nodo {
                     this.valor3D = "";
                     this.tmp = false;
 
-                    Globales.gen.addComment("Terminando Relacional");
-
                     //Termino ejecucion
                     return resultadoIzq != resultadoDerecho;
                 }else{
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Termino ejecucion
                     return resultadoIzq != resultadoDerecho;
@@ -351,7 +342,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq > (int)resultadoDerecho;
@@ -380,7 +370,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq > (double)resultadoDerecho;
@@ -421,7 +410,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq > (int)resultadoDerecho;
@@ -450,7 +438,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq > (double)resultadoDerecho;
@@ -504,7 +491,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq >= (int)resultadoDerecho;
@@ -533,7 +519,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq >= (double)resultadoDerecho;
@@ -574,7 +559,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq >= (int)resultadoDerecho;
@@ -603,7 +587,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq >= (double)resultadoDerecho;
@@ -657,7 +640,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq < (int)resultadoDerecho;
@@ -686,7 +668,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq < (double)resultadoDerecho;
@@ -727,7 +708,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq < (int)resultadoDerecho;
@@ -756,7 +736,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq < (double)resultadoDerecho;
@@ -810,7 +789,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq <= (int)resultadoDerecho;
@@ -839,7 +817,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (int)resultadoIzq <= (double)resultadoDerecho;
@@ -880,7 +857,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq <= (int)resultadoDerecho;
@@ -909,7 +885,6 @@ public class Relacional extends Nodo {
 
                     this.valor3D = "";
                     this.tmp = false;
-                    Globales.gen.addComment("Terminando Relacional");
 
                     //Retorno el resultado de los valores
                     return (double)resultadoIzq <= (double)resultadoDerecho;

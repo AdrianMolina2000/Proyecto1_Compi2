@@ -58,11 +58,19 @@ public class Identificador extends Nodo {
                 C3D genAux = new C3D();
                 Globales.gen = genAux.getInstance();
             }
-            Globales.gen.addComment("Empezando Acceder Variable");
+            Globales.gen.addComment("Acceder Variable");
             String temp = Globales.gen.addTemp();
-            String tempPos = String.valueOf(variable.pos);
+            String pos = Globales.gen.addTemp();
 
-            Globales.gen.getStack(temp, tempPos);
+            if(!variable.isGlobal){
+                Globales.gen.addExp(pos, "P", "+", String.valueOf(variable.pos + 1));
+            }else{
+                Globales.gen.addExp(pos, "", "", String.valueOf(variable.pos));
+            }
+
+
+            Globales.gen.getStack(temp, pos);
+
             if (variable.tipo.tipo != Tipo.Tipos.LOGICAL) {
                 this.valor3D = temp;
                 this.tmp = true;
@@ -81,7 +89,6 @@ public class Identificador extends Nodo {
             Globales.gen.addGoto(this.ef);
             this.valor3D = "";
             this.tmp = false;
-            Globales.gen.addComment("Fin variable");
 
             //Devuelvo el valor resultante
             return result;

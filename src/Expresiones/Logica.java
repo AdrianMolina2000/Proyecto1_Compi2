@@ -41,7 +41,7 @@ public class Logica extends Nodo {
             C3D genAux = new C3D();
             Globales.gen = genAux.getInstance();
         }
-        Globales.gen.addComment("Empezando Logica");
+        Globales.gen.addComment("Logica");
 
         //Verifico si existen las etiquetas de verdadero y falso
         if(this.ev == null){
@@ -91,8 +91,6 @@ public class Logica extends Nodo {
 
                 this.valor3D = "";
                 this.tmp = false;
-
-                Globales.gen.addComment("Terminando Logica");
 
 
                 //Le coloco tipo a esta clase
@@ -148,8 +146,6 @@ public class Logica extends Nodo {
                 this.valor3D = "";
                 this.tmp = false;
 
-                Globales.gen.addComment("Terminando Logica");
-
 
                 //Le coloco tipo a esta clase
                 this.tipo = Tipo.Tipos.LOGICAL;
@@ -197,8 +193,6 @@ public class Logica extends Nodo {
 
                 this.valor3D = "";
                 this.tmp = false;
-
-                Globales.gen.addComment("Terminando Logica");
 
 
                 //Le coloco tipo a la clase

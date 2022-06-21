@@ -92,6 +92,7 @@ public class C3D {
         ret += natives + "\n";
         ret += funcs + "\n";
         ret += "void main() { \n";
+        ret += "    P = 0; H = 0;\n";
         ret += code += "\n";
         ret += "return;\n}";
         return ret;
@@ -243,19 +244,14 @@ public class C3D {
 
     public void printTrue(){
         addComment("Imprimiendo true");
-        addPrint("c", String.valueOf(116));
-        addPrint("c", String.valueOf(114));
-        addPrint("c", String.valueOf(117));
-        addPrint("c", String.valueOf(101));
+        addPrint("d", "1");
+
     }
 
     public void printFalse(){
         addComment("Imprimiendo false");
-        addPrint("c", String.valueOf(102));
-        addPrint("c", String.valueOf(97));
-        addPrint("c", String.valueOf(108));
-        addPrint("c", String.valueOf(115));
-        addPrint("c", String.valueOf(101));
+        addPrint("d", "0");
+
     }
 
     public void printString(){

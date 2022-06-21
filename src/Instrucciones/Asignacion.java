@@ -3,8 +3,10 @@ package Instrucciones;
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Identificador;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -26,23 +28,6 @@ public class Asignacion extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        //ERROR
-        if(this.expresion == null){
-            String err = "La expresion no es valida \n";
-            Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
-            tree.excepciones.add(error);
-            return error;
-        }
-
-        Object result = this.expresion;
-
-        if(this.expresion instanceof Nodo res){
-            result = res.execute(table, tree);
-            if (result instanceof Excepcion e) {
-                return result;
-            }
-        }
-
         //Obtengo la variable a asignar
         Simbolo variable = table.getVariable(this.id);
 
@@ -53,8 +38,24 @@ public class Asignacion extends Nodo {
             return error;
         }
 
-        this.tipo = variable.tipo.tipo;
+        //ERROR
+        if(this.expresion == null){
+            String err = "La expresion no es valida \n";
+            Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
+            tree.excepciones.add(error);
+            return error;
+        }
 
+        Object result = this.expresion;
+        if(this.expresion instanceof Nodo res){
+            result = res.execute(table, tree);
+            if (result instanceof Excepcion e) {
+                return result;
+            }
+        }
+
+
+        this.tipo = variable.tipo.tipo;
         if(this.expresion instanceof Nodo res){
             if (res.tipo != variable.tipo.tipo){
                 String err = "La variable {"+this.id+"} no puede ser asignada debido a que son de diferentes tipos ["+ variable.tipo.tipo + "] y ["+res.tipo+"] \n";
@@ -67,13 +68,8 @@ public class Asignacion extends Nodo {
         //Verifico si la variable es del tipo variable
         if(variable.tipo2.tipo == Tipo.Tipos.VARIABLE){
             if(this.expresion instanceof Nodo rest){
-                Object val = rest.execute(table, tree);
 
-                if (val instanceof Excepcion e) {
-                    return val;
-                }
-
-                if(val instanceof ArrayList<?>){
+                if(result instanceof ArrayList<?>){
                     String err = "No es un valor valido para La variable {"+this.id+"} \n";
                     Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
                     tree.excepciones.add(error);
@@ -81,7 +77,34 @@ public class Asignacion extends Nodo {
                 }
 
                 //Guardo el nuevo valor en la variable
-                variable.valor = val;
+                variable.valor = result;
+
+                //Para 3D
+                if(Globales.gen == null){
+                    C3D genAux = new C3D();
+                    Globales.gen = genAux.getInstance();
+                }
+                Globales.gen.addComment("Asignar Variable");
+
+                String pos = Globales.gen.addTemp();
+
+                if(!variable.isGlobal){
+                    Globales.gen.addExp(pos, "P", "+", String.valueOf(table.size));
+                }else{
+                    Globales.gen.addExp(pos, "", "", String.valueOf(variable.pos));
+                }
+
+                if(rest.tipo == Tipo.Tipos.LOGICAL){
+                    String ev = Globales.gen.newLabel();
+                    Globales.gen.addLabel(rest.ev);
+                    Globales.gen.setStack(String.valueOf(pos), "1");
+                    Globales.gen.addGoto(ev);
+                    Globales.gen.addLabel(rest.ef);
+                    Globales.gen.setStack(String.valueOf(pos), "0");
+                    Globales.gen.addLabel(ev);
+                }else{
+                    Globales.gen.setStack(pos, rest.valor3D);
+                }
 
                 //Creo el nodo AST
                 nodoMain = new NodoAST("ASIGNAR");
@@ -89,7 +112,7 @@ public class Asignacion extends Nodo {
                 nodoMain.agregarHijo(rest.getAST());
 
                 //Termino la ejecucion
-                return val;
+                return result;
             }else{
                 String err = "No es un valor valido para La variable {"+this.id+"} \n";
                 Excepcion error = new Excepcion("Semantico", err, this.line, this.column);

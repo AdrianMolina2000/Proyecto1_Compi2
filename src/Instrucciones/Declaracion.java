@@ -72,17 +72,28 @@ public class Declaracion extends Nodo {
 
         Simbolo simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
 
+        table.setVariable(simbolo);
+        tree.Variables.add(simbolo);
+
+        simbolo = table.getVariable(this.id);
 
         //Para 3D
         if(Globales.gen == null){
             C3D genAux = new C3D();
             Globales.gen = genAux.getInstance();
         }
-        Globales.gen.addComment("Empezando Declarar Variable");
+        Globales.gen.addComment("Declarar Variable");
 
-        simbolo.pos = table.size;
+        simbolo.pos = table.size - 1;
         simbolo.heap = false;
-        int pos = simbolo.pos;
+
+        String pos = Globales.gen.addTemp();
+
+        if(!simbolo.isGlobal){
+            Globales.gen.addExp(pos, "P", "+", String.valueOf(table.size));
+        }else{
+            Globales.gen.addExp(pos, "", "", String.valueOf(simbolo.pos));
+        }
 
         if(this.valor.tipo == Tipo.Tipos.LOGICAL){
             String ev = Globales.gen.newLabel();
@@ -93,16 +104,9 @@ public class Declaracion extends Nodo {
             Globales.gen.setStack(String.valueOf(pos), "0");
             Globales.gen.addLabel(ev);
         }else{
-            Globales.gen.setStack(String.valueOf(pos), this.valor.valor3D);
+            Globales.gen.setStack(pos, this.valor.valor3D);
         }
 
-        Globales.gen.addComment("Fin declaracion varible");
-
-
-
-
-        table.setVariable(simbolo);
-        tree.Variables.add(simbolo);
 
         //Creacion de nodoMain AST
         nodoMain = new NodoAST("DECLARACION");

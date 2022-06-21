@@ -12,6 +12,7 @@ public class Simbolo {
     Table ambito;
     public int pos;
     public boolean heap;
+    public boolean isGlobal = false;
 
 
     public Simbolo(Tipo tipo, Tipo tipo2, String id, Object valor, int line, int column, Table ambito){

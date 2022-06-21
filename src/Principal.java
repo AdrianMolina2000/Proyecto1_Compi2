@@ -117,7 +117,7 @@ public class Principal extends JFrame{
                 }
 
 
-                textArea2.setText(Globales.salida);
+                textArea3.setText(Globales.salida);
 
 
 
@@ -254,7 +254,7 @@ public class Principal extends JFrame{
                     Globales.gen = genAux.getInstance();
                 }
 
-                textArea3.setText(Globales.gen.getCode());
+                textArea2.setText(Globales.gen.getCode());
             }
         });
     }

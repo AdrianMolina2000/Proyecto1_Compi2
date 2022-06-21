@@ -9,10 +9,12 @@ public abstract class Nodo {
     public int column;
     public Tipo.Tipos tipo;
 
+    //Para 3D
     public String valor3D;
     public boolean tmp;
     public String ev;
     public String ef;
+    public boolean realizar = true;
 
 
     public abstract Object execute(Table table, Tree tree);
