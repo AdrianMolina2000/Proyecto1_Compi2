@@ -48,4 +48,9 @@ public class ListaDeclaraciones extends Nodo {
         nodo.agregarHijos(nodoDec);
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
 }

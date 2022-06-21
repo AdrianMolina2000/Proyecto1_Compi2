@@ -75,4 +75,9 @@ public class DeclaracionAllocatable extends Nodo {
 
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
 }

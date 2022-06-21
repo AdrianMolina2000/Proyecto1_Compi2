@@ -294,10 +294,8 @@ public class C3D {
 
         initFun("potencia");
 
-        String tmpH = addTemp();
         String tmpP = addTemp();
 
-        addExp(tmpH, "H", "", "");
         addExp(tmpP, "P", "+", "1");
 
         String tmp = addTemp();

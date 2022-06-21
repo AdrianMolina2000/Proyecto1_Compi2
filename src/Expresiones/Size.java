@@ -88,4 +88,9 @@ public class Size extends Nodo {
         }
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
 }

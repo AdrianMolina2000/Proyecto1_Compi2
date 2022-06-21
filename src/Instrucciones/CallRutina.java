@@ -174,4 +174,9 @@ public class CallRutina extends Nodo {
         nodo.agregarHijo(nodoIns);
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
 }

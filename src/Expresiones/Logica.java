@@ -230,4 +230,9 @@ public class Logica extends Nodo {
         }
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
 }

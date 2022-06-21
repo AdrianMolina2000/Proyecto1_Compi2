@@ -116,12 +116,11 @@ public class Principal extends JFrame{
                     Globales.salida += Globales.tree.consola.get(i);
                 }
 
-
                 textArea3.setText(Globales.salida);
 
-
-
-
+                for(int i = 0; i<Globales.tree.instrucciones.size(); i++){
+                    Globales.tree.instrucciones.get(i).get3D();
+                }
             }
         });
 

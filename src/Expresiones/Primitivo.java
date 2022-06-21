@@ -18,6 +18,33 @@ public class Primitivo extends Nodo {
     }
 
     public Object execute(Table table, Tree tree){
+
+        if (this.tipo == Tipo.Tipos.CHARACTER || this.tipo == Tipo.Tipos.STRING || this.tipo == Tipo.Tipos.COMPLEX){
+            //Elimino las comillas de la entrada
+            String entrada = String.valueOf(this.valor);
+            entrada = entrada.replace("\"", "");
+            entrada = entrada.replace("'", "");
+
+            return entrada;
+        }else{
+            return this.valor;
+        }
+    }
+
+    @Override
+    public NodoAST getAST() {
+        NodoAST nodo;
+        if(Tipo.Tipos.STRING == this.tipo){
+            String val = String.valueOf(this.valor).replace("\"", "");
+            nodo = new NodoAST(val);
+        }else{
+            nodo = new NodoAST(String.valueOf(this.valor));
+        }
+        return nodo;
+    }
+
+    @Override
+    public void get3D() {
         if(Globales.gen == null){
             //Para 3D
             C3D genAux = new C3D();
@@ -25,6 +52,26 @@ public class Primitivo extends Nodo {
         }
 
         if(this.tipo == Tipo.Tipos.INTEGER || this.tipo == Tipo.Tipos.REAL){
+
+            this.valor3D = String.valueOf(this.valor);
+            this.tmp = false;
+
+        }else if (this.tipo == Tipo.Tipos.LOGICAL){
+
+            if(this.ev == null){
+                this.ev = Globales.gen.newLabel();
+            }
+            if(this.ef == null){
+                this.ef = Globales.gen.newLabel();
+            }
+
+            if((boolean)this.valor){
+                Globales.gen.addGoto(this.ev);
+                Globales.gen.addGoto(this.ef);
+            }else{
+                Globales.gen.addGoto(this.ef);
+                Globales.gen.addGoto(this.ev);
+            }
 
             //Guardo valores
             this.valor3D = String.valueOf(this.valor);
@@ -43,31 +90,8 @@ public class Primitivo extends Nodo {
             this.valor3D = String.valueOf(ascii);
             this.tmp = false;
 
-            return entrada;
-
-        }else if (this.tipo == Tipo.Tipos.LOGICAL){
-            if(this.ev == null){
-                this.ev = Globales.gen.newLabel();
-            }
-            if(this.ef == null){
-                this.ef = Globales.gen.newLabel();
-            }
-
-            if((boolean)this.valor){
-                Globales.gen.addGoto(ev);
-                Globales.gen.addGoto(ef);
-            }else{
-                Globales.gen.addGoto(ef);
-                Globales.gen.addGoto(ev);
-            }
-
-            //Guardo valores
-            this.valor3D = String.valueOf(this.valor);
-            this.tmp = false;
-            this.ev = ev;
-            this.ef = ef;
-
         }else if (this.tipo == Tipo.Tipos.STRING || this.tipo == Tipo.Tipos.COMPLEX){
+
             Globales.gen.addComment("Guardando cadena en el heap");
             String temp = Globales.gen.addTemp();
             Globales.gen.addExp(temp, "H", "", "");
@@ -90,22 +114,6 @@ public class Primitivo extends Nodo {
 
             this.valor3D = temp;
             this.tmp = true;
-            return entrada;
         }
-
-        //RETORNA EL VALOR GENERAL
-        return this.valor;
-    }
-
-    @Override
-    public NodoAST getAST() {
-        NodoAST nodo;
-        if(Tipo.Tipos.STRING == this.tipo){
-            String val = String.valueOf(this.valor).replace("\"", "");
-            nodo = new NodoAST(val);
-        }else{
-            nodo = new NodoAST(String.valueOf(this.valor));
-        }
-        return nodo;
     }
 }

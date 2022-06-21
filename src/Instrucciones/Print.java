@@ -17,7 +17,11 @@ import java.util.ArrayList;
 public class Print extends Nodo {
     ArrayList<Nodo> expresion;
 
+    //Para AST
     ArrayList<NodoAST> nodoIns = new ArrayList<>();
+
+    //Para C3D
+    Table tablaC3D;
 
     public Print(ArrayList<Nodo> expresion, int line, int column) {
         super(null, line, column);
@@ -26,27 +30,35 @@ public class Print extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
+        tablaC3D = table;
         for(int i = 0; i<this.expresion.size(); i++){
             if(this.expresion.get(i) instanceof Identificador iden){
                 //Obtengo la variable de la tabla de simbolos
                 Simbolo ide = table.getVariable(iden.id);
-
-                Object val = iden.execute(table, tree);
-
-                //ERROR
-                if(val instanceof Excepcion e){
-                    return val;
-                }
-
-                nodoIns.add(iden.getAST());
 
                 //ERROR
                 if(ide == null){
                     String err = "La variable {"+iden.id+"} no ha sido encontrada \n";
                     Excepcion error = new Excepcion("Semantico", err,this.line, this.column);
                     tree.excepciones.add(error);
+
+                    //Para deshabilitar el C3D
+                    this.isC3D = false;
+
                     return error;
                 }
+
+                Object val = iden.execute(table, tree);
+                //ERROR
+                if(val instanceof Excepcion){
+                    //Para deshabilitar el C3D
+                    this.isC3D = false;
+
+                    return val;
+                }
+
+                nodoIns.add(iden.getAST());
+
 
                 //Verifico si la variable es del tipo ARREGLO
                 if(ide.tipo2.tipo == Tipo.Tipos.ARREGLO || ide.tipo2.tipo == Tipo.Tipos.ALLOCATE){
@@ -58,6 +70,9 @@ public class Print extends Nodo {
                     }
 
                     tree.consola.add(cadena);
+
+                    //Para deshabilitar el C3D
+                    this.isC3D = false;
                 }
 
                 //Verifico si la variable es del tipo ARREGLO2
@@ -74,6 +89,9 @@ public class Print extends Nodo {
                     }
 
                     tree.consola.add(cadena);
+
+                    //Para deshabilitar el C3D
+                    this.isC3D = false;
                 }
 
                 else{
@@ -89,63 +107,16 @@ public class Print extends Nodo {
 
                     tree.consola.add(salida);
 
-                    //PARA C3D
-                    if(this.expresion.get(i).valor3D != null){
-                        Nodo prim = this.expresion.get(i);
-                        if(Globales.gen == null){
-                            C3D genAux = new C3D();
-                            Globales.gen = genAux.getInstance();
-                        }
-
-                        if(prim.tipo == Tipo.Tipos.INTEGER){
-                            Globales.gen.addComment("Imprimiendo un Integer");
-                            Globales.gen.addPrint("d", String.valueOf(prim.valor3D));
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }
-
-                        else if(prim.tipo == Tipo.Tipos.REAL){
-                            Globales.gen.addComment("Imprimiendo un Real");
-                            Globales.gen.printFloat("f", String.valueOf(prim.valor3D));
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }
-
-                        else if(prim.tipo == Tipo.Tipos.CHARACTER){
-                            Globales.gen.addComment("Imprimiendo un Character");
-                            Globales.gen.addPrint("c", prim.valor3D);
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }
-
-                        else if(prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX){
-                            Globales.gen.addComment("Imprimiendo Cadena");
-                            Globales.gen.printString();
-                            String tmp = Globales.gen.addTemp();
-                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(table.size));
-                            Globales.gen.addExp(tmp, tmp, "+", "1");
-                            Globales.gen.setStack(tmp, prim.valor3D);
-                            Globales.gen.newTable(String.valueOf(table.size));
-                            Globales.gen.callFun("printString");
-                            Globales.gen.getStack(Globales.gen.addTemp(), "P");
-                            Globales.gen.getTable(String.valueOf(table.size));
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }
-
-                        else if(prim.tipo == Tipo.Tipos.LOGICAL){
-                            Globales.gen.addComment("Imprimiendo un Logical");
-                            String tempLbl = Globales.gen.newLabel();
-                            Globales.gen.addLabel(prim.ev);
-                            Globales.gen.printTrue();
-                            Globales.gen.addGoto(tempLbl);
-                            Globales.gen.addLabel(prim.ef);
-                            Globales.gen.printFalse();
-                            Globales.gen.addLabel(tempLbl);
-                            Globales.gen.addPrint("c",  String.valueOf(10));
-                        }
-                    }
+                    //Para habilitar el C3D
+                    this.isC3D = true;
                 }
             }else {
                 Object val = this.expresion.get(i).execute(table, tree);
 
                 if(val instanceof Excepcion){
+                    //Para deshabilitar el C3D
+                    this.isC3D = false;
+
                     return val;
                 }
 
@@ -162,58 +133,8 @@ public class Print extends Nodo {
                 //Para AST
                 nodoIns.add(this.expresion.get(i).getAST());
 
-                //PARA C3D
-                if(this.expresion.get(i).valor3D != null){
-                    Nodo prim = this.expresion.get(i);
-                    if(Globales.gen == null){
-                        C3D genAux = new C3D();
-                        Globales.gen = genAux.getInstance();
-                    }
-
-                    if(prim.tipo == Tipo.Tipos.INTEGER){
-                        Globales.gen.addComment("Imprimiendo un Integer");
-                        Globales.gen.addPrint("d", prim.valor3D);
-                        Globales.gen.addPrint("c",  String.valueOf(10));
-                    }
-
-                    else if(prim.tipo == Tipo.Tipos.REAL){
-                        Globales.gen.addComment("Imprimiendo un Real");
-                        Globales.gen.printFloat("f", prim.valor3D);
-                        Globales.gen.addPrint("c",  String.valueOf(10));
-                    }
-
-                    else if(prim.tipo == Tipo.Tipos.CHARACTER){
-                        Globales.gen.addComment("Imprimiendo un Character");
-                        Globales.gen.addPrint("c", prim.valor3D);
-                        Globales.gen.addPrint("c",  String.valueOf(10));
-                    }
-
-                    else if(prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX){
-                        Globales.gen.addComment("Imprimiendo Cadena");
-                        Globales.gen.printString();
-                        String tmp = Globales.gen.addTemp();
-                        Globales.gen.addExp(tmp, "P", "+", String.valueOf(table.size));
-                        Globales.gen.addExp(tmp, tmp, "+", "1");
-                        Globales.gen.setStack(tmp, prim.valor3D);
-                        Globales.gen.newTable(String.valueOf(table.size));
-                        Globales.gen.callFun("printString");
-                        Globales.gen.getStack(Globales.gen.addTemp(), "P");
-                        Globales.gen.getTable(String.valueOf(table.size));
-                        Globales.gen.addPrint("c",  String.valueOf(10));
-                    }
-
-                    else if(prim.tipo == Tipo.Tipos.LOGICAL){
-                        Globales.gen.addComment("Imprimiendo un Logical");
-                        String tempLbl = Globales.gen.newLabel();
-                        Globales.gen.addLabel(prim.ev);
-                        Globales.gen.printTrue();
-                        Globales.gen.addGoto(tempLbl);
-                        Globales.gen.addLabel(prim.ef);
-                        Globales.gen.printFalse();
-                        Globales.gen.addLabel(tempLbl);
-                        Globales.gen.addPrint("c",  String.valueOf(10));
-                    }
-                }
+                //Para habilitar el C3D
+                this.isC3D = true;
             }
         }
         tree.consola.add("\n");
@@ -225,5 +146,100 @@ public class Print extends Nodo {
         NodoAST nodo = new NodoAST("PRINT");
         nodo.agregarHijos(nodoIns);
         return nodo;
+    }
+
+    @Override
+    public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+
+        if(this.isC3D) {
+            for (int i = 0; i < this.expresion.size(); i++) {
+                this.expresion.get(i).get3D();
+                if (this.expresion.get(i) instanceof Identificador prim) {
+                    if (this.expresion.get(i).valor3D != null) {
+                        if (prim.tipo == Tipo.Tipos.INTEGER) {
+                            Globales.gen.addComment("Imprimiendo Integer");
+                            Globales.gen.addPrint("d", String.valueOf(prim.valor3D));
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.REAL) {
+                            Globales.gen.addComment("Imprimiendo Real");
+                            Globales.gen.printFloat("f", String.valueOf(prim.valor3D));
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.CHARACTER) {
+                            Globales.gen.addComment("Imprimiendo Character");
+                            Globales.gen.addPrint("c", prim.valor3D);
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX) {
+                            Globales.gen.addComment("Imprimiendo String");
+                            Globales.gen.printString();
+                            String tmp = Globales.gen.addTemp();
+                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(this.tablaC3D.size));
+                            Globales.gen.addExp(tmp, tmp, "+", "1");
+                            Globales.gen.setStack(tmp, prim.valor3D);
+                            Globales.gen.newTable(String.valueOf(this.tablaC3D.size));
+                            Globales.gen.callFun("printString");
+                            Globales.gen.getStack(Globales.gen.addTemp(), "P");
+                            Globales.gen.getTable(String.valueOf(this.tablaC3D.size));
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.LOGICAL) {
+                            Globales.gen.addComment("Imprimiendo Logical");
+                            String tempLbl = Globales.gen.newLabel();
+                            Globales.gen.addLabel(prim.ev);
+                            Globales.gen.printTrue();
+                            Globales.gen.addGoto(tempLbl);
+                            Globales.gen.addLabel(prim.ef);
+                            Globales.gen.printFalse();
+                            Globales.gen.addLabel(tempLbl);
+                            Globales.gen.addPrint("c", "32");
+                        }
+                    }
+
+                } else {
+                    if (this.expresion.get(i).valor3D != null) {
+                        Nodo prim = this.expresion.get(i);
+
+                        if (prim.tipo == Tipo.Tipos.INTEGER) {
+                            Globales.gen.addComment("Imprimiendo un Integer");
+                            Globales.gen.addPrint("d", prim.valor3D);
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.REAL) {
+                            Globales.gen.addComment("Imprimiendo un Real");
+                            Globales.gen.printFloat("f", prim.valor3D);
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.CHARACTER) {
+                            Globales.gen.addComment("Imprimiendo un Character");
+                            Globales.gen.addPrint("c", prim.valor3D);
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX) {
+                            Globales.gen.addComment("Imprimiendo Cadena");
+                            Globales.gen.printString();
+                            String tmp = Globales.gen.addTemp();
+                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(tablaC3D.size));
+                            Globales.gen.addExp(tmp, tmp, "+", "1");
+                            Globales.gen.setStack(tmp, prim.valor3D);
+                            Globales.gen.newTable(String.valueOf(tablaC3D.size));
+                            Globales.gen.callFun("printString");
+                            Globales.gen.getStack(Globales.gen.addTemp(), "P");
+                            Globales.gen.getTable(String.valueOf(tablaC3D.size));
+                            Globales.gen.addPrint("c", "32");
+                        } else if (prim.tipo == Tipo.Tipos.LOGICAL) {
+                            Globales.gen.addComment("Imprimiendo un Logical");
+                            String tempLbl = Globales.gen.newLabel();
+                            Globales.gen.addLabel(prim.ev);
+                            Globales.gen.printTrue();
+                            Globales.gen.addGoto(tempLbl);
+                            Globales.gen.addLabel(prim.ef);
+                            Globales.gen.printFalse();
+                            Globales.gen.addLabel(tempLbl);
+                            Globales.gen.addPrint("c", "32");
+                        }
+                    }
+                }
+            }
+            Globales.gen.addPrint("c", "10");
+        }
     }
 }

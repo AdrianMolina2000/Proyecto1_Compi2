@@ -196,4 +196,9 @@ public class llamarFunc extends Nodo {
         nodo.agregarHijo(nodoRet);
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
 }

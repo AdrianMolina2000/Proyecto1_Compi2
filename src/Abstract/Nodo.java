@@ -15,9 +15,12 @@ public abstract class Nodo {
     public String ev;
     public String ef;
     public boolean realizar = true;
+    public boolean isC3D = false;
 
 
     public abstract Object execute(Table table, Tree tree);
+
+    public abstract void get3D();
     public abstract NodoAST getAST();
 
     public Nodo(Tipo.Tipos tipo, int line, int column) {

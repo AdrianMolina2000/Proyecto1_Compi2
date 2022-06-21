@@ -62,4 +62,11 @@ public class Program extends Nodo {
         nodo.agregarHijos(nodoIns);
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+        for(int i = 0; i<instrucciones.size(); i++){
+            instrucciones.get(i).get3D();
+        }
+    }
 }

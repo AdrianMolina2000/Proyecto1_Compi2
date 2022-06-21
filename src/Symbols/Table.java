@@ -6,12 +6,16 @@ import java.util.Map;
 public class Table {
     public Table anterior;
     public Map<String, Simbolo> Variables;
-    public int size;
+    public int size = 0;
 
     public Table(Table anterior) {
         this.anterior = anterior;
         Variables = new HashMap<>();
-        size = 0;
+        if(anterior == null){
+            size = 0;
+        }else{
+            size += anterior.size;
+        }
     }
 
     public void setVariable(Simbolo simbol){

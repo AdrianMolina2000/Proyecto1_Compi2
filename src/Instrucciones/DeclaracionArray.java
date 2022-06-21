@@ -189,4 +189,10 @@ public class DeclaracionArray extends Nodo {
 
         return nodo;
     }
+
+    @Override
+    public void get3D() {
+
+    }
+
 }
