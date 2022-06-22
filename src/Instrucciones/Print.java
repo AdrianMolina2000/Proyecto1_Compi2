@@ -156,6 +156,7 @@ public class Print extends Nodo {
         }
 
         if(this.isC3D) {
+
             for (int i = 0; i < this.expresion.size(); i++) {
                 this.expresion.get(i).get3D();
                 if (this.expresion.get(i) instanceof Identificador prim) {
@@ -176,13 +177,13 @@ public class Print extends Nodo {
                             Globales.gen.addComment("Imprimiendo String");
                             Globales.gen.printString();
                             String tmp = Globales.gen.addTemp();
-                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(this.tablaC3D.size));
+                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(this.tablaC3D.getTotalSize()));
                             Globales.gen.addExp(tmp, tmp, "+", "1");
                             Globales.gen.setStack(tmp, prim.valor3D);
-                            Globales.gen.newTable(String.valueOf(this.tablaC3D.size));
+                            Globales.gen.newTable(String.valueOf(this.tablaC3D.getTotalSize()));
                             Globales.gen.callFun("printString");
                             Globales.gen.getStack(Globales.gen.addTemp(), "P");
-                            Globales.gen.getTable(String.valueOf(this.tablaC3D.size));
+                            Globales.gen.getTable(String.valueOf(this.tablaC3D.getTotalSize()));
                             Globales.gen.addPrint("c", "32");
                         } else if (prim.tipo == Tipo.Tipos.LOGICAL) {
                             Globales.gen.addComment("Imprimiendo Logical");
@@ -217,13 +218,13 @@ public class Print extends Nodo {
                             Globales.gen.addComment("Imprimiendo Cadena");
                             Globales.gen.printString();
                             String tmp = Globales.gen.addTemp();
-                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(tablaC3D.size));
+                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(this.tablaC3D.getTotalSize()));
                             Globales.gen.addExp(tmp, tmp, "+", "1");
                             Globales.gen.setStack(tmp, prim.valor3D);
-                            Globales.gen.newTable(String.valueOf(tablaC3D.size));
+                            Globales.gen.newTable(String.valueOf(this.tablaC3D.getTotalSize()));
                             Globales.gen.callFun("printString");
                             Globales.gen.getStack(Globales.gen.addTemp(), "P");
-                            Globales.gen.getTable(String.valueOf(tablaC3D.size));
+                            Globales.gen.getTable(String.valueOf(this.tablaC3D.getTotalSize()));
                             Globales.gen.addPrint("c", "32");
                         } else if (prim.tipo == Tipo.Tipos.LOGICAL) {
                             Globales.gen.addComment("Imprimiendo un Logical");

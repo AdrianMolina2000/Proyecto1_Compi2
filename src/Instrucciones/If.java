@@ -14,27 +14,35 @@ import java.util.ArrayList;
 public class If extends Nodo {
     Nodo condicion;
     ArrayList<Nodo> listaIf;
+    ArrayList<Nodo> listaElseIf;
     ArrayList<Nodo> listaElse;
 
     //PARA EL AST
     NodoAST nodoMain;
     ArrayList<NodoAST> listaIfAST = new ArrayList<>();
+    ArrayList<NodoAST> listaElseIfAST = new ArrayList<>();
     ArrayList<NodoAST> listaElseAST = new ArrayList<>();
 
     //Para C3D
-    Table tableElseif;
+    Table tableC3D;
+    Tree treeC3D;
 
-
-    public If(Nodo condicion, ArrayList<Nodo> listaIf, ArrayList<Nodo> listaElse, int line, int column) {
+    public If(Nodo condicion, ArrayList<Nodo> listaIf, ArrayList<Nodo> listaElseIf, ArrayList<Nodo> listaElse, int line, int column) {
         super(null, line, column);
         this.condicion = condicion;
         this.listaIf = listaIf;
+        this.listaElseIf = listaElseIf;
         this.listaElse = listaElse;
     }
 
     @Override
     public Object execute(Table table, Tree tree) {
+        tableC3D = table;
+        treeC3D = tree;
+
         Table newtable = new Table(table);
+        table.siguiente = newtable;
+
 
         //Verifico que venga una condicion
         if(this.condicion == null){
@@ -58,190 +66,120 @@ public class If extends Nodo {
         }
 
         //Para C3D
-        if(Globales.gen == null){
-            C3D genAux = new C3D();
-            Globales.gen = genAux.getInstance();
-        }
-        Globales.gen.addComment("Sentencia IF");
-        String salida = Globales.gen.newLabel();
+        this.isC3D = true;
 
-        //Para el C3D
-        Globales.gen.addLabel(condicion.ev);
-
-        //Verifico si la condicion de entrada es verdadera
         if((boolean)result) {
 
-            if(this.tableElseif != null){
-                Globales.gen.addExp("P", "P", "+", String.valueOf(tableElseif.size));
-            }else{
-                Globales.gen.addExp("P", "P", "+", String.valueOf(table.size));
-            }
-
-            //Ejecuto las instrucciones por si la condicion es verdadera
-            for(int i = 0; i<this.listaIf.size(); i++) {
-                Object res = this.listaIf.get(i).execute(newtable, tree);
+            for(Nodo instrucciones: this.listaIf) {
+                Object res = instrucciones.execute(newtable, tree);
 
                 if (res instanceof Excepcion e) {
                     tree.consola.add(e.toString());
                 }
 
-                //Agrego los AST a una lista
-                listaIfAST.add(this.listaIf.get(i).getAST());
+                listaIfAST.add(instrucciones.getAST());
 
-                //Verifico si vienen instrucciones de control
                 if (res instanceof Exit || res instanceof Cycle) {
-                    //Creo el nodoMain para el AST
+                    //Para AST
                     nodoMain = new NodoAST("IF");
+                    NodoAST nodoCondicion = this.condicion.getAST();
+                    NodoAST nodoInstrucciones = new NodoAST("INSTRUCCIONES");
+                    nodoInstrucciones.agregarHijos(listaIfAST);
+                    nodoMain.agregarHijo(nodoCondicion);
+                    nodoMain.agregarHijo(nodoInstrucciones);
 
-                    NodoAST nodoCond = new NodoAST("CONDICION");
-                    nodoCond.agregarHijo(this.condicion.getAST());
-                    nodoMain.agregarHijo(nodoCond);
-
-                    NodoAST nodoIf = new NodoAST("INSTRUCCIONES IF");
-                    if(this.listaIf.size() != 0){
-                        nodoIf.agregarHijos(listaIfAST);
-                    }
-
-                    nodoMain.agregarHijo(nodoIf);
-
-                    //Detengo la ejecucion
                     return res;
                 }
             }
 
-            //Creo el nodoMain para el AST
+            //Para AST
             nodoMain = new NodoAST("IF");
+            NodoAST nodoCondicion = this.condicion.getAST();
+            NodoAST nodoInstrucciones = new NodoAST("INSTRUCCIONES IF");
+            nodoInstrucciones.agregarHijos(listaIfAST);
+            nodoMain.agregarHijo(nodoCondicion);
+            nodoMain.agregarHijo(nodoInstrucciones);
 
-            NodoAST nodoCond = new NodoAST("CONDICION");
-            nodoCond.agregarHijo(this.condicion.getAST());
-            nodoMain.agregarHijo(nodoCond);
+            return null;
+        }else {
+            if(this.listaElseIf.size() != 0) {
+                for(Nodo instrucciones: this.listaElseIf){
 
-            NodoAST nodoIf = new NodoAST("INSTRUCCIONES IF");
-            if(this.listaIf.size() != 0){
-                nodoIf.agregarHijos(listaIfAST);
-            }
+                    Object res = instrucciones.execute(table, tree);
 
-            nodoMain.agregarHijo(nodoIf);
+                    if (res instanceof Excepcion e) {
+                        tree.consola.add(e.toString());
+                    }
 
-            //Para el C3D
-            if(this.tableElseif != null){
-                Globales.gen.addExp("P", "P", "-", String.valueOf(tableElseif.size));
-            }else{
-                Globales.gen.addExp("P", "P", "-", String.valueOf(table.size));
-            }
-            Globales.gen.addGoto(salida);
-            Globales.gen.addLabel(condicion.ef);
-            Globales.gen.addLabel(salida);
+                    listaElseIfAST.add(instrucciones.getAST());
 
-            //Detengo la ejecucion
-            return true;
-        }
-
-        //Verifico si la condicion de entrada es falsa
-        else {
-
-            //Para C3D
-            Globales.gen.addComment("Sentencia ELSE");
-            Globales.gen.addLabel(condicion.ef);
-            if(this.tableElseif != null){
-                Globales.gen.addExp("P", "P", "+", String.valueOf(tableElseif.size));
-            }else{
-                Globales.gen.addExp("P", "P", "+", String.valueOf(table.size));
-            }
-
-
-            //Ejecuto las instrucciones por si la condicion es falsa
-            for (int i = 0; i < this.listaElse.size(); i++) {
-                Object res;
-
-                //Para C3D
-                if(this.listaElse.get(i) instanceof If){
-                    Globales.gen.addComment("Sentencia Else If");
-                    ((If) this.listaElse.get(i)).tableElseif = table;
-                    res = this.listaElse.get(i).execute(newtable, tree);
-                }else{
-                    res = this.listaElse.get(i).execute(newtable, tree);
-                }
-
-                if (res instanceof Excepcion e) {
-                    tree.consola.add(e.toString());
-                }else{
-                    //Agrego los AST a una lista
-                    listaElseAST.add(this.listaElse.get(i).getAST());
-
-                    //Verifico si vienen instrucciones de control
-                    if (res instanceof Exit || res instanceof Cycle) {
-                        //Creo el nodoMain para el AST
+                    if(res instanceof Boolean){
+                        //Para AST
                         nodoMain = new NodoAST("IF");
+                        NodoAST nodoCondicion = this.condicion.getAST();
+                        NodoAST nodoInstrucciones = new NodoAST("LISTA ELSE IF");
+                        nodoInstrucciones.agregarHijos(listaElseIfAST);
+                        nodoMain.agregarHijo(nodoCondicion);
+                        nodoMain.agregarHijo(nodoInstrucciones);
 
-                        NodoAST nodoCond = new NodoAST("CONDICION");
-                        nodoCond.agregarHijo(this.condicion.getAST());
-                        nodoMain.agregarHijo(nodoCond);
+                        return null;
+                    }
 
-                        NodoAST nodoElse = new NodoAST("INSTRUCCIONES ELSE");
-                        if(this.listaIf.size() != 0){
-                            nodoElse.agregarHijos(listaElseAST);
-                        }
+                    if (res instanceof Exit || res instanceof Cycle) {
+                        //Para AST
+                        nodoMain = new NodoAST("IF");
+                        NodoAST nodoCondicion = this.condicion.getAST();
+                        NodoAST nodoInstrucciones = new NodoAST("LISTA ELSE IF");
+                        nodoInstrucciones.agregarHijos(listaElseIfAST);
+                        nodoMain.agregarHijo(nodoCondicion);
+                        nodoMain.agregarHijo(nodoInstrucciones);
 
-                        nodoMain.agregarHijo(nodoElse);
-
-                        //Detengo la ejecucion
                         return res;
                     }
+                }
 
-                    //Es una condicion para validar si es un Else If
-                    if(res != null){
-                        if(res instanceof Boolean){
-                            if((boolean)res){
-                                //Creo el nodoMain para el AST
-                                nodoMain = new NodoAST("ELSE IF");
+                //Para AST
+                nodoMain = new NodoAST("IF");
+                NodoAST nodoCondicion = this.condicion.getAST();
+                NodoAST nodoInstrucciones = new NodoAST("LISTA ELSE IF");
+                nodoInstrucciones.agregarHijos(listaElseIfAST);
+                nodoMain.agregarHijo(nodoCondicion);
+                nodoMain.agregarHijo(nodoInstrucciones);
+            }
 
-                                NodoAST nodoCond = new NodoAST("CONDICION");
-                                nodoCond.agregarHijo(this.condicion.getAST());
-                                nodoMain.agregarHijo(nodoCond);
+            if(this.listaElse.size() != 0){
+                for (Nodo instrucciones: this.listaElse) {
+                    Object res = instrucciones.execute(newtable, tree);
 
-                                NodoAST nodoElse = new NodoAST("INSTRUCCIONES ELSE IF");
-                                if(this.listaIf.size() != 0){
-                                    nodoElse.agregarHijos(listaElseAST);
-                                }
+                    if (res instanceof Excepcion e) {
+                        tree.consola.add(e.toString());
+                    }
 
-                                nodoMain.agregarHijo(nodoElse);
+                    listaElseAST.add(instrucciones.getAST());
 
-                                //Detengo la ejecucion
-                                return false;
-                            }
-                        }
+                    if (res instanceof Exit || res instanceof Cycle) {
+                        //Para AST
+                        nodoMain = new NodoAST("IF");
+                        NodoAST nodoCondicion = this.condicion.getAST();
+                        NodoAST nodoInstrucciones = new NodoAST("INSTRUCCIONES ELSE");
+                        nodoInstrucciones.agregarHijos(listaElseAST);
+                        nodoMain.agregarHijo(nodoCondicion);
+                        nodoMain.agregarHijo(nodoInstrucciones);
 
-
+                        return res;
                     }
                 }
+
+                //Para AST
+                nodoMain = new NodoAST("IF");
+                NodoAST nodoCondicion = this.condicion.getAST();
+                NodoAST nodoInstrucciones = new NodoAST("INSTRUCCIONES ELSE");
+                nodoInstrucciones.agregarHijos(listaElseAST);
+                nodoMain.agregarHijo(nodoCondicion);
+                nodoMain.agregarHijo(nodoInstrucciones);
             }
 
-            //Creo el nodoMain para el AST
-            nodoMain = new NodoAST("IF");
-
-            NodoAST nodoCond = new NodoAST("CONDICION");
-            nodoCond.agregarHijo(this.condicion.getAST());
-            nodoMain.agregarHijo(nodoCond);
-
-            NodoAST nodoElse = new NodoAST("INSTRUCCIONES ELSE");
-            if(this.listaIf.size() != 0){
-                nodoElse.agregarHijos(listaElseAST);
-            }
-
-            nodoMain.agregarHijo(nodoElse);
-
-            //Para el C3D
-            if(this.tableElseif != null){
-                Globales.gen.addExp("P", "P", "-", String.valueOf(tableElseif.size));
-            }else{
-                Globales.gen.addExp("P", "P", "-", String.valueOf(table.size));
-            }
-            Globales.gen.addGoto(salida);
-            Globales.gen.addLabel(salida);
-
-            //Detengo la ejecucion
-            return false;
+            return null;
         }
     }
 
@@ -258,6 +196,45 @@ public class If extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(this.isC3D){
+            Table newtable = new Table(tableC3D);
+
+            Globales.gen.addComment("SENTENCIA IF");
+
+            this.condicion.ef = Globales.gen.newLabel();;
+            this.condicion.get3D();
+
+            String salida = Globales.gen.newLabel();
+
+            Globales.gen.addLabel(this.condicion.ev);
+
+            for(Nodo instruccionesIf: this.listaIf){
+                instruccionesIf.execute(newtable, treeC3D);
+                instruccionesIf.get3D();
+            }
+
+            Globales.gen.addGoto(salida);
+
+            Globales.gen.addLabel(this.condicion.ef);
+
+            for(Nodo instruccionesElseIf: this.listaElseIf){
+                instruccionesElseIf.execute(tableC3D, treeC3D);
+                ((ElseIf)instruccionesElseIf).condicion.ef = Globales.gen.newLabel();
+                ((ElseIf)instruccionesElseIf).salida = salida;
+                instruccionesElseIf.get3D();
+            }
+
+            for(Nodo instruccionesElse: this.listaElse){
+                instruccionesElse.execute(newtable, treeC3D);
+                instruccionesElse.get3D();
+            }
+
+            Globales.gen.addLabel(salida);
+        }
     }
 }

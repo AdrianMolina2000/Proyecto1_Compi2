@@ -124,5 +124,6 @@ public class Deallocate extends Nodo {
     @Override
     public void get3D() {
 
+
     }
 }

@@ -3,8 +3,10 @@ package Instrucciones;
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Primitivo;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -23,6 +25,9 @@ public class Do extends Nodo {
     ArrayList<NodoAST> instrEjec = new ArrayList<>();
     NodoAST nodoMain;
 
+    //Para C3D
+    Table tableC3D;
+
     public Do(String id, String id2, Nodo inicio, Nodo fin, Nodo paso, ArrayList<Nodo> expresiones, int line, int column) {
         super(null, line, column);
         this.inicio = inicio;
@@ -37,6 +42,7 @@ public class Do extends Nodo {
     public Object execute(Table table, Tree tree) {
         //Creo un nuevo ambito
         Table newtable = new Table(table);
+        tableC3D = table;
 
         //ERROR
         if(!this.id.equalsIgnoreCase(id2)){
@@ -103,7 +109,7 @@ public class Do extends Nodo {
 
         //Esto repetira todas las instrucciones que vienen
         for(int i = (int)inic; i <= (int)fine  ; i += (int)pas){
-
+            Table newtable2 = new Table(newtable);
             Object res;
 
             //Creo el nodo para el AST
@@ -113,7 +119,7 @@ public class Do extends Nodo {
             for(int j = 0; j<this.expresiones.size(); j++){
 
                 //Ejecuto la instruccion
-                res = this.expresiones.get(j).execute(newtable, tree);
+                res = this.expresiones.get(j).execute(newtable2, tree);
 
                 //ERROR
                 if(res instanceof Excepcion e){
@@ -128,7 +134,7 @@ public class Do extends Nodo {
                         Simbolo in = table.getVariable(((Asignacion)this.inicio).id);
 
                         Asignacion nueva = new Asignacion(in.id, new Primitivo(Tipo.Tipos.INTEGER, inic, this.line, this.column), this.line, this.column);
-                        nueva.execute(newtable, tree);
+                        nueva.execute(newtable2, tree);
 
                         //Agrego valores para el AST
                         nodoIteracion.agregarHijo(this.expresiones.get(j).getAST());
@@ -238,7 +244,7 @@ public class Do extends Nodo {
 
             //Creo la asignacion y la ejecuto
             Asignacion nueva = new Asignacion(in.id, new Primitivo(Tipo.Tipos.INTEGER, k, this.line, this.column), this.line, this.column);
-            nueva.execute(newtable, tree);
+            nueva.execute(newtable2, tree);
 
             //Agrego un nodo para el AST
             nodoIteracion.agregarHijo(nueva.getAST());
@@ -271,6 +277,9 @@ public class Do extends Nodo {
         nodoIns.agregarHijos(instrEjec);
         nodoMain.agregarHijo(nodoIns);
 
+        //Para C3D
+        this.isC3D = true;
+
         //Detengo la ejecucion
         return null;
     }
@@ -288,7 +297,89 @@ public class Do extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(this.isC3D){
+            Globales.gen.addComment("SENTENCIA DO");
+
+            this.inicio.get3D();
+            this.paso.get3D();
+            this.fin.get3D();
+
+            Simbolo variable = this.tableC3D.getVariable(((Asignacion)this.inicio).id);
+
+            //Creo los labels para for
+            String label0 = Globales.gen.newLabel();
+            String label1 = Globales.gen.newLabel();
+            String label2 = Globales.gen.newLabel();
+            String label3 = Globales.gen.newLabel();
+
+            //Guardo el valor original
+            Globales.gen.addComment("Guardo el valor original");
+            String pos0 = Globales.gen.addTemp();
+            String temp0 = Globales.gen.addTemp();
+
+            String posVar = String.valueOf(variable.pos);
+            Globales.gen.addExp(pos0, "0", "+", posVar);
+            Globales.gen.getStack(temp0, pos0);
+
+            //Inicia el ciclo
+            Globales.gen.addComment("Inicia el Ciclo");
+            Globales.gen.addLabel(label0);
+
+            //Accedo a la variable de inicio
+            String pos = Globales.gen.addTemp();
+            String temp = Globales.gen.addTemp();
+
+            Globales.gen.addExp(pos, "0", "+", posVar);
+            Globales.gen.getStack(temp, pos);
+
+            //Hago la validacion
+            Globales.gen.addComment("Hago la validacion del do");
+            Globales.gen.newIF(temp, "<=", this.fin.valor3D, label1);
+            Globales.gen.addGoto(label2);
+
+            Globales.gen.addComment("Inicio de instrucciones");
+            Globales.gen.addLabel(label1);
+
+            for(Nodo instruccion: this.expresiones){
+                instruccion.get3D();
+            }
+
+            Globales.gen.addComment("Final de instrucciones");
+            Globales.gen.addLabel(label3);
+
+            //Accedo a la variable de inicio
+            pos = Globales.gen.addTemp();
+            temp = Globales.gen.addTemp();
+
+            Globales.gen.addExp(pos, "0", "+", posVar);
+            Globales.gen.getStack(temp, pos);
+
+            //Le agrego el paso
+            Globales.gen.addComment("Incremento la variable de inicio");
+            String tvar = Globales.gen.addTemp();
+            Globales.gen.addExp(tvar, temp, "+" , this.paso.valor3D);
+            Globales.gen.setStack(pos, tvar);
+
+            //Regresamos a validar
+            Globales.gen.addComment("Regreso a validar");
+            Globales.gen.addGoto(label0);
+            Globales.gen.addComment("Termino las iteraciones del do");
+            Globales.gen.addLabel(label2);
+
+            //Le coloco el valor original a mi variable
+            Globales.gen.addComment("Coloco el valor original");
+            String posF = Globales.gen.addTemp();
+
+            Globales.gen.addExp(posF, "0", "+", posVar);
+
+            Globales.gen.setStack(posF, temp0);
+
+        }
     }
 }
 

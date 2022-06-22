@@ -5,23 +5,24 @@ import java.util.Map;
 
 public class Table {
     public Table anterior;
+    public Table siguiente;
     public Map<String, Simbolo> Variables;
     public int size = 0;
 
     public Table(Table anterior) {
         this.anterior = anterior;
         Variables = new HashMap<>();
-        if(anterior == null){
-            size = 0;
-        }else{
-            size += anterior.size;
-        }
     }
 
     public void setVariable(Simbolo simbol){
+        simbol.pos = this.getTotalSize();
         if(this.anterior == null){
             simbol.isGlobal = true;
+            simbol.pos = size;
         }
+
+        simbol.heap = false;
+
         this.Variables.put(simbol.id, simbol);
         size++;
     }
@@ -42,7 +43,7 @@ public class Table {
 
     public int getTotalSize(){
         int sum = 0;
-        Table ambito = this;
+        Table ambito = anterior;
         while (ambito != null){
             sum += ambito.size;
             ambito = ambito.anterior;

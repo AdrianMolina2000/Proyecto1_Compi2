@@ -18,6 +18,9 @@ public class Identificador extends Nodo {
     //PARA EL AST
     NodoAST nodoMain;
 
+    //Para C3D
+    Table tableC3D;
+
     public Identificador(String id, int line, int column) {
         super(null, line, column);
         this.id = id;
@@ -53,42 +56,9 @@ public class Identificador extends Nodo {
             nodoMain.agregarHijo(this.id);
             nodoMain.agregarHijo(String.valueOf(result));
 
-            //Para el C3D;
-            if(Globales.gen == null){
-                C3D genAux = new C3D();
-                Globales.gen = genAux.getInstance();
-            }
-            Globales.gen.addComment("Acceder Variable");
-            String temp = Globales.gen.addTemp();
-            String pos = Globales.gen.addTemp();
-
-            if(!variable.isGlobal){
-                Globales.gen.addExp(pos, "P", "+", String.valueOf(variable.pos + 1));
-            }else{
-                Globales.gen.addExp(pos, "", "", String.valueOf(variable.pos));
-            }
-
-
-            Globales.gen.getStack(temp, pos);
-
-            if (variable.tipo.tipo != Tipo.Tipos.LOGICAL) {
-                this.valor3D = temp;
-                this.tmp = true;
-
-                //Devuelvo el valor resultante
-                return result;
-            }
-            if(this.ev == null) {
-                this.ev = Globales.gen.newLabel();
-            }
-            if(this.ef == null){
-                this.ef = Globales.gen.newLabel();
-            }
-
-            Globales.gen.newIF(temp, "==", "1", this.ev);
-            Globales.gen.addGoto(this.ef);
-            this.valor3D = "";
-            this.tmp = false;
+            //Para C3D
+            this.isC3D = true;
+            tableC3D = table;
 
             //Devuelvo el valor resultante
             return result;
@@ -208,6 +178,41 @@ public class Identificador extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        if(isC3D){
+            Globales.gen.addComment("Acceder Variable");
 
+            Simbolo variable = this.tableC3D.getVariable(this.id);
+
+            String pos = Globales.gen.addTemp();
+            String temp = Globales.gen.addTemp();
+
+            String posVar = String.valueOf(variable.pos);
+
+            Globales.gen.addExp(pos, "0", "+", posVar);
+
+            Globales.gen.getStack(temp, pos);
+
+            if (variable.tipo.tipo != Tipo.Tipos.LOGICAL) {
+                this.valor3D = temp;
+                this.tmp = true;
+
+            }else {
+                if (this.ev == null) {
+                    this.ev = Globales.gen.newLabel();
+                }
+                if (this.ef == null) {
+                    this.ef = Globales.gen.newLabel();
+                }
+
+                Globales.gen.newIF(temp, "==", "1", this.ev);
+                Globales.gen.addGoto(this.ef);
+                this.valor3D = "";
+                this.tmp = false;
+            }
+        }
     }
 }

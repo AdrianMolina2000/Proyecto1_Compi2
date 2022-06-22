@@ -114,6 +114,7 @@ public class Primitivo extends Nodo {
 
             this.valor3D = temp;
             this.tmp = true;
+
         }
     }
 }

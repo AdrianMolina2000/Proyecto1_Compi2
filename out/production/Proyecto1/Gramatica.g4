@@ -164,7 +164,7 @@ expresion
     |val=STRING                                         #expresionString
     |val='.true.'                                       #expresionTrue
     |val='.false.'                                      #expresionFalse
-    |'[/' val=expresion e+=listaExpresion* '/]'         #expresionListaExpresion
+    |'(/' val=expresion e+=listaExpresion* '/)'         #expresionListaExpresion
     |'(' val=expresion ')'                              #expresionParentesis
     |id1=IDEN '(' e+=listaCall* ')'                     #expresionFuncion
 ;

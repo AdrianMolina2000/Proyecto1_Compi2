@@ -62,7 +62,7 @@ public class GramaticaParser extends Parser {
 			"'cycle'", "'call'", "'-'", "'.not.'", "'**'", "'/'", "'+'", "'=='", 
 			"'.eq.'", "'/='", "'.ne.'", "'>='", "'.ge.'", "'>'", "'.gt.'", "'<='", 
 			"'.le.'", "'<'", "'.lt.'", "'.and.'", "'.or.'", "'size'", "'.true.'", 
-			"'.false.'", "'[/'", "'/]'", "'integer'", "'real'", "'complex'", "'character'", 
+			"'.false.'", "'(/'", "'/)'", "'integer'", "'real'", "'complex'", "'character'", 
 			"'logical'"
 		};
 	}

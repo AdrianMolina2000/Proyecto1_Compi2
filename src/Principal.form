@@ -7,7 +7,9 @@
     </constraints>
     <properties>
       <autoscrolls value="false"/>
+      <background color="-14276309"/>
       <enabled value="true"/>
+      <foreground color="-1"/>
       <minimumSize width="500" height="500"/>
       <preferredSize width="500" height="500"/>
     </properties>
@@ -18,19 +20,33 @@
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-12894656"/>
+          <foreground color="-1"/>
+        </properties>
         <border type="none"/>
         <children>
           <scrollpane id="39ee6" binding="scrollPane1">
             <constraints>
               <grid row="0" column="0" row-span="6" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-12894656"/>
+              <foreground color="-1"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="7f96d" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <background color="-14276309"/>
+                  <caretColor color="-14816512"/>
+                  <doubleBuffered value="false"/>
+                  <font name="Consolas" size="14" style="0"/>
+                  <foreground color="-14887168"/>
+                  <lineWrap value="false"/>
+                  <tabSize value="2"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
@@ -38,12 +54,22 @@
             <constraints>
               <grid row="0" column="2" row-span="6" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-12894656"/>
+              <foreground color="-1"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="5fbce" class="javax.swing.JTextArea" binding="textArea2" default-binding="true">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <background color="-14276309"/>
+                  <caretColor color="-14816512"/>
+                  <font name="Consolas" size="14" style="0"/>
+                  <foreground color="-14887168"/>
+                  <lineWrap value="false"/>
+                  <tabSize value="2"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
@@ -111,12 +137,22 @@
             <preferred-size width="-1" height="300"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-12894656"/>
+          <foreground color="-1"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="bb22c" class="javax.swing.JTextArea" binding="textArea3" default-binding="true">
             <constraints/>
-            <properties/>
+            <properties>
+              <background color="-14276309"/>
+              <caretColor color="-14816512"/>
+              <font name="Consolas" size="14" style="0"/>
+              <foreground color="-14887168"/>
+              <lineWrap value="false"/>
+              <tabSize value="2"/>
+            </properties>
           </component>
         </children>
       </scrollpane>

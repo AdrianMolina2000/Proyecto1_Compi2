@@ -21,6 +21,9 @@ public class Declaracion extends Nodo {
     //Para AST
     NodoAST nodoMain;
 
+    //Para C3D
+    Table tableC3D;
+
     public Declaracion(Tipo.Tipos tipo, String id, Nodo valor, int line, int column) {
         super(tipo, line, column);
         this.id = id;
@@ -75,39 +78,6 @@ public class Declaracion extends Nodo {
         table.setVariable(simbolo);
         tree.Variables.add(simbolo);
 
-        simbolo = table.getVariable(this.id);
-
-        //Para 3D
-        if(Globales.gen == null){
-            C3D genAux = new C3D();
-            Globales.gen = genAux.getInstance();
-        }
-        Globales.gen.addComment("Declarar Variable");
-
-        simbolo.pos = table.size - 1;
-        simbolo.heap = false;
-
-        String pos = Globales.gen.addTemp();
-
-        if(!simbolo.isGlobal){
-            Globales.gen.addExp(pos, "P", "+", String.valueOf(table.size));
-        }else{
-            Globales.gen.addExp(pos, "", "", String.valueOf(simbolo.pos));
-        }
-
-        if(this.valor.tipo == Tipo.Tipos.LOGICAL){
-            String ev = Globales.gen.newLabel();
-            Globales.gen.addLabel(this.valor.ev);
-            Globales.gen.setStack(String.valueOf(pos), "1");
-            Globales.gen.addGoto(ev);
-            Globales.gen.addLabel(this.valor.ef);
-            Globales.gen.setStack(String.valueOf(pos), "0");
-            Globales.gen.addLabel(ev);
-        }else{
-            Globales.gen.setStack(pos, this.valor.valor3D);
-        }
-
-
         //Creacion de nodoMain AST
         nodoMain = new NodoAST("DECLARACION");
         NodoAST nodoId = new NodoAST("ID");
@@ -115,6 +85,9 @@ public class Declaracion extends Nodo {
         nodoId.agregarHijo(new NodoAST(id));
         nodoMain.agregarHijo(nodoId);
         nodoMain.agregarHijo(this.valor.getAST());
+
+        isC3D = true;
+        tableC3D = table;
 
         //Termino la ejecucion
         return null;
@@ -133,6 +106,41 @@ public class Declaracion extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D){
+
+            Globales.gen.addComment("Declarar Variable");
+
+            Simbolo simbolo = this.tableC3D.getVariable(this.id);
+
+            String temPos = Globales.gen.addTemp();
+
+            String totalSize = String.valueOf(tableC3D.getTotalSize());
+            String posVar = String.valueOf(simbolo.pos);
+
+            if(!simbolo.isGlobal){
+                Globales.gen.addExp(temPos, "P", "+", totalSize);
+            }else{
+                Globales.gen.addExp(temPos, "0", "+", posVar);
+            }
+
+            this.valor.get3D();
+
+            if(this.valor.tipo == Tipo.Tipos.LOGICAL){
+                String ev = Globales.gen.newLabel();
+                Globales.gen.addLabel(this.valor.ev);
+                Globales.gen.setStack(temPos, "1");
+                Globales.gen.addGoto(ev);
+                Globales.gen.addLabel(this.valor.ef);
+                Globales.gen.setStack(temPos, "0");
+                Globales.gen.addLabel(ev);
+            }else{
+                Globales.gen.setStack(temPos, this.valor.valor3D);
+            }
+        }
     }
 }

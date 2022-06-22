@@ -33,7 +33,6 @@ public class ListaDeclaraciones extends Nodo {
             if(result instanceof Excepcion e){
                 tree.consola.add(e.toString());
             }
-
             else {
                 //Guardo los AST de las declaraciones
                 nodoDec.add(declaraciones.get(i).getAST());
@@ -51,6 +50,8 @@ public class ListaDeclaraciones extends Nodo {
 
     @Override
     public void get3D() {
-
+        for(int i = 0; i < declaraciones.size(); i++){
+            declaraciones.get(i).get3D();
+        }
     }
 }
