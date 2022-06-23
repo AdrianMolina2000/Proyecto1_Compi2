@@ -215,6 +215,16 @@ public class If extends Nodo {
 
             for(Nodo instruccionesIf: this.listaIf){
                 instruccionesIf.execute(newtable, treeC3D);
+
+                if(instruccionesIf instanceof Exit){
+                    instruccionesIf.ev = this.ev;
+                }else if(instruccionesIf instanceof Cycle){
+                    instruccionesIf.ev = this.ef;
+                }else if(instruccionesIf instanceof If || instruccionesIf instanceof ElseIf){
+                    instruccionesIf.ev = this.ev;
+                    instruccionesIf.ef = this.ef;
+                }
+
                 instruccionesIf.get3D();
             }
 
@@ -226,14 +236,33 @@ public class If extends Nodo {
                 instruccionesElseIf.execute(tableC3D, treeC3D);
                 ((ElseIf)instruccionesElseIf).condicion.ef = Globales.gen.newLabel();
                 ((ElseIf)instruccionesElseIf).salida = salida;
+
+                if(instruccionesElseIf instanceof Exit){
+                    instruccionesElseIf.ev = this.ev;
+                }else if(instruccionesElseIf instanceof Cycle){
+                    instruccionesElseIf.ev = this.ef;
+                }else if(instruccionesElseIf instanceof If || instruccionesElseIf instanceof ElseIf){
+                    instruccionesElseIf.ev = this.ev;
+                    instruccionesElseIf.ef = this.ef;
+                }
+
                 instruccionesElseIf.get3D();
             }
 
             for(Nodo instruccionesElse: this.listaElse){
                 instruccionesElse.execute(newtable, treeC3D);
+
+                if(instruccionesElse instanceof Exit){
+                    instruccionesElse.ev = this.ev;
+                }else if(instruccionesElse instanceof Cycle){
+                    instruccionesElse.ev = this.ef;
+                }else if(instruccionesElse instanceof If || instruccionesElse instanceof ElseIf){
+                    instruccionesElse.ev = this.ev;
+                    instruccionesElse.ef = this.ef;
+                }
+
                 instruccionesElse.get3D();
             }
-
             Globales.gen.addLabel(salida);
         }
     }

@@ -16,12 +16,14 @@ import java.util.ArrayList;
 public class Asignacion extends Nodo {
     public String id;
     public Object expresion;
+    Object result;
 
     //PARA AST
     NodoAST nodoMain;
 
     //Para C3D
     Table tableC3D;
+    Object arrayC3D;
 
     public Asignacion(String id, Object valor, int line, int column) {
         super(null, line, column);
@@ -49,7 +51,7 @@ public class Asignacion extends Nodo {
             return error;
         }
 
-        Object result = this.expresion;
+        result = this.expresion;
         if(this.expresion instanceof Nodo res){
             result = res.execute(table, tree);
             if (result instanceof Excepcion e) {
@@ -126,6 +128,10 @@ public class Asignacion extends Nodo {
 
                 String resultado = "[";
                 for(int i = 0; i < listaI.size(); i++){
+                    Object val = ((ArrayList<Nodo>)listaI).get(i).execute(table, tree);
+                    if (val instanceof Excepcion e) {
+                        return val;
+                    }
                     if(((ArrayList<Nodo>)listaI).get(i).tipo != variable.tipo.tipo){
                         String err = "El arreglo no puede ser asignado porque no poseen los mismos tipos \n";
                         Excepcion error = new Excepcion("Semantico", err, this.line, this.column);
@@ -140,6 +146,10 @@ public class Asignacion extends Nodo {
                 nodoMain = new NodoAST("ASIGNAR");
                 nodoMain.agregarHijo(new NodoAST(this.id));
                 nodoMain.agregarHijo(new NodoAST(resultado));
+
+                //Para C3D
+                this.isC3D = true;
+                this.tableC3D = table;
 
                 //Le agrego la lista obtenida al arreglo
                 variable.valor = listaI;
@@ -205,6 +215,10 @@ public class Asignacion extends Nodo {
                         }
 
                         for(int j=0; j < listaJ.size(); j++){
+                            Object val = listaJ.get(j).execute(table, tree);
+                            if (val instanceof Excepcion) {
+                                return val;
+                            }
                             //Verifico que los valores de la lista sean del mismo tipo que la variable
                             if(listaJ.get(j).tipo != variable.tipo.tipo){
                                 String err = "El arreglo no puede ser asignado porque no poseen los mismos tipos \n";
@@ -274,35 +288,72 @@ public class Asignacion extends Nodo {
             C3D genAux = new C3D();
             Globales.gen = genAux.getInstance();
         }
+
         if(isC3D){
             Globales.gen.addComment("Asignar Variable");
 
             Simbolo variable = this.tableC3D.getVariable(this.id);
 
-            String pos = Globales.gen.addTemp();
+            if(variable.tipo2.tipo == Tipo.Tipos.VARIABLE){
+                String pos = Globales.gen.addTemp();
 
-            String totalSize = String.valueOf(tableC3D.getTotalSize());
-            String posVar = String.valueOf(variable.pos);
+                String totalSize = String.valueOf(tableC3D.getTotalSize());
+                String posVar = String.valueOf(variable.pos);
 
-            if(!variable.isGlobal){
-                Globales.gen.addExp(pos, "P", "+", totalSize);
-            }else{
-                Globales.gen.addExp(pos, "0", "+", posVar);
+                if(!variable.isGlobal){
+                    Globales.gen.addExp(pos, "P", "+", totalSize);
+                }else{
+                    Globales.gen.addExp(pos, "0", "+", posVar);
+                }
+
+                ((Nodo) this.expresion).get3D();
+                Nodo rest = (Nodo)this.expresion;
+
+                if(rest.tipo == Tipo.Tipos.LOGICAL){
+                    String ev = Globales.gen.newLabel();
+                    Globales.gen.addLabel(rest.ev);
+                    Globales.gen.setStack(pos, "1");
+                    Globales.gen.addGoto(ev);
+                    Globales.gen.addLabel(rest.ef);
+                    Globales.gen.setStack(pos, "0");
+                    Globales.gen.addLabel(ev);
+                }else{
+                    Globales.gen.setStack(pos, rest.valor3D);
+                }
             }
 
-            ((Nodo) this.expresion).get3D();
-            Nodo rest = (Nodo)this.expresion;
+            else if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO){
+                if(this.expresion instanceof ArrayList<?>){
+                    ArrayList<Nodo> expr = (ArrayList<Nodo>)this.expresion;
 
-            if(rest.tipo == Tipo.Tipos.LOGICAL){
-                String ev = Globales.gen.newLabel();
-                Globales.gen.addLabel(rest.ev);
-                Globales.gen.setStack(pos, "1");
-                Globales.gen.addGoto(ev);
-                Globales.gen.addLabel(rest.ef);
-                Globales.gen.setStack(pos, "0");
-                Globales.gen.addLabel(ev);
-            }else{
-                Globales.gen.setStack(pos, rest.valor3D);
+                    int i = 1;
+                    for(Nodo valor: expr){
+                        valor.get3D();
+
+                        String temp = Globales.gen.addTemp();
+                        Globales.gen.addExp(temp, String.valueOf(i), "-", "1");
+
+                        Globales.gen.setPosArray(this.id, temp, valor.valor3D);
+
+                        i++;
+                    }
+                }else if(this.expresion instanceof Identificador iden){
+                    ArrayList<Nodo> expr = (ArrayList<Nodo>)result;
+
+                    int i = 1;
+                    for(Nodo valor: expr){
+                        String tempVal = Globales.gen.addTemp();
+
+                        String temp = Globales.gen.addTemp();
+                        Globales.gen.addExp(temp, String.valueOf(i), "-", "1");
+
+                        Globales.gen.getPosArray(tempVal, iden.id, temp);
+
+                        Globales.gen.setPosArray(this.id, temp, tempVal);
+
+                        i++;
+                    }
+                }
             }
         }
     }

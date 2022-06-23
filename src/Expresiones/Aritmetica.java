@@ -687,7 +687,6 @@ public class Aritmetica extends Nodo {
 
     @Override
     public void get3D() {
-        //Para 3D
         if(Globales.gen == null){
             C3D genAux = new C3D();
             Globales.gen = genAux.getInstance();

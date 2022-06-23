@@ -53,5 +53,6 @@ public class ListaDeclaraciones extends Nodo {
         for(int i = 0; i < declaraciones.size(); i++){
             declaraciones.get(i).get3D();
         }
+
     }
 }

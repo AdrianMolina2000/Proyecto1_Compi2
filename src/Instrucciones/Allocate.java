@@ -193,6 +193,5 @@ public class Allocate extends Nodo {
     @Override
     public void get3D() {
 
-
     }
 }

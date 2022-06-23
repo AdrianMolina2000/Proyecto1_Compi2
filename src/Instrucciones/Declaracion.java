@@ -112,7 +112,6 @@ public class Declaracion extends Nodo {
         }
 
         if(isC3D){
-
             Globales.gen.addComment("Declarar Variable");
 
             Simbolo simbolo = this.tableC3D.getVariable(this.id);

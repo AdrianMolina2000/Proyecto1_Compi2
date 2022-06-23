@@ -2,7 +2,9 @@ package Instrucciones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Table;
 import Symbols.Tree;
 
@@ -31,6 +33,12 @@ public class Exit extends Nodo {
 
     @Override
     public void get3D() {
-
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        if(this.ev != null){
+            Globales.gen.addGoto(this.ev);
+        }
     }
 }

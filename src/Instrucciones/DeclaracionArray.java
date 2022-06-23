@@ -5,6 +5,7 @@ import Abstract.NodoAST;
 import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -89,6 +90,9 @@ public class DeclaracionArray extends Nodo {
                 table.setVariable(simbolo);
                 tree.Variables.add(simbolo);
 
+                //Para C3D
+                this.isC3D = true;
+
                 //Termino la ejecucion
                 return null;
             }
@@ -156,6 +160,9 @@ public class DeclaracionArray extends Nodo {
                     //Agrego la variable a la tabla de simbolos
                     table.setVariable(simbolo);
 
+                    //Para C3D
+                    this.isC3D = true;
+
                     //Termino la ejecucion
                     return null;
                 }
@@ -192,7 +199,32 @@ public class DeclaracionArray extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D){
+            if(this.dim2 == null){
+                Globales.gen.addComment("Declarar Arreglo de 1 Dim");
+                this.dim1.get3D();
+                Globales.gen.addArray(this.id, this.dim1.valor3D);
+            }else{
+                Globales.gen.addComment("Declarar Arreglo de 2 Dim");
+                this.dim1.get3D();
+                this.dim2.get3D();
+
+                String temp1 = Globales.gen.addTemp();
+                Globales.gen.addExp(temp1, dim1.valor3D, "*", dim2.valor3D);
+
+                String temp2 = Globales.gen.addTemp();
+                Globales.gen.addExp(temp2, temp1, "+", "1");
+
+                Globales.gen.addArray(this.id, temp2);
+
+                Globales.gen.setPosArray(this.id, "0", dim2.valor3D);
+            }
+        }
     }
 
 }

@@ -183,6 +183,5 @@ public class AsignacionArrayD extends Nodo {
 
     @Override
     public void get3D() {
-
     }
 }

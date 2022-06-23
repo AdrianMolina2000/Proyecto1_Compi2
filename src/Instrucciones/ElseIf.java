@@ -131,12 +131,21 @@ public class ElseIf extends Nodo {
 
             for(Nodo instruccionesIf: this.listaIf){
                 instruccionesIf.execute(newtable, treeC3D);
+
+                if(instruccionesIf instanceof Exit){
+                    instruccionesIf.ev = this.ev;
+                }else if(instruccionesIf instanceof Cycle){
+                    instruccionesIf.ev = this.ef;
+                }else if(instruccionesIf instanceof If || instruccionesIf instanceof ElseIf){
+                    instruccionesIf.ev = this.ev;
+                    instruccionesIf.ef = this.ef;
+                }
+
                 instruccionesIf.get3D();
             }
 
             Globales.gen.addGoto(this.salida);
             Globales.gen.addLabel(condicion.ef);
-
         }
     }
 }

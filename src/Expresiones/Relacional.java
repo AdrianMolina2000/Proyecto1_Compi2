@@ -620,6 +620,7 @@ public class Relacional extends Nodo {
             if(this.ev == null){
                 this.ev = Globales.gen.newLabel();
             }
+
             if(this.ef == null){
                 this.ef = Globales.gen.newLabel();
             }

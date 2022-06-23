@@ -169,6 +169,18 @@ public class C3D {
         codeIn(izq + " = " + op1 + " " + op + " " + op2 + ";\n", "    ");
     }
 
+    public void addArray(String id, String size){
+        codeIn("float " + id + "[(int)" + size + "];\n", "    ");
+    }
+
+    public void getPosArray(String tmp, String id, String pos){
+        codeIn(tmp + " = " + id + "[(int)" + pos + "];\n", "    ");
+    }
+
+    public void setPosArray(String id, String pos, String tmp){
+        codeIn(id + "[(int)" + pos + "] = " + tmp + ";\n", "    ");
+    }
+
     public void initFun(String id){
         if(!inNatives){
             inFunc = true;

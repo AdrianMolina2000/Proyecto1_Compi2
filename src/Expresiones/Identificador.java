@@ -199,7 +199,6 @@ public class Identificador extends Nodo {
             if (variable.tipo.tipo != Tipo.Tipos.LOGICAL) {
                 this.valor3D = temp;
                 this.tmp = true;
-
             }else {
                 if (this.ev == null) {
                     this.ev = Globales.gen.newLabel();

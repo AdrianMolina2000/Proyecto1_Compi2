@@ -72,7 +72,7 @@ public class Print extends Nodo {
                     tree.consola.add(cadena);
 
                     //Para deshabilitar el C3D
-                    this.isC3D = false;
+                    this.isC3D = true;
                 }
 
                 //Verifico si la variable es del tipo ARREGLO2
@@ -91,7 +91,7 @@ public class Print extends Nodo {
                     tree.consola.add(cadena);
 
                     //Para deshabilitar el C3D
-                    this.isC3D = false;
+                    this.isC3D = true;
                 }
 
                 else{
@@ -156,47 +156,124 @@ public class Print extends Nodo {
         }
 
         if(this.isC3D) {
-
             for (int i = 0; i < this.expresion.size(); i++) {
                 this.expresion.get(i).get3D();
                 if (this.expresion.get(i) instanceof Identificador prim) {
-                    if (this.expresion.get(i).valor3D != null) {
-                        if (prim.tipo == Tipo.Tipos.INTEGER) {
-                            Globales.gen.addComment("Imprimiendo Integer");
-                            Globales.gen.addPrint("d", String.valueOf(prim.valor3D));
-                            Globales.gen.addPrint("c", "32");
-                        } else if (prim.tipo == Tipo.Tipos.REAL) {
-                            Globales.gen.addComment("Imprimiendo Real");
-                            Globales.gen.printFloat("f", String.valueOf(prim.valor3D));
-                            Globales.gen.addPrint("c", "32");
-                        } else if (prim.tipo == Tipo.Tipos.CHARACTER) {
-                            Globales.gen.addComment("Imprimiendo Character");
-                            Globales.gen.addPrint("c", prim.valor3D);
-                            Globales.gen.addPrint("c", "32");
-                        } else if (prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX) {
-                            Globales.gen.addComment("Imprimiendo String");
-                            Globales.gen.printString();
-                            String tmp = Globales.gen.addTemp();
-                            Globales.gen.addExp(tmp, "P", "+", String.valueOf(this.tablaC3D.getTotalSize()));
-                            Globales.gen.addExp(tmp, tmp, "+", "1");
-                            Globales.gen.setStack(tmp, prim.valor3D);
-                            Globales.gen.newTable(String.valueOf(this.tablaC3D.getTotalSize()));
-                            Globales.gen.callFun("printString");
-                            Globales.gen.getStack(Globales.gen.addTemp(), "P");
-                            Globales.gen.getTable(String.valueOf(this.tablaC3D.getTotalSize()));
-                            Globales.gen.addPrint("c", "32");
-                        } else if (prim.tipo == Tipo.Tipos.LOGICAL) {
-                            Globales.gen.addComment("Imprimiendo Logical");
-                            String tempLbl = Globales.gen.newLabel();
-                            Globales.gen.addLabel(prim.ev);
-                            Globales.gen.printTrue();
-                            Globales.gen.addGoto(tempLbl);
-                            Globales.gen.addLabel(prim.ef);
-                            Globales.gen.printFalse();
-                            Globales.gen.addLabel(tempLbl);
-                            Globales.gen.addPrint("c", "32");
+                    Simbolo ide = tablaC3D.getVariable(prim.id);
+                    if(ide.tipo2.tipo == Tipo.Tipos.VARIABLE){
+                        if (this.expresion.get(i).valor3D != null) {
+                            if (prim.tipo == Tipo.Tipos.INTEGER) {
+                                Globales.gen.addComment("Imprimiendo Integer");
+                                Globales.gen.addPrint("d", String.valueOf(prim.valor3D));
+                                Globales.gen.addPrint("c", "32");
+                            } else if (prim.tipo == Tipo.Tipos.REAL) {
+                                Globales.gen.addComment("Imprimiendo Real");
+                                Globales.gen.printFloat("f", String.valueOf(prim.valor3D));
+                                Globales.gen.addPrint("c", "32");
+                            } else if (prim.tipo == Tipo.Tipos.CHARACTER) {
+                                Globales.gen.addComment("Imprimiendo Character");
+                                Globales.gen.addPrint("c", prim.valor3D);
+                                Globales.gen.addPrint("c", "32");
+                            } else if (prim.tipo == Tipo.Tipos.STRING || prim.tipo == Tipo.Tipos.COMPLEX) {
+                                Globales.gen.addComment("Imprimiendo String");
+                                Globales.gen.printString();
+                                String tmp = Globales.gen.addTemp();
+                                Globales.gen.addExp(tmp, "P", "+", String.valueOf(this.tablaC3D.getTotalSize()));
+                                Globales.gen.addExp(tmp, tmp, "+", "1");
+                                Globales.gen.setStack(tmp, prim.valor3D);
+                                Globales.gen.newTable(String.valueOf(this.tablaC3D.getTotalSize()));
+                                Globales.gen.callFun("printString");
+                                Globales.gen.getStack(Globales.gen.addTemp(), "P");
+                                Globales.gen.getTable(String.valueOf(this.tablaC3D.getTotalSize()));
+                                Globales.gen.addPrint("c", "32");
+                            } else if (prim.tipo == Tipo.Tipos.LOGICAL) {
+                                Globales.gen.addComment("Imprimiendo Logical");
+                                String tempLbl = Globales.gen.newLabel();
+                                Globales.gen.addLabel(prim.ev);
+                                Globales.gen.printTrue();
+                                Globales.gen.addGoto(tempLbl);
+                                Globales.gen.addLabel(prim.ef);
+                                Globales.gen.printFalse();
+                                Globales.gen.addLabel(tempLbl);
+                                Globales.gen.addPrint("c", "32");
+                            }
                         }
+                    }else if(ide.tipo2.tipo == Tipo.Tipos.ARREGLO){
+                        ArrayList<Nodo> listaI = (ArrayList<Nodo>)ide.valor;
+
+                        Globales.gen.addComment("Imprimiendo Arreglo");
+                        int j = 1;
+                        for(Nodo valor: listaI){
+                            valor.get3D();
+
+                            String temp = Globales.gen.addTemp();
+                            Globales.gen.addExp(temp, String.valueOf(j), "-", "1");
+
+                            String ret = Globales.gen.addTemp();
+
+                            Globales.gen.getPosArray(ret, ide.id, temp);
+
+                            if (prim.tipo == Tipo.Tipos.INTEGER) {
+                                Globales.gen.addPrint("d", ret);
+                                Globales.gen.addPrint("c", "32");
+                            } else if (prim.tipo == Tipo.Tipos.REAL) {
+                                Globales.gen.printFloat("f", ret);
+                                Globales.gen.addPrint("c", "32");
+                            } else if (prim.tipo == Tipo.Tipos.CHARACTER) {
+                                Globales.gen.addPrint("c", ret);
+                                Globales.gen.addPrint("c", "32");
+                            }
+                            j++;
+                        }
+
+                    }else if(ide.tipo2.tipo == Tipo.Tipos.ARREGLO2){
+                        ArrayList<ArrayList<Nodo>> listaI = (ArrayList<ArrayList<Nodo>>)ide.valor;
+
+                        Globales.gen.addComment("Imprimiendo Arreglo");
+                        int j = 1;
+                        for(ArrayList<Nodo> listaJ: listaI){
+                            int k = 1;
+                            for(Nodo valor: listaJ){
+
+                                //Obtengo numero de columnas
+                                String temp0 = Globales.gen.addTemp();
+                                Globales.gen.getPosArray(temp0, ide.id, "0");
+
+                                //Obtengo la posicion i
+                                String temp1 = Globales.gen.addTemp();
+                                Globales.gen.addExp(temp1, String.valueOf(j), "-", "1");
+
+                                //Multiplico P1 * J
+                                String temp2 = Globales.gen.addTemp();
+                                Globales.gen.addExp(temp2, temp0, "*", temp1);
+
+                                //Sumo P2 a lo anterior
+                                String temp3 = Globales.gen.addTemp();
+                                Globales.gen.addExp(temp3, temp2, "+", String.valueOf(k));
+
+                                String ret = Globales.gen.addTemp();
+                                Globales.gen.getPosArray(ret, ide.id, temp3);
+
+
+                                if (prim.tipo == Tipo.Tipos.INTEGER) {
+                                    Globales.gen.addPrint("d", ret);
+                                    Globales.gen.addPrint("c", "32");
+                                } else if (prim.tipo == Tipo.Tipos.REAL) {
+                                    Globales.gen.printFloat("f", ret);
+                                    Globales.gen.addPrint("c", "32");
+                                } else if (prim.tipo == Tipo.Tipos.CHARACTER) {
+                                    Globales.gen.addPrint("c", ret);
+                                    Globales.gen.addPrint("c", "32");
+                                }
+
+                                k++;
+                            }
+                            Globales.gen.addPrint("c", "10");
+                            j++;
+                        }
+
                     }
+
 
                 } else {
                     if (this.expresion.get(i).valor3D != null) {

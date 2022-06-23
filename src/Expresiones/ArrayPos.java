@@ -2,8 +2,10 @@ package Expresiones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -23,6 +25,10 @@ public class ArrayPos extends Nodo {
     NodoAST nodoId;
     NodoAST nodoPosicion;
     NodoAST nodoValor;
+
+    //Para C3D
+    int posicion1;
+    int posicion2;
 
     public ArrayPos(String id, Nodo pos1, Nodo pos2, int line, int column) {
         super(null, line, column);
@@ -101,6 +107,12 @@ public class ArrayPos extends Nodo {
 
                     nodoMain.agregarHijo(nodoId);
                     nodoMain.agregarHijo(val.getAST());
+
+                    //Para C3D
+                    if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO){
+                        this.isC3D = true;
+                        this.posicion1 = p1;
+                    }
 
                     //Retorno el valor
                     return result;
@@ -197,6 +209,13 @@ public class ArrayPos extends Nodo {
                             nodoMain.agregarHijo(nodoId);
                             nodoMain.agregarHijo(val.getAST());
 
+                            //Para C3D
+                            if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO2){
+                                this.isC3D = true;
+                                this.posicion1 = p1;
+                                this.posicion2 = p2;
+                            }
+
                             //Retorno el valor
                             return result;
                         }
@@ -265,6 +284,48 @@ public class ArrayPos extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D){
+            Globales.gen.addComment("Obtener Valor de arreglo");
+
+            if(this.pos2 == null){
+                this.pos1.get3D();
+
+                String temp = Globales.gen.addTemp();
+                Globales.gen.addExp(temp, this.pos1.valor3D, "-", "1");
+
+                this.valor3D = Globales.gen.addTemp();
+
+                Globales.gen.getPosArray(this.valor3D, this.id, temp);
+            }else{
+
+                //Obtengo numero de columnas
+                String temp0 = Globales.gen.addTemp();
+                Globales.gen.getPosArray(temp0, this.id, "0");
+
+                //Obtengo la posicion i
+                this.pos1.get3D();
+                String temp1 = Globales.gen.addTemp();
+                Globales.gen.addExp(temp1, pos1.valor3D, "-", "1");
+
+                //Multiplico P1 * J
+                String temp2 = Globales.gen.addTemp();
+                Globales.gen.addExp(temp2, temp0, "*", temp1);
+
+                //Sumo P2 a lo anterior
+                this.pos2.get3D();
+                String temp3 = Globales.gen.addTemp();
+                Globales.gen.addExp(temp3, temp2, "+", pos2.valor3D);
+
+                this.valor3D = Globales.gen.addTemp();
+
+                Globales.gen.getPosArray(this.valor3D, this.id, temp3);
+            }
+
+        }
     }
 }

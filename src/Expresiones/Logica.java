@@ -191,6 +191,7 @@ public class Logica extends Nodo {
             Globales.gen = genAux.getInstance();
         }
 
+
         if(this.isC3D) {
             Globales.gen.addComment("Logica");
 

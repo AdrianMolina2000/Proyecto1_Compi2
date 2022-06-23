@@ -2,8 +2,11 @@ package Instrucciones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
+import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
 
@@ -190,6 +193,9 @@ public class DoWhile extends Nodo {
         nodoIns.agregarHijos(instrEjec);
         nodoMain.agregarHijo(nodoIns);
 
+        //Para C3D
+        this.isC3D = true;
+
         //Termino la ejecucion
         return null;
     }
@@ -207,6 +213,37 @@ public class DoWhile extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
+        if(this.isC3D){
+            Globales.gen.addComment("SENTENCIA DO WHILE");
 
+            String label0 = Globales.gen.newLabel();
+
+            Globales.gen.addLabel(label0);
+
+            this.condicion.get3D();
+
+            Globales.gen.addLabel(this.condicion.ev);
+
+            for(Nodo instruccion: this.expresiones){
+                if(instruccion instanceof Exit){
+                    instruccion.ev = this.condicion.ef;
+                }else if(instruccion instanceof Cycle){
+                    instruccion.ev = label0;
+                }else if(instruccion instanceof If){
+                    instruccion.ev = this.condicion.ef;
+                    instruccion.ef = label0;
+                }
+                instruccion.get3D();
+            }
+
+            Globales.gen.addGoto(label0);
+
+            Globales.gen.addLabel(this.condicion.ef);
+
+        }
     }
 }

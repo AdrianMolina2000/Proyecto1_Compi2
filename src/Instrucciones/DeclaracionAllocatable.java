@@ -79,6 +79,5 @@ public class DeclaracionAllocatable extends Nodo {
     @Override
     public void get3D() {
 
-
     }
 }

@@ -107,6 +107,9 @@ public class Do extends Nodo {
             return error;
         }
 
+        //Para C3D
+        this.isC3D = true;
+
         //Esto repetira todas las instrucciones que vienen
         for(int i = (int)inic; i <= (int)fine  ; i += (int)pas){
             Table newtable2 = new Table(newtable);
@@ -277,8 +280,7 @@ public class Do extends Nodo {
         nodoIns.agregarHijos(instrEjec);
         nodoMain.agregarHijo(nodoIns);
 
-        //Para C3D
-        this.isC3D = true;
+
 
         //Detengo la ejecucion
         return null;
@@ -301,11 +303,9 @@ public class Do extends Nodo {
             C3D genAux = new C3D();
             Globales.gen = genAux.getInstance();
         }
-
         if(this.isC3D){
             Globales.gen.addComment("SENTENCIA DO");
 
-            this.inicio.get3D();
             this.paso.get3D();
             this.fin.get3D();
 
@@ -325,6 +325,8 @@ public class Do extends Nodo {
             String posVar = String.valueOf(variable.pos);
             Globales.gen.addExp(pos0, "0", "+", posVar);
             Globales.gen.getStack(temp0, pos0);
+
+            this.inicio.get3D();
 
             //Inicia el ciclo
             Globales.gen.addComment("Inicia el Ciclo");
@@ -346,6 +348,14 @@ public class Do extends Nodo {
             Globales.gen.addLabel(label1);
 
             for(Nodo instruccion: this.expresiones){
+                if(instruccion instanceof Exit){
+                    instruccion.ev = label2;
+                }else if(instruccion instanceof Cycle){
+                    instruccion.ev = label3;
+                }else if(instruccion instanceof If){
+                    instruccion.ev = label2;
+                    instruccion.ef = label3;
+                }
                 instruccion.get3D();
             }
 

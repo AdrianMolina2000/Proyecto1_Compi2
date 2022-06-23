@@ -2,8 +2,10 @@ package Expresiones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -15,6 +17,9 @@ public class Size extends Nodo {
 
     //PARA EL AST
     NodoAST nodoRest;
+
+    //Para el C3D
+    int size;
 
     public Size(String id, int line, int column) {
         super(null, line, column);
@@ -64,6 +69,10 @@ public class Size extends Nodo {
                 //Creo el nodo con el valor para el AST
                 nodoRest = new NodoAST(String.valueOf(listaI.size()));
 
+                //Para C3D
+                this.isC3D = true;
+                this.size = listaI.size();
+
                 //Retorno el valor de la lista
                 return listaI.size();
             }
@@ -91,6 +100,16 @@ public class Size extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D){
+            String tempSize = Globales.gen.addTemp();
+            Globales.gen.addExp(tempSize, "0", "+", String.valueOf(this.size));
+            this.valor3D = tempSize;
+            this.tmp = true;
+        }
     }
 }

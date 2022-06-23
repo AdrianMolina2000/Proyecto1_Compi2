@@ -65,6 +65,7 @@ public class Program extends Nodo {
 
     @Override
     public void get3D() {
+
         for(int i = 0; i<instrucciones.size(); i++){
             instrucciones.get(i).get3D();
         }
