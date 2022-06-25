@@ -109,10 +109,6 @@ public class SubRutina extends Nodo {
         if(isC3D) {
             Globales.gen.initFun(this.id1);
 
-            for (Nodo params : listaParams2) {
-
-            }
-
             for (Nodo ins : instrucciones) {
                 ins.get3D();
             }

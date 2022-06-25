@@ -3,8 +3,10 @@ package Instrucciones;
 import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Primitivo;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Table;
 import Symbols.Tree;
 
@@ -38,6 +40,9 @@ public class Return extends Nodo {
         //Creo el nodo Main AST
         nodoMain = new NodoAST("RETURN");
         nodoMain.agregarHijo(this.expresion.getAST());
+
+        //Para C3D
+        isC3D = true;
 
         return expr;
     }

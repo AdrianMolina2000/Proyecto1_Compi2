@@ -2,8 +2,10 @@ package Instrucciones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -96,14 +98,19 @@ public class Funcion extends Nodo {
             if(exist){
                 Nodo eli = instrucciones.remove(elim);
                 this.tipo = eli.tipo;
+                eli.reto = true;
                 retorno.add(eli);
             }else if(listaD){
                 ListaDeclaraciones eli = (ListaDeclaraciones) instrucciones.get(elim);
                 if(eli.declaraciones.size() == 1){
-                    retorno.add(eli.declaraciones.remove(elimL));
+                    Nodo ret = eli.declaraciones.remove(elimL);
+                    ret.reto = true;
+                    retorno.add(ret);
                     instrucciones.remove(elim);
                 }else{
-                    retorno.add(eli.declaraciones.remove(elimL));
+                    Nodo ret = eli.declaraciones.remove(elimL);
+                    ret.reto = true;
+                    retorno.add(ret);
                 }
             }else{
                 String err = "La variable de retorno no ha sido encontrada ["+this.id3+"] \n";
@@ -120,6 +127,7 @@ public class Funcion extends Nodo {
 
             Simbolo metodo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.FUNCION), this.id1, metodoValor, this.line, this.column, table, false);
             tree.setFuncion(metodo);
+            isC3D = true;
             return null;
 
         }else {
@@ -149,6 +157,23 @@ public class Funcion extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D) {
+            Globales.gen.initFun(this.id1);
+
+            for(Nodo re: retorno){
+                re.get3D();
+            }
+
+            for (Nodo ins : instrucciones) {
+                ins.get3D();
+            }
+
+            Globales.gen.endFun();
+        }
     }
 }

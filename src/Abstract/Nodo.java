@@ -16,8 +16,7 @@ public abstract class Nodo {
     public String ef;
     public boolean realizar = true;
     public boolean isC3D = false;
-
-
+    public boolean reto = false;
 
     public abstract Object execute(Table table, Tree tree);
 

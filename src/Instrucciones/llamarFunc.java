@@ -4,8 +4,10 @@ import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Identificador;
 import Expresiones.Primitivo;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -20,6 +22,10 @@ public class llamarFunc extends Nodo {
     ArrayList<NodoAST> paramsEjec = new ArrayList<>();
     ArrayList<NodoAST> instrEjec = new ArrayList<>();
     NodoAST nodoRet = new NodoAST("RETORNO");
+
+    //Para C3D
+    Table tableC3D;
+    Return retu;
 
     public llamarFunc(String id, ArrayList<Nodo> parametrosEnt, int line, int column) {
         super(null, line, column);
@@ -169,10 +175,14 @@ public class llamarFunc extends Nodo {
             iden = new Identificador(decA.id, decA.line, decA.column);
         }
 
-        Return retu = new Return(iden, iden.line, iden.column);
+        retu = new Return(iden, iden.line, iden.column);
         Object ret = retu.execute(newtable, tree);
 
         nodoRet.agregarHijo(retu.getAST());
+
+        //Para C3D
+        isC3D = true;
+        tableC3D = table;
 
         return ret;
     }
@@ -194,11 +204,41 @@ public class llamarFunc extends Nodo {
         nodo.agregarHijo(nodoIns);
 
         nodo.agregarHijo(nodoRet);
+
         return nodo;
     }
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D){
+            String tmp = Globales.gen.addTemp();
+
+            int i = tableC3D.getTotalSize()+1;
+            for(Nodo param: parametrosEnt){
+                param.get3D();
+                Globales.gen.addExp(tmp, "P", "+", String.valueOf(i));
+                Globales.gen.setStack(tmp, param.valor3D);
+                i++;
+            }
+
+            Globales.gen.newTable(String.valueOf(tableC3D.getTotalSize()));
+            Globales.gen.callFun(this.id);
+
+            String temp = Globales.gen.addTemp();
+            Globales.gen.addExp(temp, "P", "+", "0");
+            String tmp2 = Globales.gen.addTemp();
+            Globales.gen.getStack(tmp2, temp);
+
+            Globales.gen.getTable(String.valueOf(tableC3D.getTotalSize()));
+
+
+            this.tmp = true;
+            this.valor3D = tmp2;
+        }
     }
 }
