@@ -742,8 +742,8 @@ public class Aritmetica extends Nodo {
                 Globales.gen.addExp(temp, "0", this.operador, right);
                 this.valor3D = temp;
                 this.tmp = true;
-
             }
+
         }
     }
 }

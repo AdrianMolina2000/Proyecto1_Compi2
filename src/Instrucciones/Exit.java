@@ -40,5 +40,6 @@ public class Exit extends Nodo {
         if(this.ev != null){
             Globales.gen.addGoto(this.ev);
         }
+
     }
 }

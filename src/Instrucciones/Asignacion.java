@@ -248,6 +248,10 @@ public class Asignacion extends Nodo {
                 nodoMain.agregarHijo(new NodoAST(this.id));
                 nodoMain.agregarHijo(new NodoAST(resultado));
 
+                //Para C3D
+                this.isC3D = true;
+                this.tableC3D = table;
+
                 //Le asigno el valor a la variable
                 variable.valor = listaI;
                 return null;
@@ -351,6 +355,42 @@ public class Asignacion extends Nodo {
 
                         Globales.gen.setPosArray(this.id, temp, tempVal);
 
+                        i++;
+                    }
+                }
+            }
+
+            else if(variable.tipo2.tipo == Tipo.Tipos.ARREGLO2){
+                if(this.expresion instanceof Identificador iden){
+                    ArrayList< ArrayList<Nodo>> listaI = (ArrayList< ArrayList<Nodo>>)result;
+
+                    int i = 1;
+                    for(ArrayList<Nodo> listaJ: listaI){
+                        int j = 1;
+                        for(Nodo valor: listaJ){
+                            //Obtengo numero de columnas
+                            String temp0 = Globales.gen.addTemp();
+                            Globales.gen.getPosArray(temp0, iden.id, "0");
+
+                            //Obtengo la posicion i
+                            String temp1 = Globales.gen.addTemp();
+                            Globales.gen.addExp(temp1, String.valueOf(i), "-", "1");
+
+                            //Multiplico P1 * J
+                            String temp2 = Globales.gen.addTemp();
+                            Globales.gen.addExp(temp2, temp0, "*", temp1);
+
+                            //Sumo P2 a lo anterior
+                            String temp3 = Globales.gen.addTemp();
+                            Globales.gen.addExp(temp3, temp2, "+", String.valueOf(j));
+
+                            String ret = Globales.gen.addTemp();
+                            Globales.gen.getPosArray(ret, iden.id, temp3);
+
+                            Globales.gen.setPosArray(this.id, temp3, ret);
+
+                            j++;
+                        }
                         i++;
                     }
                 }
