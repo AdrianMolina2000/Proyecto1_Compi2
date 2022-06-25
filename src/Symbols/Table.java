@@ -1,5 +1,8 @@
 package Symbols;
 
+import Gramatica.Globales;
+import Other.Excepcion;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,19 +24,20 @@ public class Table {
             simbol.pos = size;
         }
 
-        simbol.heap = false;
+        if(simbol.inFunc){
+            simbol.pos = size;
+        }
 
-        this.Variables.put(simbol.id, simbol);
+        this.Variables.put(simbol.id.toLowerCase(), simbol);
         size++;
     }
 
     public Simbolo getVariable(String id){
         Table ambito = this;
         while (ambito != null){
-
             for (Map.Entry<String, Simbolo> entry : ambito.Variables.entrySet()) {
-                if(entry.getKey().equalsIgnoreCase(id)){
-                    return ambito.Variables.get(id);
+                if(entry.getKey().equalsIgnoreCase(id.toLowerCase())){
+                    return ambito.Variables.get(id.toLowerCase());
                 }
             }
             ambito = ambito.anterior;
@@ -41,13 +45,40 @@ public class Table {
         return null;
     }
 
+    public Simbolo getVariable2(String id){
+        if(Variables.containsKey(id.toLowerCase())){
+            return Variables.get(id.toLowerCase());
+        }else{
+            return null;
+        }
+    }
+
     public int getTotalSize(){
         int sum = 0;
-        Table ambito = anterior;
+        Table ambito = this;
         while (ambito != null){
             sum += ambito.size;
             ambito = ambito.anterior;
         }
         return sum;
+    }
+
+    public int getPrevSizes(){
+        int sum = 0;
+        Table ambito = this.anterior;
+        while (ambito != null){
+            sum += ambito.size;
+            ambito = ambito.anterior;
+        }
+        return sum;
+    }
+
+    public int getPrevSize(){
+        int sum = 0;
+        if(this.anterior == null){
+            return 0;
+        }else{
+            return this.anterior.size;
+        }
     }
 }

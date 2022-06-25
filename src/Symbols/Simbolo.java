@@ -11,11 +11,11 @@ public class Simbolo {
     public int column;
     Table ambito;
     public int pos;
-    public boolean heap;
+    public boolean inFunc;
     public boolean isGlobal = false;
 
 
-    public Simbolo(Tipo tipo, Tipo tipo2, String id, Object valor, int line, int column, Table ambito){
+    public Simbolo(Tipo tipo, Tipo tipo2, String id, Object valor, int line, int column, Table ambito, boolean inFunc){
         this.tipo = tipo;
         this.tipo2 = tipo2;
         this.id = id;
@@ -23,6 +23,7 @@ public class Simbolo {
         this.line = line;
         this.column = column;
         this.ambito = ambito;
+        this.inFunc = inFunc;
     }
 
 }

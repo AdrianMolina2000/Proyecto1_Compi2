@@ -30,10 +30,10 @@ public class DeclaracionArray extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        Simbolo simbolo = table.getVariable(this.id);
+        Simbolo simbolo = table.getVariable2(this.id);
 
         if(simbolo != null){
-            String err = "La variable {" + this.id + "} ya ha sido declarada \n";
+            String err = "La variable {" + this.id + "} ya ha sido declarada en este ambito\n";
             Excepcion error = new Excepcion("Semantico", err, line, column);
             tree.excepciones.add(error);
             return error;
@@ -74,7 +74,7 @@ public class DeclaracionArray extends Nodo {
                 //Creo la nueva variable tipo ARRAY
                 Tipo nuevoTipo = new Tipo(this.tipo);
                 Tipo nuevoTipo2 = new Tipo(Tipo.Tipos.ARREGLO);
-                simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
+                simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table, false);
 
                 //Creo el nodo para el AST
                 nodoMain =  new NodoAST("DECLARACION");
@@ -144,7 +144,7 @@ public class DeclaracionArray extends Nodo {
                     //Creo la nueva variable tipo ARRAY
                     Tipo nuevoTipo = new Tipo(this.tipo);
                     Tipo nuevoTipo2 = new Tipo(Tipo.Tipos.ARREGLO2);
-                    simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, resI, this.line, this.column, table);
+                    simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, resI, this.line, this.column, table, false);
 
                     //Creo el nodo para el AST
                     nodoMain =  new NodoAST("DECLARACION");

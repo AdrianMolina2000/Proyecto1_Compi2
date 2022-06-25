@@ -192,12 +192,19 @@ public class Identificador extends Nodo {
 
             String posVar = String.valueOf(variable.pos);
 
-            Globales.gen.addExp(pos, "0", "+", posVar);
+            if(variable.inFunc){
+                Globales.gen.addExp(pos, "P", "+", String.valueOf(variable.pos+1));
+            }else{
+                Globales.gen.addExp(pos, "P", "+", posVar);
+            }
+
 
             Globales.gen.getStack(temp, pos);
 
             if (variable.tipo.tipo != Tipo.Tipos.LOGICAL) {
-                this.valor3D = temp;
+                if(this.valor3D == null){
+                    this.valor3D = temp;
+                }
                 this.tmp = true;
             }else {
                 if (this.ev == null) {

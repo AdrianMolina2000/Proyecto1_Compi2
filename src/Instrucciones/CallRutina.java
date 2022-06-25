@@ -4,8 +4,10 @@ import Abstract.Nodo;
 import Abstract.NodoAST;
 import Expresiones.Identificador;
 import Expresiones.Primitivo;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -20,6 +22,9 @@ public class CallRutina extends Nodo {
     ArrayList<NodoAST> paramsEjec;
     ArrayList<NodoAST> instrEjec;
 
+    //Para C3D
+    Table tableC3D;
+
     public CallRutina(String id, ArrayList<Nodo> parametrosEnt, int line, int column) {
         super(null, line, column);
         this.id = id;
@@ -31,7 +36,7 @@ public class CallRutina extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        Table newtable = new Table(null);
+        Table newtable = new Table(table);
 
         Simbolo simboloMetodo = tree.getMetodo(this.id);
 
@@ -56,19 +61,20 @@ public class CallRutina extends Nodo {
         for (int i = 0; i < parametros.size(); i++) {
             if(parametros.get(i) instanceof Declaracion dec){
                 if(this.parametrosEnt.get(i) instanceof Identificador ide){
-                    ide.execute(table, tree);
+                    ide.execute(newtable, tree);
                     if(ide.tipo != dec.tipo){
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +ide.tipo + "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
                         tree.excepciones.add(error);
                         return error;
                     }
-                    dec.valor = new Primitivo(ide.tipo, ide.execute(table, tree), dec.line, dec.column);
+                    dec.valor = new Primitivo(ide.tipo, ide.execute(newtable, tree), dec.line, dec.column);
+                    dec.inFunc = true;
                     dec.execute(newtable, tree);
                     paramsEjec.add(ide.getAST());
                     instrEjec.add(dec.getAST());
                 }else {
-                    this.parametrosEnt.get(i).execute(table, tree);
+                    this.parametrosEnt.get(i).execute(newtable, tree);
                     if(this.parametrosEnt.get(i).tipo != dec.tipo){
                         String err = "La variable {" +dec.id+ "} no puede ser declarada debido a que son de diferentes tipos [" +dec.tipo+"] y [" +this.parametrosEnt.get(i).tipo+ "] \n";
                         Excepcion error = new Excepcion("Semantico", err, dec.line, dec.column);
@@ -76,6 +82,7 @@ public class CallRutina extends Nodo {
                         return error;
                     }
                     dec.valor = this.parametrosEnt.get(i);
+                    dec.inFunc = true;
                     dec.execute(newtable, tree);
 
                     paramsEjec.add(this.parametrosEnt.get(i).getAST());
@@ -86,7 +93,7 @@ public class CallRutina extends Nodo {
                 Object dim1 = decArray.dim1.execute(newtable, tree);
 
                 if(this.parametrosEnt.get(i) instanceof Identificador ide){
-                    Object result = ide.execute(table, tree);
+                    Object result = ide.execute(newtable, tree);
 
                     if(ide.tipo != decArray.tipo){
                         String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos ["+decArray.tipo+"] y [" +ide.tipo + "] \n";
@@ -153,6 +160,9 @@ public class CallRutina extends Nodo {
             instrEjec.add(instrucciones.get(i).getAST());
         }
 
+        isC3D = true;
+        tableC3D = table;
+
         return null;
     }
 
@@ -177,6 +187,26 @@ public class CallRutina extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D){
+            String tmp = Globales.gen.addTemp();
+
+            int i = tableC3D.getTotalSize()+1;
+            for(Nodo param: parametrosEnt){
+                param.get3D();
+                Globales.gen.addExp(tmp, "P", "+", String.valueOf(i));
+                Globales.gen.setStack(tmp, param.valor3D);
+                i++;
+            }
+
+
+            Globales.gen.newTable(String.valueOf(tableC3D.getTotalSize()));
+            Globales.gen.callFun(this.id);
+            Globales.gen.getTable(String.valueOf(tableC3D.getTotalSize()));
+        }
     }
 }

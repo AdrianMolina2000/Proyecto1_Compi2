@@ -29,7 +29,7 @@ public class llamarFunc extends Nodo {
 
     @Override
     public Object execute(Table table, Tree tree) {
-        Table newtable = new Table(null);
+        Table newtable = new Table(table);
 
         Simbolo simboloMetodo = tree.getFuncion(this.id);
 

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class Declaracion extends Nodo {
     String id;
     public Nodo valor;
+    boolean inFunc = false;
 
     //Para AST
     NodoAST nodoMain;
@@ -62,8 +63,8 @@ public class Declaracion extends Nodo {
         }
 
         //Verifico si la variable ya existe
-        if(table.getVariable(this.id) != null){
-            String err = "La variable {" + this.id + "} ya ha sido declarada \n";
+        if(table.getVariable2(this.id) != null){
+            String err = "La variable {" + this.id + "} ya ha sido declarada en este ambito\n";
             Excepcion error = new Excepcion("Semantico", err, line, column);
             tree.excepciones.add(error);
             return error;
@@ -73,7 +74,8 @@ public class Declaracion extends Nodo {
         Tipo nuevoTipo = new Tipo(this.tipo);
         Tipo nuevoTipo2 = new Tipo(Tipo.Tipos.VARIABLE);
 
-        Simbolo simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
+
+        Simbolo simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table, inFunc);
 
         table.setVariable(simbolo);
         tree.Variables.add(simbolo);
@@ -118,13 +120,14 @@ public class Declaracion extends Nodo {
 
             String temPos = Globales.gen.addTemp();
 
-            String totalSize = String.valueOf(tableC3D.getTotalSize());
+
+            String totalSize = String.valueOf(tableC3D.getPrevSizes() + simbolo.pos );
             String posVar = String.valueOf(simbolo.pos);
 
-            if(!simbolo.isGlobal){
-                Globales.gen.addExp(temPos, "P", "+", totalSize);
+            if(simbolo.inFunc){
+                Globales.gen.addExp(temPos, "P", "+", String.valueOf(simbolo.pos+1));
             }else{
-                Globales.gen.addExp(temPos, "0", "+", posVar);
+                Globales.gen.addExp(temPos, "P", "+", posVar);
             }
 
             this.valor.get3D();

@@ -301,14 +301,15 @@ public class Asignacion extends Nodo {
             if(variable.tipo2.tipo == Tipo.Tipos.VARIABLE){
                 String pos = Globales.gen.addTemp();
 
-                String totalSize = String.valueOf(tableC3D.getTotalSize());
+                String totalSize = String.valueOf(tableC3D.getPrevSizes());
                 String posVar = String.valueOf(variable.pos);
 
-                if(!variable.isGlobal){
-                    Globales.gen.addExp(pos, "P", "+", totalSize);
+                if(variable.inFunc){
+                    Globales.gen.addExp(pos, "P", "+", String.valueOf(variable.pos+1));
                 }else{
-                    Globales.gen.addExp(pos, "0", "+", posVar);
+                    Globales.gen.addExp(pos, "P", "+", posVar);
                 }
+
 
                 ((Nodo) this.expresion).get3D();
                 Nodo rest = (Nodo)this.expresion;

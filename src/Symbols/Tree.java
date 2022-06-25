@@ -26,26 +26,26 @@ public class Tree {
     }
 
     public void setFuncion(Simbolo simbol){
-        this.funciones.put(simbol.id, simbol);
+        this.funciones.put(simbol.id.toLowerCase(), simbol);
     }
 
     public Simbolo getFuncion(String id){
         for (Map.Entry<String, Simbolo> entry : funciones.entrySet()) {
-            if(entry.getKey().equalsIgnoreCase(id)){
-                return funciones.get(id);
+            if(entry.getKey().equalsIgnoreCase(id.toLowerCase())){
+                return funciones.get(id.toLowerCase());
             }
         }
         return null;
     }
 
     public void setMetodo(Simbolo simbol){
-        this.metodos.put(simbol.id, simbol);
+        this.metodos.put(simbol.id.toLowerCase(), simbol);
     }
 
     public Simbolo getMetodo(String id){
         for (Map.Entry<String, Simbolo> entry : metodos.entrySet()) {
-            if(entry.getKey().equalsIgnoreCase(id)){
-                return metodos.get(id);
+            if(entry.getKey().equalsIgnoreCase(id.toLowerCase())){
+                return metodos.get(id.toLowerCase());
             }
         }
         return null;

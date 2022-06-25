@@ -2,8 +2,10 @@ package Instrucciones;
 
 import Abstract.Nodo;
 import Abstract.NodoAST;
+import Gramatica.Globales;
 import Other.Excepcion;
 import Other.Tipo;
+import Symbols.C3D;
 import Symbols.Simbolo;
 import Symbols.Table;
 import Symbols.Tree;
@@ -68,8 +70,12 @@ public class SubRutina extends Nodo {
             metodoValor.add(listaParams2);
             metodoValor.add(instrucciones);
 
-            Simbolo metodo = new Simbolo(new Tipo(Tipo.Tipos.VOID), new Tipo(Tipo.Tipos.METODO), this.id1, metodoValor, this.line, this.column, table);
+            Simbolo metodo = new Simbolo(new Tipo(Tipo.Tipos.VOID), new Tipo(Tipo.Tipos.METODO), this.id1, metodoValor, this.line, this.column, table, false);
             tree.setMetodo(metodo);
+
+            //Para C3D
+            isC3D = true;
+
             return null;
         } else {
             String err = "La subrutina [" +this.id1+ "] ya ha sido creado con anterioridad";
@@ -95,6 +101,23 @@ public class SubRutina extends Nodo {
 
     @Override
     public void get3D() {
+        if(Globales.gen == null){
+            C3D genAux = new C3D();
+            Globales.gen = genAux.getInstance();
+        }
 
+        if(isC3D) {
+            Globales.gen.initFun(this.id1);
+
+            for (Nodo params : listaParams2) {
+
+            }
+
+            for (Nodo ins : instrucciones) {
+                ins.get3D();
+            }
+
+            Globales.gen.endFun();
+        }
     }
 }

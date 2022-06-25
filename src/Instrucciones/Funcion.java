@@ -118,7 +118,7 @@ public class Funcion extends Nodo {
             metodoValor.add(instrucciones);
             metodoValor.add(retorno);
 
-            Simbolo metodo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.FUNCION), this.id1, metodoValor, this.line, this.column, table);
+            Simbolo metodo = new Simbolo(new Tipo(this.tipo), new Tipo(Tipo.Tipos.FUNCION), this.id1, metodoValor, this.line, this.column, table, false);
             tree.setFuncion(metodo);
             return null;
 

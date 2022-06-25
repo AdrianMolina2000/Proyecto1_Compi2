@@ -44,10 +44,10 @@ public class DeclaracionAllocatable extends Nodo {
         }
 
         //Creo la nueva variable
-        simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table);
+        simbolo = new Simbolo(nuevoTipo, nuevoTipo2, this.id, result, this.line, this.column, table, false);
 
         //Verifico si existe en la tabla de simbolos
-        if(table.getVariable(this.id) == null){
+        if(table.getVariable2(this.id) == null){
             table.setVariable(simbolo);
             tree.Variables.add(simbolo);
 
@@ -58,7 +58,7 @@ public class DeclaracionAllocatable extends Nodo {
             //Termino la ejecucion
             return null;
         }else{
-            String err = "La variable {" + this.id + "} ya ha sido declarada \n";
+            String err = "La variable {" + this.id + "} ya ha sido declarada en este ambito\n";
             Excepcion error = new Excepcion("Semantico", err, line, column);
             tree.excepciones.add(error);
             return error;
