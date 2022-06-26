@@ -139,13 +139,13 @@ listaCall
 ;
 
 expresion
-    :op='-' expresion                                   #expresionNegativo
-    |op='.not.' expresion                               #expresionNot
+    :op= '-' expresion                                  #expresionNegativo
+    |op= '.not.' expresion                              #expresionNot
     |val1=expresion op='**' val2=expresion              #expresionPotencia
-    |val1=expresion op='*' val2=expresion               #expresionMultiplicacion
     |val1=expresion op='/' val2=expresion               #expresionDivision
-    |val1=expresion op='+' val2=expresion               #expresionSuma
+    |val1=expresion op='*' val2=expresion               #expresionMultiplicacion
     |val1=expresion op='-' val2=expresion               #expresionResta
+    |val1=expresion op='+' val2=expresion               #expresionSuma
     |val1=expresion op=('=='|'.eq.') val2=expresion     #expresionEq
     |val1=expresion op=('/='|'.ne.') val2=expresion     #expresionNe
     |val1=expresion op=('>='|'.ge.') val2=expresion     #expresionGe

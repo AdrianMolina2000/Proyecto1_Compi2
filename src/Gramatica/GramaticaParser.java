@@ -3730,54 +3730,54 @@ public class GramaticaParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new ExpresionMultiplicacionContext(new ExpresionContext(_parentctx, _parentState));
-						((ExpresionMultiplicacionContext)_localctx).val1 = _prevctx;
+						_localctx = new ExpresionDivisionContext(new ExpresionContext(_parentctx, _parentState));
+						((ExpresionDivisionContext)_localctx).val1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(615);
 						if (!(precpred(_ctx, 25))) throw new FailedPredicateException(this, "precpred(_ctx, 25)");
 						setState(616);
-						((ExpresionMultiplicacionContext)_localctx).op = match(T__22);
+						((ExpresionDivisionContext)_localctx).op = match(T__34);
 						setState(617);
-						((ExpresionMultiplicacionContext)_localctx).val2 = expresion(26);
+						((ExpresionDivisionContext)_localctx).val2 = expresion(26);
 						}
 						break;
 					case 3:
 						{
-						_localctx = new ExpresionDivisionContext(new ExpresionContext(_parentctx, _parentState));
-						((ExpresionDivisionContext)_localctx).val1 = _prevctx;
+						_localctx = new ExpresionMultiplicacionContext(new ExpresionContext(_parentctx, _parentState));
+						((ExpresionMultiplicacionContext)_localctx).val1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(618);
 						if (!(precpred(_ctx, 24))) throw new FailedPredicateException(this, "precpred(_ctx, 24)");
 						setState(619);
-						((ExpresionDivisionContext)_localctx).op = match(T__34);
+						((ExpresionMultiplicacionContext)_localctx).op = match(T__22);
 						setState(620);
-						((ExpresionDivisionContext)_localctx).val2 = expresion(25);
+						((ExpresionMultiplicacionContext)_localctx).val2 = expresion(25);
 						}
 						break;
 					case 4:
 						{
-						_localctx = new ExpresionSumaContext(new ExpresionContext(_parentctx, _parentState));
-						((ExpresionSumaContext)_localctx).val1 = _prevctx;
+						_localctx = new ExpresionRestaContext(new ExpresionContext(_parentctx, _parentState));
+						((ExpresionRestaContext)_localctx).val1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(621);
 						if (!(precpred(_ctx, 23))) throw new FailedPredicateException(this, "precpred(_ctx, 23)");
 						setState(622);
-						((ExpresionSumaContext)_localctx).op = match(T__35);
+						((ExpresionRestaContext)_localctx).op = match(T__31);
 						setState(623);
-						((ExpresionSumaContext)_localctx).val2 = expresion(24);
+						((ExpresionRestaContext)_localctx).val2 = expresion(24);
 						}
 						break;
 					case 5:
 						{
-						_localctx = new ExpresionRestaContext(new ExpresionContext(_parentctx, _parentState));
-						((ExpresionRestaContext)_localctx).val1 = _prevctx;
+						_localctx = new ExpresionSumaContext(new ExpresionContext(_parentctx, _parentState));
+						((ExpresionSumaContext)_localctx).val1 = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(624);
 						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
 						setState(625);
-						((ExpresionRestaContext)_localctx).op = match(T__31);
+						((ExpresionSumaContext)_localctx).op = match(T__35);
 						setState(626);
-						((ExpresionRestaContext)_localctx).val2 = expresion(23);
+						((ExpresionSumaContext)_localctx).val2 = expresion(23);
 						}
 						break;
 					case 6:
@@ -4564,19 +4564,19 @@ public class GramaticaParser extends Parser {
 		"\u0000\u0000\u0262\u0259\u0001\u0000\u0000\u0000\u0263\u028d\u0001\u0000"+
 		"\u0000\u0000\u0264\u0265\n\u001a\u0000\u0000\u0265\u0266\u0005\"\u0000"+
 		"\u0000\u0266\u028c\u0003(\u0014\u001b\u0267\u0268\n\u0019\u0000\u0000"+
-		"\u0268\u0269\u0005\u0017\u0000\u0000\u0269\u028c\u0003(\u0014\u001a\u026a"+
-		"\u026b\n\u0018\u0000\u0000\u026b\u026c\u0005#\u0000\u0000\u026c\u028c"+
-		"\u0003(\u0014\u0019\u026d\u026e\n\u0017\u0000\u0000\u026e\u026f\u0005"+
-		"$\u0000\u0000\u026f\u028c\u0003(\u0014\u0018\u0270\u0271\n\u0016\u0000"+
-		"\u0000\u0271\u0272\u0005 \u0000\u0000\u0272\u028c\u0003(\u0014\u0017\u0273"+
-		"\u0274\n\u0015\u0000\u0000\u0274\u0275\u0007\u0000\u0000\u0000\u0275\u028c"+
-		"\u0003(\u0014\u0016\u0276\u0277\n\u0014\u0000\u0000\u0277\u0278\u0007"+
-		"\u0001\u0000\u0000\u0278\u028c\u0003(\u0014\u0015\u0279\u027a\n\u0013"+
-		"\u0000\u0000\u027a\u027b\u0007\u0002\u0000\u0000\u027b\u028c\u0003(\u0014"+
-		"\u0014\u027c\u027d\n\u0012\u0000\u0000\u027d\u027e\u0007\u0003\u0000\u0000"+
-		"\u027e\u028c\u0003(\u0014\u0013\u027f\u0280\n\u0011\u0000\u0000\u0280"+
-		"\u0281\u0007\u0004\u0000\u0000\u0281\u028c\u0003(\u0014\u0012\u0282\u0283"+
-		"\n\u0010\u0000\u0000\u0283\u0284\u0007\u0005\u0000\u0000\u0284\u028c\u0003"+
+		"\u0268\u0269\u0005#\u0000\u0000\u0269\u028c\u0003(\u0014\u001a\u026a\u026b"+
+		"\n\u0018\u0000\u0000\u026b\u026c\u0005\u0017\u0000\u0000\u026c\u028c\u0003"+
+		"(\u0014\u0019\u026d\u026e\n\u0017\u0000\u0000\u026e\u026f\u0005 \u0000"+
+		"\u0000\u026f\u028c\u0003(\u0014\u0018\u0270\u0271\n\u0016\u0000\u0000"+
+		"\u0271\u0272\u0005$\u0000\u0000\u0272\u028c\u0003(\u0014\u0017\u0273\u0274"+
+		"\n\u0015\u0000\u0000\u0274\u0275\u0007\u0000\u0000\u0000\u0275\u028c\u0003"+
+		"(\u0014\u0016\u0276\u0277\n\u0014\u0000\u0000\u0277\u0278\u0007\u0001"+
+		"\u0000\u0000\u0278\u028c\u0003(\u0014\u0015\u0279\u027a\n\u0013\u0000"+
+		"\u0000\u027a\u027b\u0007\u0002\u0000\u0000\u027b\u028c\u0003(\u0014\u0014"+
+		"\u027c\u027d\n\u0012\u0000\u0000\u027d\u027e\u0007\u0003\u0000\u0000\u027e"+
+		"\u028c\u0003(\u0014\u0013\u027f\u0280\n\u0011\u0000\u0000\u0280\u0281"+
+		"\u0007\u0004\u0000\u0000\u0281\u028c\u0003(\u0014\u0012\u0282\u0283\n"+
+		"\u0010\u0000\u0000\u0283\u0284\u0007\u0005\u0000\u0000\u0284\u028c\u0003"+
 		"(\u0014\u0011\u0285\u0286\n\u000f\u0000\u0000\u0286\u0287\u00051\u0000"+
 		"\u0000\u0287\u028c\u0003(\u0014\u0010\u0288\u0289\n\u000e\u0000\u0000"+
 		"\u0289\u028a\u00052\u0000\u0000\u028a\u028c\u0003(\u0014\u000f\u028b\u0264"+
