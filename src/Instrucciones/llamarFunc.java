@@ -97,8 +97,8 @@ public class llamarFunc extends Nodo {
                     Object result = ide.execute(table, tree);
 
                     if(decArray.dim2 == null){
-                        if(ide.tipo != Tipo.Tipos.ARREGLO){
-                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo + "] \n";
+                        if(ide.tipo2 != Tipo.Tipos.ARREGLO){
+                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo2 + "] \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
                             return error;
@@ -120,8 +120,8 @@ public class llamarFunc extends Nodo {
                     }else{
                         Object dim2 = decArray.dim2.execute(newtable, tree);
 
-                        if(ide.tipo != Tipo.Tipos.ARREGLO2){
-                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo + "] \n";
+                        if(ide.tipo2 != Tipo.Tipos.ARREGLO2){
+                            String err = "El arreglo {" +decArray.id+ "} no puede ser declarada debido a que son de diferentes tipos [Array] y [" +ide.tipo2 + "] \n";
                             Excepcion error = new Excepcion("Semantico", err, decArray.line, decArray.column);
                             tree.excepciones.add(error);
                             return error;

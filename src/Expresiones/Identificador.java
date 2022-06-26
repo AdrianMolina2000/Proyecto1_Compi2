@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class Identificador extends Nodo {
     public String id;
+    public Tipo.Tipos tipo2;
 
     //PARA EL AST
     NodoAST nodoMain;
@@ -50,6 +51,7 @@ public class Identificador extends Nodo {
 
             //Le coloco el tipo a esta clase
             this.tipo = variable.tipo.tipo;
+            this.tipo2 = variable.tipo2.tipo;
 
             //Creacion del nodo AST
             nodoMain = new NodoAST("ID");
@@ -95,6 +97,7 @@ public class Identificador extends Nodo {
 
             //Le asigno tipo a esta clase
             this.tipo = variable.tipo.tipo;
+            this.tipo2 = variable.tipo2.tipo;
 
             //Creo el nodo para el AST
             nodoMain = new NodoAST("ID");
@@ -145,6 +148,7 @@ public class Identificador extends Nodo {
 
             //Le asigno tipo a esta clase
             this.tipo = variable.tipo.tipo;
+            this.tipo2 = variable.tipo2.tipo;
 
             //Creo el nodo para el AST
             nodoMain = new NodoAST("ID");
