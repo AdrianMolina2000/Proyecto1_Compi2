@@ -26,7 +26,7 @@ public class C3D {
     boolean Bmodulo;
     boolean BcompararString;
     boolean BtoString;
-    
+
     public C3D() {
         countTemp = 0;
         countLabel = 0;
