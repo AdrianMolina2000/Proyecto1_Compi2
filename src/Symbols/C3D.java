@@ -52,19 +52,6 @@ public class C3D {
         BtoString = false;
     }
 
-    public void cleanAll(){
-        countTemp = 0;
-        countLabel = 0;
-
-        code = "";
-        funcs = "";
-        natives = "";
-        inFunc = false;
-        inNatives = false;
-        temps = new ArrayList<>();
-        gen = new C3D();
-    }
-
     public String getHeader(){
         String ret = "#include <stdio.h> \n";
         ret += "float heap[16384]; \n";
@@ -140,11 +127,6 @@ public class C3D {
         temps.add(temp);
         used.add(temp);
         return temp;
-    }
-
-    public void deleteTemp(String tmp){
-        used.remove(tmp);
-        free.add(tmp);
     }
 
     public String newLabel(){
@@ -227,24 +209,6 @@ public class C3D {
         codeIn("H= H + 1;\n", "    ");
     }
 
-    public void saveTemp(Table table, String temp){
-        addComment("Guardando temporales");
-        String tmp = addTemp();
-        addExp(tmp, "P", "+", String.valueOf(table.size));
-        setStack(tmp, temp);
-        table.size++;
-        addComment("Temporales guardados");
-    }
-
-    public void getTemp(Table table, String temp){
-        addComment("Recuperando temporales");
-        table.size--;
-        String tmp = addTemp();
-        addExp(tmp, "P", "+", String.valueOf(table.size));
-        getStack(temp, tmp);
-        addComment("Temporales recuperados");
-    }
-
     public void addPrint(String type, String value){
             codeIn("printf(\"%"+ type +"\", (int) " + value + " );\n", "    ");
     }
@@ -252,7 +216,6 @@ public class C3D {
     public void printFloat(String type, String value){
             codeIn("printf(\"%f\", (float) " + value + ");\n", "    ");
     }
-
 
     public void printTrue(){
         addComment("Imprimiendo true");

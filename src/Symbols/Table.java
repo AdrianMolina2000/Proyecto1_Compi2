@@ -72,13 +72,4 @@ public class Table {
         }
         return sum;
     }
-
-    public int getPrevSize(){
-        int sum = 0;
-        if(this.anterior == null){
-            return 0;
-        }else{
-            return this.anterior.size;
-        }
-    }
 }

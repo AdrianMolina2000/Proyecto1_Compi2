@@ -120,13 +120,11 @@ public class Declaracion extends Nodo {
 
             String temPos = Globales.gen.addTemp();
 
-
-            String totalSize = String.valueOf(tableC3D.getPrevSizes() + simbolo.pos );
             String posVar = String.valueOf(simbolo.pos);
 
             if(reto){
-                    simbolo.pos = 0;
-                    Globales.gen.addExp(temPos, "P", "+", "0");
+                simbolo.pos = 0;
+                Globales.gen.addExp(temPos, "P", "+", "0");
             }else{
                 if(simbolo.inFunc){
                     Globales.gen.addExp(temPos, "P", "+", String.valueOf(simbolo.pos+1));
